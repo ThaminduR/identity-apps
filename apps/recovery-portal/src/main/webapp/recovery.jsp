@@ -19,6 +19,7 @@
 
 <%@ page import="org.apache.commons.collections.map.HashedMap" %>
 <%@ page import="org.apache.commons.lang.StringUtils" %>
+<%@ page import="org.wso2.carbon.identity.base.IdentityRuntimeException" %>
 <%@ page import="org.wso2.carbon.identity.mgt.endpoint.util.IdentityManagementEndpointConstants" %>
 <%@ page import="org.wso2.carbon.identity.mgt.endpoint.util.IdentityManagementEndpointUtil" %>
 <%@ page import="org.wso2.carbon.identity.mgt.endpoint.util.client.ApiException" %>
@@ -71,16 +72,22 @@
                 request.getRequestDispatcher("error.jsp").forward(request, response);
                 return;
             }
-        } catch (Exception e) {
-            request.setAttribute("error", true);
+        } catch (IdentityRuntimeException e) {
             if (StringUtils.isBlank(tenantDomain)) {
                 tenantDomain = IdentityManagementEndpointConstants.SUPER_TENANT;
             }
             else {
-                request.setAttribute("errorMsg", e.getMessage());
+                request.setAttribute("error", true);
+                request.setAttribute("errorMsg", IdentityManagementEndpointUtil.i18n(recoveryResourceBundle,
+                                            "Invalid.tenant.domain"));
                 request.getRequestDispatcher("error.jsp").forward(request, response);
                 return;
             }
+        } catch (Exception e) {
+            request.setAttribute("error", true);
+            request.setAttribute("errorMsg", e.getMessage());
+            request.getRequestDispatcher("error.jsp").forward(request, response);
+            return;
         }
         List<Claim> claims;
         UsernameRecoveryApi usernameRecoveryApi = new UsernameRecoveryApi();
