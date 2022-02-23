@@ -29,7 +29,6 @@
 <%@ page import="org.wso2.carbon.identity.mgt.endpoint.util.client.model.UserClaim" %>
 <%@ page import="org.wso2.carbon.identity.recovery.util.Utils" %>
 <%@ page import="org.wso2.carbon.identity.recovery.IdentityRecoveryConstants" %>
-<%@ page import="java.lang.Exception" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
@@ -83,11 +82,6 @@
                 request.getRequestDispatcher("error.jsp").forward(request, response);
                 return;
             }
-        } catch (Exception e) {
-            request.setAttribute("error", true);
-            request.setAttribute("errorMsg", e.getMessage());
-            request.getRequestDispatcher("error.jsp").forward(request, response);
-            return;
         }
         List<Claim> claims;
         UsernameRecoveryApi usernameRecoveryApi = new UsernameRecoveryApi();
