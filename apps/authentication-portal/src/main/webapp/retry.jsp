@@ -16,6 +16,8 @@
   ~ under the License.
   --%>
 
+<%@ page import="com.google.gson.Gson" %>
+<%@ page import="org.apache.commons.lang3.StringUtils" %>
 <%@ page import="org.owasp.encoder.Encode" %>
 <%@ page import="java.io.File" %>
 <%@ page import="org.wso2.carbon.identity.application.authentication.endpoint.util.AuthContextAPIClient" %>
