@@ -119,6 +119,7 @@ export class Config {
         return {
             announcements: window["AppUtils"].getConfig().ui.announcements,
             appName: window["AppUtils"].getConfig().ui.appName,
+            appTitle: window["AppUtils"].getConfig().ui.appTitle,
             authenticatorApp: { apps: [ { link: "", name: "" } ] },
             copyrightText: `${window["AppUtils"].getConfig().ui.appCopyright} \u00A9 ${ new Date().getFullYear() }`,
             features: window["AppUtils"].getConfig().ui.features,
