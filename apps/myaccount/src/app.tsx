@@ -63,6 +63,7 @@ export const App = (): ReactElement => {
     const config: ConfigReducerStateInterface = useSelector((state: AppState) => state.config);
     const loginInit: boolean = useSelector((state: AppState) => state.authenticationInformation.loginInit);
     const allowedScopes: string = useSelector((state: AppState) => state?.authenticationInformation?.scope);
+    const appTitle: string = useSelector((state: AppState) => state?.config?.ui?.appTitle);
 
     const [ appRoutes, setAppRoutes ] = useState<RouteInterface[]>(getAppRoutes());
 
@@ -190,6 +191,7 @@ export const App = (): ReactElement => {
                                         >
                                             <>
                                                 <Helmet>
+                                                    <title>{ appTitle }</title>
                                                     <link
                                                         rel="shortcut icon"
                                                         href={ `${ window[ "AppUtils" ].getConfig().clientOrigin }/` +
