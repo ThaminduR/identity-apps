@@ -748,7 +748,7 @@ export const devPortal: DevPortalNS = {
                                 },
                                 expiry: {
                                     hint: "Configure the ID token expiry time (in seconds).",
-                                    label: "Id token expiry time",
+                                    label: "ID token expiry time",
                                     placeholder: "Enter the ID token expiry time",
                                     validations: {
                                         empty: "Please fill the ID token expiry time"
