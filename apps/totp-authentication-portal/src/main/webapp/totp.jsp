@@ -28,6 +28,7 @@
 <%@ page import="org.wso2.carbon.identity.application.authentication.endpoint.util.TenantDataManager" %>
 <%@ page import="org.owasp.encoder.Encode" %>
 <%@ page import="org.wso2.carbon.identity.application.authenticator.totp.util.TOTPUtil" %>
+<%@ page import="org.wso2.carbon.identity.application.authentication.endpoint.util.AuthenticationEndpointUtil" %>
 <%@ include file="includes/localize.jsp" %>
 
     <%
@@ -149,7 +150,7 @@
                         <div class="ui divider hidden"></div>
                             <%
                                 String multiOptionURI = request.getParameter("multiOptionURI");
-                                if (multiOptionURI != null) {
+                                if (multiOptionURI != null && AuthenticationEndpointUtil.isValidURL(multiOptionURI)) {
                             %>
                                 <a class="ui button link-button" id="goBackLink"
                                 href='<%=Encode.forHtmlAttribute(multiOptionURI)%>'>
