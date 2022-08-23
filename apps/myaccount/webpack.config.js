@@ -342,6 +342,7 @@ module.exports = (env) => {
                 template: path.join(__dirname, "src", "rpIFrame.html")
             }),
             new webpack.DefinePlugin({
+                PRESERVE_SESSION_AT_PASSWORD_UPDATE: JSON.stringify("false"),
                 "process.env": {
                     NODE_ENV: JSON.stringify(env.NODE_ENV)
                 },
