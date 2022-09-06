@@ -18,6 +18,7 @@
 
 import { I18n, LanguageChangeException, SupportedLanguagesMeta } from "@wso2is/i18n";
 import { Footer, ThemeContext } from "@wso2is/react-components";
+import moment from "moment";
 import React, { ReactElement, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
@@ -52,6 +53,7 @@ export const AppFooter: React.FunctionComponent<AppFooterProps> = (): ReactEleme
      * @param {string} language - Selected language.
      */
     const handleLanguageSwitch = (language: string): void => {
+        moment.locale(language ?? "en");
         I18n.instance.changeLanguage(language)
             .catch((error) => {
                 throw new LanguageChangeException(language, error);
