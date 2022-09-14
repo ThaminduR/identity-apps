@@ -28,6 +28,7 @@ import { LocalStorageUtils } from "@wso2is/core/utils";
 import { I18n, I18nModuleOptionsInterface } from "@wso2is/i18n";
 import { ContentLoader, SessionManagementProvider, ThemeContext } from "@wso2is/react-components";
 import _ from "lodash";
+import moment from "moment";
 import React, { ReactElement, Suspense, useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { I18nextProvider } from "react-i18next";
@@ -74,6 +75,13 @@ export const App = (): ReactElement => {
         dispatch(initializeAuthentication());
         sessionStorageDisabled();
     }, []);
+
+    /**
+     * Set the locale for moment library
+     */
+     useEffect(() => {
+        moment.locale(I18n.instance.language);
+    }, [ I18n.instance.language ]);
 
     /**
      * Set the deployment configs in redux state.
