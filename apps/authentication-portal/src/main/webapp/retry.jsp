@@ -55,21 +55,21 @@
             if (parameters != null) {
                 String statusParam = (String) parameters.get("status");
                 String statusMessageParam = (String) parameters.get("statusMsg");
-                    if (StringUtils.isNotEmpty(statusParam)) {
-                        stat = AuthenticationEndpointUtil.customi18n(resourceBundle, statusParam);
-                    }
-                    if (StringUtils.isNotEmpty(statusMessageParam)) {
-                        statusMessage = AuthenticationEndpointUtil.customi18n(resourceBundle, statusMessageParam);
-                    }
+                if (StringUtils.isNotEmpty(statusParam)) {
+                    stat = AuthenticationEndpointUtil.customi18n(resourceBundle, statusParam);
+                }
+                if (StringUtils.isNotEmpty(statusMessageParam)) {
+                    statusMessage = AuthenticationEndpointUtil.customi18n(resourceBundle, statusMessageParam);
                 }
             }
-            if (StringUtils.isEmpty(stat)) {
-                stat = AuthenticationEndpointUtil.i18n(resourceBundle, "authentication.error");
-            }
-            if (StringUtils.isEmpty(statusMessage)) {
-                statusMessage =  AuthenticationEndpointUtil.i18n(resourceBundle,
-                        "something.went.wrong.during.authentication");
-            }
+        }
+        if (StringUtils.isEmpty(stat)) {
+            stat = AuthenticationEndpointUtil.i18n(resourceBundle, "authentication.error");
+        }
+        if (StringUtils.isEmpty(statusMessage)) {
+            statusMessage =  AuthenticationEndpointUtil.i18n(resourceBundle,
+                    "something.went.wrong.during.authentication");
+        }
     } else {
         String i18nErrorMapping = AuthenticationEndpointUtil.getErrorCodeToi18nMapping(
             stat, statusMessage);
