@@ -54,7 +54,7 @@ export const AppFooter: React.FunctionComponent<AppFooterProps> = (): ReactEleme
      * @param {string} language - Selected language.
      */
     const handleLanguageSwitch = (language: string): void => {
-        moment.locale(language ?? "es");
+        moment.locale(language ?? "en");
         I18n.instance.changeLanguage(language)
             .catch((error) => {
                 throw new LanguageChangeException(language, error);
