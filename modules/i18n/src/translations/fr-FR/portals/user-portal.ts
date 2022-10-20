@@ -921,22 +921,22 @@ export const userPortal: UserPortalNS = {
         },
         profile: {
             fields: {
-                addressesHome: "Adresse personnelle",
-                addressesWork: "Adresse professionnelle",
+                addresses_home: "Adresse personnelle",
+                addresses_work: "Adresse professionnelle",
                 emails: "Email",
-                emailsHome: "E-mail personnel",
-                emailsOther: "Autre adresse e-mail",
-                emailsWork: "E-mail professionnel",
+                emails_home: "E-mail personnel",
+                emails_other: "Autre adresse e-mail",
+                emails_work: "E-mail professionnel",
                 generic: {
                     default: "Ajouter l'attribut {{fieldName}}"
                 },
-                nameFamilyName: "Nom de famille",
-                nameGivenName: "Prénom",
+                name_familyName: "Nom de famille",
+                name_givenName: "Prénom",
                 phoneNumbers: "Numéros de téléphone",
-                phoneNumbersHome: "Numéro de téléphone personnel",
-                phoneNumbersMobile: "Numéro de téléphone portable",
-                phoneNumbersOther: "Autre numéro de téléphone",
-                phoneNumbersWork: "Numéro de téléphone au professionnel",
+                phoneNumbers_home: "Numéro de téléphone personnel",
+                phoneNumbers_mobile: "Numéro de téléphone portable",
+                phoneNumbers_other: "Autre numéro de téléphone",
+                phoneNumbers_work: "Numéro de téléphone au professionnel",
                 profileImage: "Image de profil",
                 profileUrl: "URL",
                 userName: "Nom d'utilisateur"
