@@ -19,7 +19,6 @@
 import { I18n, LanguageChangeException, SupportedLanguagesMeta } from "@wso2is/i18n";
 import { Footer, ThemeContext } from "@wso2is/react-components";
 import moment from "moment";
-import "moment/min/locales";
 import React, { ReactElement, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
