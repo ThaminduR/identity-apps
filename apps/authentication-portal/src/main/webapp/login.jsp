@@ -107,17 +107,20 @@
 <%
     String inputType = request.getParameter("inputType");
     String username = null;
+    String authAPIURL = application.getInitParameter(Constants.AUTHENTICATION_REST_ENDPOINT_URL);
+    if (StringUtils.isBlank(authAPIURL)) {
+        authAPIURL = IdentityManagementEndpointUtil.getBasePath(tenantDomain, "/api/identity/auth/v1.1/", true);
+    }
+    if (!authAPIURL.endsWith("/")) {
+        authAPIURL += "/";
+    }
+    authAPIURL += "context/" + request.getParameter("sessionDataKey");
+    String contextProperties = AuthContextAPIClient.getContextProperties(authAPIURL);
 
-    if (isIdentifierFirstLogin(inputType)) {
-        String authAPIURL = application.getInitParameter(Constants.AUTHENTICATION_REST_ENDPOINT_URL);
-        if (StringUtils.isBlank(authAPIURL)) {
-            authAPIURL = IdentityUtil.getServerURL("/api/identity/auth/v1.1/", true, true);
-        }
-        if (!authAPIURL.endsWith("/")) {
-            authAPIURL += "/";
-        }
-        authAPIURL += "context/" + request.getParameter("sessionDataKey");
-        String contextProperties = AuthContextAPIClient.getContextProperties(authAPIURL);
+    if (contextProperties == null) {
+        String redirectURL = "error.do";
+        response.sendRedirect(redirectURL);
+    } else if (isIdentifierFirstLogin(inputType)) {
         Gson gson = new Gson();
         Map<String, Object> parameters = gson.fromJson(contextProperties, Map.class);
         if (parameters != null) {
