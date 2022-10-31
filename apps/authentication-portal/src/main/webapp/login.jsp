@@ -46,6 +46,7 @@
     private static final String IDENTIFIER_EXECUTOR = "IdentifierExecutor";
     private static final String OPEN_ID_AUTHENTICATOR = "OpenIDAuthenticator";
     private static final String JWT_BASIC_AUTHENTICATOR = "JWTBasicAuthenticator";
+    private static final String SERVER_AUTH_URL = "/api/identity/auth/v1.1/"
     private static final String X509_CERTIFICATE_AUTHENTICATOR = "x509CertificateAuthenticator";
     private String reCaptchaAPI = null;
     private String reCaptchaKey = null;
@@ -109,7 +110,7 @@
     String username = null;
     String authAPIURL = application.getInitParameter(Constants.AUTHENTICATION_REST_ENDPOINT_URL);
     if (StringUtils.isBlank(authAPIURL)) {
-        authAPIURL = IdentityManagementEndpointUtil.getBasePath(tenantDomain, "/api/identity/auth/v1.1/", true);
+        authAPIURL = IdentityManagementEndpointUtil.getBasePath(tenantDomain, SERVER_AUTH_URL, true);
     }
     if (!authAPIURL.endsWith("/")) {
         authAPIURL += "/";
