@@ -46,6 +46,7 @@
     private static final String IDENTIFIER_EXECUTOR = "IdentifierExecutor";
     private static final String OPEN_ID_AUTHENTICATOR = "OpenIDAuthenticator";
     private static final String JWT_BASIC_AUTHENTICATOR = "JWTBasicAuthenticator";
+    private static final String SERVER_AUTH_URL = "/api/identity/auth/v1.1/"
     private static final String X509_CERTIFICATE_AUTHENTICATOR = "x509CertificateAuthenticator";
     private String reCaptchaAPI = null;
     private String reCaptchaKey = null;
@@ -107,17 +108,20 @@
 <%
     String inputType = request.getParameter("inputType");
     String username = null;
+    String authAPIURL = application.getInitParameter(Constants.AUTHENTICATION_REST_ENDPOINT_URL);
+    if (StringUtils.isBlank(authAPIURL)) {
+        authAPIURL = IdentityManagementEndpointUtil.getBasePath(tenantDomain, SERVER_AUTH_URL, true);
+    }
+    if (!authAPIURL.endsWith("/")) {
+        authAPIURL += "/";
+    }
+    authAPIURL += "context/" + request.getParameter("sessionDataKey");
+    String contextProperties = AuthContextAPIClient.getContextProperties(authAPIURL);
 
-    if (isIdentifierFirstLogin(inputType)) {
-        String authAPIURL = application.getInitParameter(Constants.AUTHENTICATION_REST_ENDPOINT_URL);
-        if (StringUtils.isBlank(authAPIURL)) {
-            authAPIURL = IdentityUtil.getServerURL("/api/identity/auth/v1.1/", true, true);
-        }
-        if (!authAPIURL.endsWith("/")) {
-            authAPIURL += "/";
-        }
-        authAPIURL += "context/" + request.getParameter("sessionDataKey");
-        String contextProperties = AuthContextAPIClient.getContextProperties(authAPIURL);
+    if (contextProperties == null) {
+        String redirectURL = "error.do";
+        response.sendRedirect(redirectURL);
+    } else if (isIdentifierFirstLogin(inputType)) {
         Gson gson = new Gson();
         Map<String, Object> parameters = gson.fromJson(contextProperties, Map.class);
         if (parameters != null) {

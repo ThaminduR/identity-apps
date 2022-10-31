@@ -17,16 +17,17 @@
   --%>
 
 <%@ page import="com.google.gson.Gson" %>
-<%@ page import="org.apache.commons.lang3.StringUtils" %>
+<%@ page import="org.apache.commons.lang.StringUtils" %>
 <%@ page import="org.owasp.encoder.Encode" %>
 <%@ page import="java.io.File" %>
 <%@ page import="org.wso2.carbon.identity.application.authentication.endpoint.util.AuthContextAPIClient" %>
 <%@ page import="org.wso2.carbon.identity.application.authentication.endpoint.util.Constants" %>
-<%@ page import="org.wso2.carbon.identity.core.util.IdentityUtil" %>
+<%@ page import="org.wso2.carbon.identity.mgt.endpoint.util.IdentityManagementEndpointUtil" %>
 <%@ page import="java.util.Map" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@ include file="includes/localize.jsp" %>
+<%@include file="includes/init-url.jsp" %>
 
 <%!
     private static final String SERVER_AUTH_URL = "/api/identity/auth/v1.1/";
@@ -39,12 +40,12 @@
     String statusMessage = request.getParameter("statusMsg");
     // Check the error is null or whether there is no corresponding value in the resource bundle.
     if (stat == null || statusMessage == null) {
+        String authAPIURL = application.getInitParameter(Constants.AUTHENTICATION_REST_ENDPOINT_URL);
+        if (StringUtils.isBlank(authAPIURL)) {
+            authAPIURL = IdentityManagementEndpointUtil.getBasePath(tenantDomain, SERVER_AUTH_URL, true);
+        }
         String errorKey = request.getParameter(REQUEST_PARAM_ERROR_KEY);
         if (errorKey != null) {
-            String authAPIURL = application.getInitParameter(Constants.AUTHENTICATION_REST_ENDPOINT_URL);
-            if (StringUtils.isBlank(authAPIURL)) {
-                authAPIURL = IdentityUtil.getServerURL(SERVER_AUTH_URL, true, true);
-            }
             if (!authAPIURL.endsWith("/")) {
                 authAPIURL += "/";
             }
@@ -62,6 +63,9 @@
                     statusMessage = AuthenticationEndpointUtil.customi18n(resourceBundle, statusMessageParam);
                 }
             }
+        } else if (AuthContextAPIClient.getContextProperties(authAPIURL) == null) {
+            String redirectURL = "error.do";
+            response.sendRedirect(redirectURL);
         }
         if (StringUtils.isEmpty(stat)) {
             stat = AuthenticationEndpointUtil.i18n(resourceBundle, "authentication.error");
