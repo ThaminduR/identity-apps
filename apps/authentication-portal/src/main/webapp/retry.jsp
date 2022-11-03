@@ -40,12 +40,12 @@
     String statusMessage = request.getParameter("statusMsg");
     // Check the error is null or whether there is no corresponding value in the resource bundle.
     if (stat == null || statusMessage == null) {
-        String authAPIURL = application.getInitParameter(Constants.AUTHENTICATION_REST_ENDPOINT_URL);
-        if (StringUtils.isBlank(authAPIURL)) {
-            authAPIURL = IdentityManagementEndpointUtil.getBasePath(tenantDomain, SERVER_AUTH_URL, true);
-        }
         String errorKey = request.getParameter(REQUEST_PARAM_ERROR_KEY);
         if (errorKey != null) {
+            String authAPIURL = application.getInitParameter(Constants.AUTHENTICATION_REST_ENDPOINT_URL);
+            if (StringUtils.isBlank(authAPIURL)) {
+                authAPIURL = IdentityManagementEndpointUtil.getBasePath(tenantDomain, SERVER_AUTH_URL, true);
+            }
             if (!authAPIURL.endsWith("/")) {
                 authAPIURL += "/";
             }
@@ -63,9 +63,6 @@
                     statusMessage = AuthenticationEndpointUtil.customi18n(resourceBundle, statusMessageParam);
                 }
             }
-        } else if (AuthContextAPIClient.getContextProperties(authAPIURL) == null) {
-            String redirectURL = "error.do";
-            response.sendRedirect(redirectURL);
         }
         if (StringUtils.isEmpty(stat)) {
             stat = AuthenticationEndpointUtil.i18n(resourceBundle, "authentication.error");
