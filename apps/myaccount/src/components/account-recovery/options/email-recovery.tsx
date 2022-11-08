@@ -15,6 +15,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+ import { ProfileConstants } from "@wso2is/core/constants";
 import { Field, Forms, Validation } from "@wso2is/forms";
 import { FormValidation } from "@wso2is/validation";
 import { isEmpty } from "lodash";
@@ -88,6 +89,9 @@ export const EmailRecovery: React.FunctionComponent<EmailRecoveryProps> = (props
         }
     }, [ profileInfo?.pendingEmails ]);
 
+    /**
+     * dispatch getProfileInformation action if the profileDetails object is empty
+     */
     useEffect(() => {
         if (isEmpty(profileInfo)) {
             dispatch(getProfileInformation());
@@ -104,6 +108,7 @@ export const EmailRecovery: React.FunctionComponent<EmailRecoveryProps> = (props
             ],
             schemas: ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]
         };
+
         data.Operations[0].value = {
             emails: emailType || emailSchema
                 ? [
@@ -112,7 +117,10 @@ export const EmailRecovery: React.FunctionComponent<EmailRecoveryProps> = (props
                         value: emailAddress
                     }
                 ]
-                : [emailAddress]
+                : [emailAddress],
+            [ProfileConstants.SCIM2_ENT_USER_SCHEMA]: {
+                "verifyEmail": true
+            }
         };
 
         updateProfileInfo(data)
@@ -187,7 +195,12 @@ export const EmailRecovery: React.FunctionComponent<EmailRecoveryProps> = (props
 
     useEffect(() => {
         if (!isEmpty(profileInfo)) {
-            setEmailAddress(profileInfo);
+            const tempProfileInfo: BasicProfileInterface = profileInfo;
+            
+            if (profileInfo?.pendingEmails?.length > 0) {
+                tempProfileInfo.emails = [profileInfo.pendingEmails[0].value];
+            }
+            setEmailAddress(tempProfileInfo);
         }
     }, [profileInfo]);
 
