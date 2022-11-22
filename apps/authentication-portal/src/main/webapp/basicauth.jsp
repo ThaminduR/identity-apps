@@ -108,7 +108,7 @@
     });
 
     function showResendReCaptcha() {
-        <% if (StringUtils.isNotBlank(request.getParameter("failedUsername"))){ %>
+        <% if (StringUtils.isNotBlank(request.getParameter("failedUsername"))) { %>
             <% if (reCaptchaResendEnabled) { %>
                 window.location.href="resend-confirmation-captcha.jsp?<%=AuthenticationEndpointUtil.cleanErrorMessages(Encode.forJava(request.getQueryString()))%>";
             <% } else { %>
