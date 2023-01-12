@@ -236,7 +236,7 @@
                     <%
                         }
                     } else {
-                        Map<String, String> queryMap = extractQueryParamsFromURL(callback);
+                        Map<String, String> queryMap = new HashMap<>();
                         queryMap.put("passwordReset", "true");
                         String parameterizedCallback = FrameworkUtils.buildURLWithQueryParams(callback, queryMap);
                     %>
