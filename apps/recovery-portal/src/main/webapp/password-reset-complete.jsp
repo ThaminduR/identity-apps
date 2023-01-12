@@ -38,6 +38,7 @@
 <%@ page import="org.json.simple.JSONObject" %>
 <%@ page import="org.owasp.encoder.Encode" %>
 <%@ page import="org.wso2.carbon.identity.recovery.util.Utils" %>
+<%@ page import="org.wso2.carbon.identity.application.authentication.framework.util.FrameworkUtils" %>
 
 <jsp:directive.include file="includes/localize.jsp"/>
 <jsp:directive.include file="tenant-resolve.jsp"/>
@@ -235,13 +236,11 @@
                     <%
                         }
                     } else {
-                        String appender = "?";
-                        if (callback.contains("?")) {
-                            appender = "&";
-                        }
-                        callback += appender + "passwordReset=true";
+                        Map<String, String> queryMap = new HashMap<>();
+                        queryMap.put("passwordReset", "true");
+                        String parameterizedCallback = FrameworkUtils.buildURLWithQueryParams(callback, queryMap);
                     %>
-                    location.href = "<%= IdentityManagementEndpointUtil.getURLEncodedCallback(callback)%>";
+                    location.href = "<%= IdentityManagementEndpointUtil.getURLEncodedCallback(parameterizedCallback)%>";
                     <%
                     }
                     } catch (URISyntaxException e) {
