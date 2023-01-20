@@ -96,7 +96,7 @@
                             <fmt:formatNumber><e:forHtmlContent value='${requestScope.data["MaxSessionCount"]}'/></fmt:formatNumber> <%=AuthenticationEndpointUtil.i18n(resourceBundle, "you.currently.have.x.active.sessions.2")%>.
                         </h4>
 
-                        <table class="ui celled table">
+                        <table id="session-details" class="ui celled table">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -106,21 +106,7 @@
                                     <th><input type="checkbox" onchange="toggleSessionCheckboxes()" id="masterCheckbox" checked></th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <c:forEach items='${requestScope.data["sessions"]}' var="session" varStatus="loop">
-                                    <tr>
-                                        <td><e:forHtmlContent value="${loop.index + 1}"/></td>
-                                        <td><e:forHtmlContent value="${session[2]}"/></td>
-                                        <td><e:forHtmlContent value="${session[3]}"/></td>
-                                        <td id="<e:forHtmlAttribute value="${session[1]}"/>">
-                                            <script>getDateFromTimestamp(<e:forJavaScript value="${session[1]}"/>);</script>
-                                        </td>
-                                        <td><input type="checkbox" onchange="toggleMasterCheckbox()"
-                                                    value="<e:forHtmlAttribute value="${session[0]}"/>"
-                                                    name="sessionsToTerminate" checked></td>
-                                    </tr>
-                                </c:forEach>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
 
                         <h4>
@@ -193,6 +179,21 @@
     <% } %>
 
     <script>
+        $(document).ready(function() {
+            <c:forEach items='${requestScope.data["sessions"]}' var="session" varStatus="loop">
+                var accessedTime = getDateFromTimestamp(<e:forJavaScript value="${session[1]}"/>);
+                var tableRow =
+                    "<tr>"
+                    + "<td><e:forHtmlContent value="${loop.index + 1}"/></td>"
+                    + "<td><e:forHtmlContent value="${session[2]}"/></td>"
+                    + "<td><e:forHtmlContent value="${session[3]}"/></td>"
+                    + "<td id='<e:forHtmlAttribute value="${session[1]}"/>'>" + accessedTime + "</td>"
+                    + "<td><input type='checkbox' onchange='toggleMasterCheckbox()' value='<e:forHtmlAttribute value="${session[0]}"/>' name='sessionsToTerminate' checked/></td>"
+                    + "</tr>";
+                $("#session-details tbody").append(tableRow);
+            </c:forEach>
+        });
+
         function hideModal(elem) {
             $(elem).closest('.modal').modal('hide');
         }
@@ -207,7 +208,7 @@
                 minute: "2-digit",
                 hour12: true,
             };
-            document.getElementById(timestamp).innerText = date.toLocaleDateString(undefined, options);
+            return date.toLocaleDateString(undefined, options);
         }
 
         function toggleSessionCheckboxes() {
