@@ -18,6 +18,7 @@
 
 <%@ page import="org.wso2.carbon.identity.application.authentication.endpoint.util.AuthContextAPIClient" %>
 <%@page import="org.wso2.carbon.identity.application.authentication.endpoint.util.Constants" %>
+<%@ page import="org.wso2.carbon.identity.core.util.IdentityUtil" %>
 <%@ page import="org.wso2.carbon.identity.mgt.endpoint.util.IdentityManagementEndpointUtil" %>
 <%@ page import="org.owasp.encoder.Encode" %>
 <%@ page import="java.util.Map" %>
@@ -29,14 +30,22 @@
 
 <%!
     private static final String SERVER_AUTH_URL = "/api/identity/auth/v1.1/";
+    private static final String CONFIG_FILTER_MISSING_CLAIM_PARAM =
+            "AuthenticationEndpoint.EnableFilteringMissingClaimsParam";
 %>
 
 <%
     String[] missingClaimList = null;
     String appName = null;
     Boolean isFederated = false;
-    if (request.getParameter(Constants.MISSING_CLAIMS) != null) {
-        missingClaimList = request.getParameter(Constants.MISSING_CLAIMS).split(",");
+    Boolean missingClaimFilterEnabled =
+            Boolean.parseBoolean(IdentityUtil.getProperty(CONFIG_FILTER_MISSING_CLAIM_PARAM));
+    if (!missingClaimFilterEnabled) {
+        if (request.getParameter(Constants.MISSING_CLAIMS) != null) {
+            missingClaimList = request.getParameter(Constants.MISSING_CLAIMS).split(",");
+        } else {
+            request.getRequestDispatcher("error.do").forward(request, response);
+        }
     } else {
         String authAPIURL = application.getInitParameter(Constants.AUTHENTICATION_REST_ENDPOINT_URL);
         if (StringUtils.isBlank(authAPIURL)) {
