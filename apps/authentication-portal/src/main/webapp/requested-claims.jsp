@@ -54,7 +54,7 @@
         if (!authAPIURL.endsWith("/")) {
             authAPIURL += "/";
         }
-        authAPIURL += "context/" + request.getParameter("sessionDataKey");
+        authAPIURL += "context/" + request.getParameter(Constants.SESSION_DATA_KEY);
         String contextProperties = AuthContextAPIClient.getContextProperties(authAPIURL);
         Gson gson = new Gson();
         Map<String, Object> parameters = gson.fromJson(contextProperties, Map.class);
