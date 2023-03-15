@@ -18,11 +18,13 @@
 
 <%@ page import="org.wso2.carbon.identity.application.authentication.endpoint.util.AuthContextAPIClient" %>
 <%@page import="org.wso2.carbon.identity.application.authentication.endpoint.util.Constants" %>
-<%@ page import="org.wso2.carbon.identity.core.util.IdentityUtil" %>
+<%@ page import="org.wso2.carbon.identity.application.authentication.framework.config.builder.FileBasedConfigurationBuilder" %>
 <%@ page import="org.wso2.carbon.identity.mgt.endpoint.util.IdentityManagementEndpointUtil" %>
 <%@ page import="org.owasp.encoder.Encode" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.io.File" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.google.gson.Gson" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <%@include file="includes/localize.jsp" %>
@@ -30,17 +32,20 @@
 
 <%!
     private static final String SERVER_AUTH_URL = "/api/identity/auth/v1.1/";
-    private static final String CONFIG_FILTER_MISSING_CLAIM_PARAM =
-            "AuthenticationEndpoint.EnableFilteringMissingClaimsParam";
+    private static final String EXCLUDE_POLICY = "exclude";
 %>
 
 <%
     String[] missingClaimList = null;
     String appName = null;
     Boolean isFederated = false;
-    Boolean missingClaimFilterEnabled =
-            Boolean.parseBoolean(IdentityUtil.getProperty(CONFIG_FILTER_MISSING_CLAIM_PARAM));
-    if (!missingClaimFilterEnabled) {
+    List<String> queryParams = FileBasedConfigurationBuilder.getInstance()
+            .getAuthEndpointRedirectParams();
+    String action = FileBasedConfigurationBuilder.getInstance()
+            .getAuthEndpointRedirectParamsAction();
+    boolean missingClaimFilteringEnabled =
+            StringUtils.equals(action, EXCLUDE_POLICY) && queryParams.contains(Constants.MISSING_CLAIMS);
+    if (!missingClaimFilteringEnabled) {
         if (request.getParameter(Constants.MISSING_CLAIMS) != null) {
             missingClaimList = request.getParameter(Constants.MISSING_CLAIMS).split(",");
         } else {
