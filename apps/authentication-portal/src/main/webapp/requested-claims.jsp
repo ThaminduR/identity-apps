@@ -48,8 +48,6 @@
     if (!missingClaimFilteringEnabled) {
         if (request.getParameter(Constants.MISSING_CLAIMS) != null) {
             missingClaimList = request.getParameter(Constants.MISSING_CLAIMS).split(",");
-        } else {
-            request.getRequestDispatcher("error.do").forward(request, response);
         }
     } else {
         String authAPIURL = application.getInitParameter(Constants.AUTHENTICATION_REST_ENDPOINT_URL);
