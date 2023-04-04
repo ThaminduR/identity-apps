@@ -20,7 +20,6 @@
 <%@ page import="org.owasp.encoder.Encode" %>
 <%@ page import="org.wso2.carbon.identity.captcha.util.CaptchaUtil" %>
 <%@ page import="org.wso2.carbon.identity.mgt.endpoint.util.client.ApiException" %>
-<%@ page import="org.wso2.carbon.identity.base.IdentityRuntimeException" %>
 <%@ page import="org.wso2.carbon.identity.mgt.constants.SelfRegistrationStatusCodes" %>
 <%@ page import="org.wso2.carbon.identity.mgt.endpoint.util.client.api.ReCaptchaApi" %>
 <%@ page import="org.wso2.carbon.identity.mgt.endpoint.util.client.model.ReCaptchaProperties" %>
@@ -70,20 +69,8 @@
 
     ReCaptchaApi reCaptchaApi = new ReCaptchaApi();
         try {
-            ReCaptchaProperties reCaptchaProperties = null;
-            if (request.getParameter("tenantDomain") == null && user != null && StringUtils.isNotEmpty(user.getTenantDomain())) {
-                try {
-                    IdentityTenantUtil.getTenantId(user.getTenantDomain());
-                    reCaptchaProperties = reCaptchaApi.getReCaptcha(user.getTenantDomain(), true, "ReCaptcha", "self-registration");
-                } catch (IdentityRuntimeException e) {
-                    request.setAttribute("error", true);
-                    request.setAttribute("errorMsg", e.getMessage());
-                    request.getRequestDispatcher("error.jsp").forward(request, response);
-                    return;
-                }
-            } else if (request.getParameter("tenantDomain") != null ) {
-                reCaptchaProperties = reCaptchaApi.getReCaptcha(tenantDomain, true, "ReCaptcha", "self-registration");
-            }
+            ReCaptchaProperties reCaptchaProperties = reCaptchaApi.getReCaptcha(tenantDomain, true, "ReCaptcha",
+                "self-registration");
             if (reCaptchaProperties != null && reCaptchaProperties.getReCaptchaEnabled()) {
                 Map<String, List<String>> headers = new HashMap<>();
                 headers.put("reCaptcha", Arrays.asList(String.valueOf(true)));
@@ -92,7 +79,8 @@
                 IdentityManagementEndpointUtil.addReCaptchaHeaders(request, headers);
             }
         } catch (ApiException e) {
-            IdentityManagementEndpointUtil.addErrorInformation(request, e);
+            request.setAttribute("error", true);
+            request.setAttribute("errorMsg", e.getMessage());
             request.getRequestDispatcher("error.jsp").forward(request, response);
             return;
         }
