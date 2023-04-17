@@ -133,6 +133,10 @@
 
         ResendCodeRequestDTO selfRegistrationRequest = new ResendCodeRequestDTO();
         UserDTO userDTO = AuthenticationEndpointUtil.getUser(resendUsername);
+        int atIndex = resendUsername.lastIndexOf('@');
+        if (atIndex == -1) {
+            userDTO.setTenantDomain(request.getParameter("tenantDomain"));
+        }
         selfRegistrationRequest.setUser(userDTO);
     
         PropertyDTO propertyDTO = new PropertyDTO();
