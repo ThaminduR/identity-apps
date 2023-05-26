@@ -179,7 +179,7 @@
                         if (OTPcode == "") {
                             e.preventDefault();
                             document.getElementById('alertDiv').innerHTML 
-                                = '<div id="error-msg" class="ui negative message">Please enter the code!</div><div class="ui divider hidden"></div>';
+                                = '<div id="error-msg" class="ui negative message"><%=IdentityManagementEndpointUtil.i18n(recoveryResourceBundle, "please.enter.code")%></div><div class="ui divider hidden"></div>';
                         } else {
                             $('#pin_form').data("submitted", true);
                         }
