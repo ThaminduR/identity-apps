@@ -22,6 +22,7 @@ import { addAlert } from "@wso2is/core/store";
 import { CommonUtils as ReusableCommonUtils } from "@wso2is/core/utils";
 import {
     Announcement,
+    HeaderLinkInterface,
     Logo,
     ProductBrand,
     Header as ReusableHeader,
@@ -41,7 +42,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Image } from "semantic-ui-react";
 import { AppConstants } from "../../constants";
 import { history } from "../../helpers";
-import { ConfigReducerStateInterface } from "../../models";
+import { ConfigReducerStateInterface, FeatureConfigInterface } from "../../models";
 import { AppState } from "../../store";
 import { getProfileInformation, getProfileLinkedAccounts, handleAccountSwitching } from "../../store/actions";
 import { CommonUtils, refreshPage } from "../../utils";
@@ -70,6 +71,8 @@ export const Header: FunctionComponent<HeaderPropsInterface> = (
     const dispatch = useDispatch();
 
     const { state } = useContext(ThemeContext);
+
+    const accessConfig: FeatureConfigInterface = useSelector((state: AppState) => state?.config?.ui?.features);
 
     const { t } = useTranslation();
 
@@ -167,6 +170,29 @@ export const Header: FunctionComponent<HeaderPropsInterface> = (
         setAnnouncement(validAnnouncement);
     };
 
+    /**
+     * Returns user dropdown links.
+     */
+    const getUserDropdownLinks = (): HeaderLinkInterface[] => {
+        const dropdownLinks: HeaderLinkInterface[] = [];
+
+        if (accessConfig?.personalInfo?.enabled) {
+             dropdownLinks.push({
+                icon: "arrow right",
+                name: t("common:personalInfo"),
+                onClick: () => history.push(AppConstants.getPaths().get("PROFILE_INFO"))
+            })
+        }
+        
+        dropdownLinks.push({
+            icon: "power off",
+            name: t("common:logout"),
+            onClick: () => history.push(AppConstants.getAppLogoutPath())
+        });
+
+        return dropdownLinks;
+    };
+
     return (
         <ReusableHeader
             announcement={ announcement && (
@@ -218,18 +244,7 @@ export const Header: FunctionComponent<HeaderPropsInterface> = (
             isProfileInfoLoading={ isProfileInfoLoading }
             linkedAccounts={ linkedAccounts }
             onLinkedAccountSwitch={ handleLinkedAccountSwitch }
-            userDropdownLinks={ [
-                {
-                    icon: "arrow right",
-                    name: t("common:personalInfo"),
-                    onClick: () => history.push(AppConstants.getPaths().get("PROFILE_INFO"))
-                },
-                {
-                    icon: "power off",
-                    name: t("common:logout"),
-                    onClick: () => history.push(AppConstants.getAppLogoutPath())
-                }
-            ] }
+            userDropdownLinks = { getUserDropdownLinks() }
             profileInfo={ profileInfo }
             showUserDropdown={ true }
             onSidePanelToggleClick={ onSidePanelToggleClick }
