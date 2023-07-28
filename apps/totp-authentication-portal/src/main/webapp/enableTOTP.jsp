@@ -22,6 +22,7 @@
 <%@ page import="java.io.File" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="org.wso2.carbon.identity.application.authentication.endpoint.util.AuthContextAPIClient" %>
+<%@ page import="org.wso2.carbon.identity.application.authentication.framework.config.builder.FileBasedConfigurationBuilder" %>
 <%@ page import="org.wso2.carbon.identity.mgt.endpoint.util.IdentityManagementEndpointUtil" %>
 <%@ page import="org.wso2.carbon.identity.application.authentication.endpoint.util.Constants" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
@@ -36,29 +37,42 @@
 <%!
     private static final String SERVER_AUTH_URL = "/api/identity/auth/v1.1/";
     private static final String EXCLUDE_POLICY = "exclude";
+    private static final String SKEY = "ske";
 %>
 
     <%
-        String tenantDomain;
-        if (IdentityTenantUtil.isTenantQualifiedUrlsEnabled()) {
-            tenantDomain = IdentityTenantUtil.getTenantDomainFromContext();
-        } else {
-            tenantDomain = request.getParameter("tenantDomain");
-        }
         String ske = null;
-        String authAPIURL = application.getInitParameter(Constants.AUTHENTICATION_REST_ENDPOINT_URL);
-        if (StringUtils.isBlank(authAPIURL)) {
-            authAPIURL = IdentityManagementEndpointUtil.getBasePath(tenantDomain, SERVER_AUTH_URL, true);
-        }
-        if (!authAPIURL.endsWith("/")) {
-            authAPIURL += "/";
-        }
-        authAPIURL += "context/" + request.getParameter(Constants.SESSION_DATA_KEY);
-        String contextProperties = AuthContextAPIClient.getContextProperties(authAPIURL);
-        Gson gson = new Gson();
-        Map<String, Object> parameters = gson.fromJson(contextProperties, Map.class);
-        if (parameters != null) {
-            ske = (String) parameters.get("ske");
+        List<String> queryParams = FileBasedConfigurationBuilder.getInstance()
+                .getAuthEndpointRedirectParams();
+        String action = FileBasedConfigurationBuilder.getInstance()
+                .getAuthEndpointRedirectParamsAction();
+        boolean sKeyFilteringEnabled =
+                StringUtils.equals(action, EXCLUDE_POLICY) && queryParams.contains(SKEY);
+        if (!sKeyFilteringEnabled) {
+            if (request.getParameter(SKEY) != null) {
+                ske = request.getParameter(SKEY);
+                }
+            } else {
+                String tenantDomain;
+                if (IdentityTenantUtil.isTenantQualifiedUrlsEnabled()) {
+                    tenantDomain = IdentityTenantUtil.getTenantDomainFromContext();
+                } else {
+                    tenantDomain = request.getParameter("tenantDomain");
+                }
+                String authAPIURL = application.getInitParameter(Constants.AUTHENTICATION_REST_ENDPOINT_URL);
+                if (StringUtils.isBlank(authAPIURL)) {
+                    authAPIURL = IdentityManagementEndpointUtil.getBasePath(tenantDomain, SERVER_AUTH_URL, true);
+                }
+                if (!authAPIURL.endsWith("/")) {
+                    authAPIURL += "/";
+                }
+                authAPIURL += "context/" + request.getParameter(Constants.SESSION_DATA_KEY);
+                String contextProperties = AuthContextAPIClient.getContextProperties(authAPIURL);
+                Gson gson = new Gson();
+                Map<String, Object> parameters = gson.fromJson(contextProperties, Map.class);
+                if (parameters != null) {
+                ske = (String) parameters.get(SKEY);
+            }
         }
 
         request.getSession().invalidate();
