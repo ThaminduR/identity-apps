@@ -51,26 +51,26 @@
         if (!sKeyFilteringEnabled) {
             if (request.getParameter(SKEY) != null) {
                 ske = request.getParameter(SKEY);
-                }
+            }
+        } else {
+            String tenantDomain;
+            if (IdentityTenantUtil.isTenantQualifiedUrlsEnabled()) {
+                tenantDomain = IdentityTenantUtil.getTenantDomainFromContext();
             } else {
-                String tenantDomain;
-                if (IdentityTenantUtil.isTenantQualifiedUrlsEnabled()) {
-                    tenantDomain = IdentityTenantUtil.getTenantDomainFromContext();
-                } else {
-                    tenantDomain = request.getParameter("tenantDomain");
-                }
-                String authAPIURL = application.getInitParameter(Constants.AUTHENTICATION_REST_ENDPOINT_URL);
-                if (StringUtils.isBlank(authAPIURL)) {
-                    authAPIURL = IdentityManagementEndpointUtil.getBasePath(tenantDomain, SERVER_AUTH_URL, true);
-                }
-                if (!authAPIURL.endsWith("/")) {
-                    authAPIURL += "/";
-                }
-                authAPIURL += "context/" + request.getParameter(Constants.SESSION_DATA_KEY);
-                String contextProperties = AuthContextAPIClient.getContextProperties(authAPIURL);
-                Gson gson = new Gson();
-                Map<String, Object> parameters = gson.fromJson(contextProperties, Map.class);
-                if (parameters != null) {
+                tenantDomain = request.getParameter("tenantDomain");
+            }
+            String authAPIURL = application.getInitParameter(Constants.AUTHENTICATION_REST_ENDPOINT_URL);
+            if (StringUtils.isBlank(authAPIURL)) {
+                authAPIURL = IdentityManagementEndpointUtil.getBasePath(tenantDomain, SERVER_AUTH_URL, true);
+            }
+            if (!authAPIURL.endsWith("/")) {
+                authAPIURL += "/";
+            }
+            authAPIURL += "context/" + request.getParameter(Constants.SESSION_DATA_KEY);
+            String contextProperties = AuthContextAPIClient.getContextProperties(authAPIURL);
+            Gson gson = new Gson();
+            Map<String, Object> parameters = gson.fromJson(contextProperties, Map.class);
+            if (parameters != null) {
                 ske = (String) parameters.get(SKEY);
             }
         }
