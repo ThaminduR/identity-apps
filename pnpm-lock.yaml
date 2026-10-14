@@ -4241,6 +4241,9 @@ importers:
 
   features/admin.device-policies.v1:
     dependencies:
+      '@asgardeo/auth-react':
+        specifier: ^5.6.1
+        version: 5.6.1(@babel/runtime-corejs3@7.29.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@emotion/react':
         specifier: ^11.11.0
         version: 11.14.0(@types/react@18.0.18)(react@18.3.1)
@@ -4280,9 +4283,15 @@ importers:
       '@wso2is/react-components':
         specifier: ^2.10.0
         version: link:../../modules/react-components
+      axios:
+        specifier: 1.7.0
+        version: 1.7.0
       i18next:
         specifier: ^21.9.1
         version: 21.10.0
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.18.1
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -4353,6 +4362,9 @@ importers:
 
   features/admin.devices.v1:
     dependencies:
+      '@asgardeo/auth-react':
+        specifier: ^5.6.1
+        version: 5.6.1(@babel/runtime-corejs3@7.29.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@emotion/react':
         specifier: ^11.11.0
         version: 11.14.0(@types/react@18.0.18)(react@18.3.1)
@@ -4386,9 +4398,15 @@ importers:
       '@wso2is/react-components':
         specifier: ^2.10.0
         version: link:../../modules/react-components
+      axios:
+        specifier: 1.7.0
+        version: 1.7.0
       i18next:
         specifier: ^21.9.1
         version: 21.10.0
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.18.1
       react:
         specifier: ^18.2.0
         version: 18.3.1
