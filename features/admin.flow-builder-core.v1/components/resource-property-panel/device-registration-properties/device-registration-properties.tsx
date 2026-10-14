@@ -22,46 +22,57 @@ import CircularProgress from "@oxygen-ui/react/CircularProgress";
 import Stack from "@oxygen-ui/react/Stack";
 import TextField from "@oxygen-ui/react/TextField";
 import Typography from "@oxygen-ui/react/Typography";
-import {
-    CommonResourcePropertiesPropsInterface
-} from "@wso2is/admin.flow-builder-core.v1/components/resource-property-panel/resource-properties";
-import {
-    PolicyListItemInterface,
-    useGetDevicePolicies
-} from "@wso2is/admin.device-policies.v1";
+import { useGetDevicePolicies } from "@wso2is/admin.device-policies.v1/hooks/use-get-device-policies";
+import { PolicyListItemInterface } from "@wso2is/admin.device-policies.v1/models/device-policy";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
-import React, { FunctionComponent, ReactElement, useMemo } from "react";
+import React, { FunctionComponent, ReactElement, SyntheticEvent, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { CommonResourcePropertiesPropsInterface } from "../resource-properties";
 
+/**
+ * Props interface of {@link DeviceRegistrationProperties}
+ */
 type DeviceRegistrationPropertiesPropsInterface = CommonResourcePropertiesPropsInterface &
     IdentifiableComponentInterface;
 
-const NO_POLICY_OPTION: PolicyListItemInterface = { id: "", name: "No policy (skip check)" };
-
 /**
- * Property panel for the DeviceRegistrationExecutor step in ask password flow builder.
+ * Property panel for the DeviceRegistrationExecutor step.
  * Lets the user pick a device assurance policy (or none) to attach to the executor.
+ *
+ * @param props - Props injected to the component.
+ * @returns DeviceRegistrationProperties component.
  */
 const DeviceRegistrationProperties: FunctionComponent<DeviceRegistrationPropertiesPropsInterface> = ({
     resource,
     onChange,
     "data-componentid": componentId = "device-registration-properties"
 }: DeviceRegistrationPropertiesPropsInterface): ReactElement => {
+    const { t } = useTranslation();
+
     const { data: policyListResponse, isLoading, error } = useGetDevicePolicies();
 
+    const noPolicyOption: PolicyListItemInterface = useMemo(
+        (): PolicyListItemInterface => ({
+            id: "",
+            name: t("flows:core.executions.deviceRegistration.noPolicy")
+        }),
+        [ t ]
+    );
+
     const options: PolicyListItemInterface[] = useMemo((): PolicyListItemInterface[] => {
-        return [ NO_POLICY_OPTION, ...(policyListResponse?.policies ?? []) ];
-    }, [ policyListResponse ]);
+        return [ noPolicyOption, ...(policyListResponse?.policies ?? []) ];
+    }, [ noPolicyOption, policyListResponse ]);
 
     const currentPolicyName: string = resource?.data?.action?.executor?.meta?.policyName ?? "";
 
     const selectedPolicy: PolicyListItemInterface = useMemo(
         (): PolicyListItemInterface =>
-            options.find((p: PolicyListItemInterface): boolean => p.name === currentPolicyName)
-            ?? NO_POLICY_OPTION,
-        [ options, currentPolicyName ]
+            options.find((option: PolicyListItemInterface): boolean => option.name === currentPolicyName)
+            ?? noPolicyOption,
+        [ options, currentPolicyName, noPolicyOption ]
     );
 
-    const handleChange = (_e: React.SyntheticEvent, value: PolicyListItemInterface): void => {
+    const handleChange = (_event: SyntheticEvent, value: PolicyListItemInterface): void => {
         onChange(
             "action.executor.meta.policyName",
             value?.id ? value.name : "",
@@ -72,7 +83,7 @@ const DeviceRegistrationProperties: FunctionComponent<DeviceRegistrationProperti
     if (error) {
         return (
             <Alert severity="error" data-componentid={ `${ componentId }-error` }>
-                Failed to load device assurance policies.
+                { t("flows:core.executions.deviceRegistration.policyFetchError") }
             </Alert>
         );
     }
@@ -80,8 +91,7 @@ const DeviceRegistrationProperties: FunctionComponent<DeviceRegistrationProperti
     return (
         <Stack gap={ 2 } data-componentid={ componentId }>
             <Typography variant="body2">
-                Select a device assurance policy to enforce during device registration,
-                or leave unset to skip the check.
+                { t("flows:core.executions.deviceRegistration.description") }
             </Typography>
             <Autocomplete
                 disablePortal
@@ -98,8 +108,8 @@ const DeviceRegistrationProperties: FunctionComponent<DeviceRegistrationProperti
                 renderInput={ (params: AutocompleteRenderInputParams): ReactElement => (
                     <TextField
                         { ...params }
-                        label="Device assurance policy"
-                        placeholder="Select a policy"
+                        label={ t("flows:core.executions.deviceRegistration.policyLabel") }
+                        placeholder={ t("flows:core.executions.deviceRegistration.policyPlaceholder") }
                         InputProps={ {
                             ...params.InputProps,
                             endAdornment: (
@@ -109,8 +119,10 @@ const DeviceRegistrationProperties: FunctionComponent<DeviceRegistrationProperti
                                 </>
                             )
                         } }
+                        data-componentid={ `${ componentId }-policy-input` }
                     />
                 ) }
+                data-componentid={ `${ componentId }-policy-select` }
             />
         </Stack>
     );

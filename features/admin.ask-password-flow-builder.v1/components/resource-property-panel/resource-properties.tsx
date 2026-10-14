@@ -21,6 +21,8 @@ import TextField from "@oxygen-ui/react/TextField";
 import {
     CommonResourcePropertiesPropsInterface
 } from "@wso2is/admin.flow-builder-core.v1/components/resource-property-panel/resource-properties";
+// eslint-disable-next-line max-len
+import DeviceRegistrationProperties from "@wso2is/admin.flow-builder-core.v1/components/resource-property-panel/device-registration-properties/device-registration-properties";
 import FlowExtensionProperties from "@wso2is/admin.flow-builder-core.v1/components/resource-property-panel/flow-extension-properties/flow-extension-properties";
 import { FieldKey, FieldValue } from "@wso2is/admin.flow-builder-core.v1/models/base";
 import { Element, ElementCategories, ElementTypes } from "@wso2is/admin.flow-builder-core.v1/models/elements";
@@ -39,7 +41,6 @@ import RulesProperties from "./nodes/rules-properties";
 import ResourcePropertyFactory from "./resource-property-factory";
 import FlowCompletionProperties from "./steps/end/flow-completion-properties";
 import ConfirmationCodeProperties from "./steps/execution/confirmation-code-properties";
-import DeviceRegistrationProperties from "./steps/execution/device-registration-properties";
 import FederationProperties from "./steps/execution/federation-properties";
 import AskPasswordFlowBuilderConstants from "../../constants/ask-password-flow-builder-constants";
 

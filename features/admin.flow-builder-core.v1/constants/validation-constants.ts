@@ -23,6 +23,14 @@ class ValidationConstants {
     private constructor() {}
 
     public static readonly REQUIRED_FIELD_ERROR_CODE: string = "REQUIRED_FIELD_ERROR";
+
+    /**
+     * Executors of which at least one must precede a device registration step in the flow.
+     */
+    public static readonly DEVICE_REGISTRATION_PRECEDING_FACTOR_EXECUTORS: string[] = [
+        "EmailOTPExecutor",
+        "SMSOTPExecutor"
+    ];
 }
 
 export default ValidationConstants;

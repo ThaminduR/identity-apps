@@ -114,6 +114,13 @@ export interface flowsNS {
             confirmationCode: {
                 configurationHint: string;
             };
+            deviceRegistration: {
+                description: string;
+                noPolicy: string;
+                policyFetchError: string;
+                policyLabel: string;
+                policyPlaceholder: string;
+            };
             landing: {
                 message: string;
             };
@@ -319,6 +326,9 @@ export interface flowsNS {
                     general: string;
                     actionId: string;
                 };
+            };
+            deviceRegistrationFactors: {
+                message: string;
             };
             userResolveExecutorFields: {
                 message: string;

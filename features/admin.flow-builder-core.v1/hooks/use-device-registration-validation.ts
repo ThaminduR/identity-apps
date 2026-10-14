@@ -16,16 +16,15 @@
  * under the License.
  */
 
-import
-RegistrationFlowExecutorConstants
-    from "@wso2is/admin.registration-flow-builder.v1/constants/registration-flow-executor-constants";
 import { Edge, Node, ReactFlowState, getIncomers, useStore } from "@xyflow/react";
 import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import useValidationStatus from "./use-validation-status";
+import ValidationConstants from "../constants/validation-constants";
 import { Element } from "../models/elements";
 import Notification, { NotificationType } from "../models/notification";
-import { Resource } from "../public-api";
+import { Resource } from "../models/resources";
+import { ExecutionTypes } from "../models/steps";
 
 /**
  * Custom hook for validating that a DeviceRegistrationExecutor step is preceded by
@@ -45,7 +44,7 @@ const useDeviceRegistrationValidation = (nodeId: string, executorName: string): 
         validationConfig?.isDeviceRegistrationFactorValidationEnabled ?? false;
 
     const isDeviceRegistrationNode: boolean =
-        executorName === RegistrationFlowExecutorConstants.DEVICE_REGISTRATION_EXECUTOR;
+        executorName === ExecutionTypes.DeviceRegistration;
 
     /**
      * Traverses upstream to collect all ancestor nodes.
@@ -72,11 +71,9 @@ const useDeviceRegistrationValidation = (nodeId: string, executorName: string): 
     const nodeHasOTPFactor = (node: Node): boolean =>
         (node?.data?.components as Element[])?.some((parent: Element) =>
             parent?.components?.some(
-                (child: Element) =>
-                    child?.action?.executor?.name ===
-                        RegistrationFlowExecutorConstants.EMAIL_OTP_EXECUTOR ||
-                    child?.action?.executor?.name ===
-                        RegistrationFlowExecutorConstants.SMS_OTP_EXECUTOR
+                (child: Element) => ValidationConstants.DEVICE_REGISTRATION_PRECEDING_FACTOR_EXECUTORS.includes(
+                    child?.action?.executor?.name
+                )
             )
         );
 
@@ -116,11 +113,7 @@ const useDeviceRegistrationValidation = (nodeId: string, executorName: string): 
 
             const notification: Notification = new Notification(
                 errorNotificationId,
-                t(
-                    "flowBuilder:validations.deviceRegistrationRequiresFactors.message",
-                    "Device registration requires at least one of the following " +
-                        "factors to be present in the flow: Email OTP or SMS OTP."
-                ),
+                t("flows:core.validation.deviceRegistrationFactors.message"),
                 NotificationType.ERROR
             );
 

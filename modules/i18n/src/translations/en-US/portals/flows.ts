@@ -106,6 +106,13 @@ export const flows: flowsNS = {
             confirmationCode: {
                 configurationHint: "Allow users to set their own passwords during admin-initiated onboarding and configure related settings."
             },
+            deviceRegistration: {
+                description: "Select a device assurance policy to enforce during device registration, or leave unset to skip the check.",
+                noPolicy: "No policy (skip check)",
+                policyFetchError: "Failed to load device assurance policies.",
+                policyLabel: "Device assurance policy",
+                policyPlaceholder: "Select a policy"
+            },
             landing:{
                 message: "Configure the {{executor}} settings and publish to apply the changes."
             },
@@ -316,6 +323,9 @@ export const flows: flowsNS = {
                     text: "Typography must have text content to be displayed to users.",
                     variant: "Typography must have a variant defined for proper text styling."
                 }
+            },
+            deviceRegistrationFactors: {
+                message: "Device registration requires at least one of the following factors to be present in the flow: Email OTP or SMS OTP."
             },
             userResolveExecutorFields: {
                 message: "Forms with a 'Resolve User' action can only contain a text input field mapped to Username.",
