@@ -34,5 +34,6 @@ export enum TemplateTypes {
     Default = "DEFAULT",
     DeviceRegistrationEmailOTP = "DEVICE_REGISTRATION_EMAIL_OTP",
     DeviceRegistrationSMSOTP = "DEVICE_REGISTRATION_SMS_OTP",
-    BasicWithDeviceRegister = "BASIC_WITH_DEVICE_REGISTER"
+    BasicWithDeviceRegister = "BASIC_WITH_DEVICE_REGISTER",
+    BasicWallet = "BASIC_WALLET"
 }

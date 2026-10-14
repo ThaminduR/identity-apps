@@ -107,6 +107,11 @@ export class I18nModuleConstants {
     public static readonly ISSUER_USAGE_SCOPE_NAMESPACE: string = "issuerUsageScope";
 
     /**
+     * FAPI Security Policy namespace.
+     */
+    public static readonly FAPI_SECURITY_POLICY_NAMESPACE: string = "fapiSecurityPolicy";
+
+    /**
      * transferList namespace.
      */
     public static readonly TRANSFER_LIST_NAMESPACE: string = "transferList";
@@ -243,6 +248,12 @@ export class I18nModuleConstants {
      * @constant
      */
     public static readonly CONSOLE_SETTINGS_NAMESPACE: string = "consoleSettings";
+
+    /**
+     * CLI settings namespace.
+     * @constant
+     */
+    public static readonly CLI_SETTINGS_NAMESPACE: string = "cliSettings";
 
     /**
      * Secrets namespace.
@@ -390,9 +401,19 @@ export class I18nModuleConstants {
     public static readonly COMMON_USERS_NAMESPACE: string = "commonUsers";
 
     /**
+     * Presentation Definitions namespace.
+     */
+    public static readonly PRESENTATION_DEFINITIONS_NAMESPACE: string = "presentationDefinitions";
+
+    /**
      * Verifiable Credentials namespace.
      */
     public static readonly VERIFIABLE_CREDENTIALS_NAMESPACE: string = "verifiableCredentials";
+
+    /**
+     * OpenID4VP Configuration namespace.
+     */
+    public static readonly OPENID4VP_CONFIG_NAMESPACE: string = "openid4vp";
 
     /**
      * Customer Data Service namespace.
@@ -419,6 +440,16 @@ export class I18nModuleConstants {
      * Flows namespace.
      */
     public static readonly FLOWS_NAMESPACE: string = "flows";
+
+    /**
+     * Consents namespace.
+     */
+    public static readonly CONSENTS_NAMESPACE: string = "consents";
+
+    /**
+     * Flow Extension namespace.
+     */
+    public static readonly FLOW_EXTENSION_NAMESPACE: string = "flowExtension";
 
     /**
      * Constant representing the text direction handling attribute.

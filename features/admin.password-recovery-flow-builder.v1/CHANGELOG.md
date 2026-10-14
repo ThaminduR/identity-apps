@@ -1,5 +1,48 @@
 # @wso2is/admin.password-recovery-flow-builder.v1
 
+## 1.2.3
+
+### Patch Changes
+
+- Updated dependencies [[`48bc2416dfc2a2e40699f1fd8e95ddd4893e0a11`](https://github.com/wso2/identity-apps/commit/48bc2416dfc2a2e40699f1fd8e95ddd4893e0a11)]:
+  - @wso2is/admin.core.v1@2.60.0
+  - @wso2is/admin.flow-builder-core.v1@0.11.0
+  - @wso2is/admin.server-configurations.v1@2.39.0
+  - @wso2is/admin.flows.v1@1.0.181
+
+## 1.2.2
+
+### Patch Changes
+
+- [#10607](https://github.com/wso2/identity-apps/pull/10607) [`92f04ea2aeb793dd159c54ef93c4c3fd1a33c2ed`](https://github.com/wso2/identity-apps/commit/92f04ea2aeb793dd159c54ef93c4c3fd1a33c2ed) Thanks [@VIHANGAGIT](https://github.com/VIHANGAGIT)! - Resolve steps in flow builder for dynamically registered executors from /dropins
+
+- Updated dependencies [[`92f04ea2aeb793dd159c54ef93c4c3fd1a33c2ed`](https://github.com/wso2/identity-apps/commit/92f04ea2aeb793dd159c54ef93c4c3fd1a33c2ed)]:
+  - @wso2is/admin.flow-builder-core.v1@0.10.224
+
+## 1.2.1
+
+### Patch Changes
+
+- [#10537](https://github.com/wso2/identity-apps/pull/10537) [`9e230b44cbf1d8852af9cb3c02bbe8bb526b19ac`](https://github.com/wso2/identity-apps/commit/9e230b44cbf1d8852af9cb3c02bbe8bb526b19ac) Thanks [@KD23243](https://github.com/KD23243)! - Add flow extension step support to password recovery and ask password flow builders
+
+- Updated dependencies [[`9e230b44cbf1d8852af9cb3c02bbe8bb526b19ac`](https://github.com/wso2/identity-apps/commit/9e230b44cbf1d8852af9cb3c02bbe8bb526b19ac)]:
+  - @wso2is/admin.flow-builder-core.v1@0.10.221
+
+## 1.2.0
+
+### Minor Changes
+
+- [#10332](https://github.com/wso2/identity-apps/pull/10332) [`48d4a528de3cf610eadd8230c4cc46fe9e872bfb`](https://github.com/wso2/identity-apps/commit/48d4a528de3cf610eadd8230c4cc46fe9e872bfb) Thanks [@VIHANGAGIT](https://github.com/VIHANGAGIT)! - Add user enumeration controls and account status to password recovery flow
+
+## 1.1.213
+
+### Patch Changes
+
+- [#10350](https://github.com/wso2/identity-apps/pull/10350) [`2282759fcffa31ca2d3ec513f353aaed00700185`](https://github.com/wso2/identity-apps/commit/2282759fcffa31ca2d3ec513f353aaed00700185) Thanks [@ImalshaD](https://github.com/ImalshaD)! - Add user_identifier to flow builder.
+
+- Updated dependencies [[`2282759fcffa31ca2d3ec513f353aaed00700185`](https://github.com/wso2/identity-apps/commit/2282759fcffa31ca2d3ec513f353aaed00700185)]:
+  - @wso2is/admin.flow-builder-core.v1@0.10.218
+
 ## 1.1.212
 
 ### Patch Changes

@@ -420,6 +420,7 @@ export const governanceConnectors: governanceConnectorsNS = {
                 },
                 multiattributeLoginHandler: {
                     friendlyName: "Multi Attribute Login",
+                    description: "Configure alternative login identifiers and allow users to use username or configured login identifier in login and recovery flows.",
                     properties: {
                         accountMultiattributeloginHandlerEnable: {
                             hint: "Enable using multiple attributes as login identifier",
@@ -508,6 +509,7 @@ export const governanceConnectors: governanceConnectorsNS = {
                 },
                 adminForcedPasswordReset: {
                     friendlyName: "Password Reset",
+                    description: "Enable administrators to initiate password reset process for users.",
                     properties: {
                         recoveryAdminPasswordResetRecoveryLink: {
                             hint: "User gets notified with a link to reset password",
@@ -743,6 +745,21 @@ export const governanceConnectors: governanceConnectorsNS = {
                             label: "Backup code size"
                         }
                     }
+                }
+            }
+        },
+        consentManagement: {
+            categoryTitle: "Policy & Preference Management",
+            connectors: {
+                preferenceManagement: {
+                    description: "Manage communication preferences for your organization.",
+                    friendlyName: "Preference Management",
+                    header: "Preference Management"
+                },
+                policyConsents: {
+                    description: "Manage policies for your organization.",
+                    friendlyName: "Policy Management",
+                    header: "Policy Management"
                 }
             }
         },

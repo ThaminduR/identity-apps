@@ -192,6 +192,126 @@ export const applications: ApplicationsNS = {
         },
         placeholder: "Search applications by name, client ID, or issuer"
     },
+    clientSecrets: {
+        confirmations: {
+            deleteSecret: {
+                assertionHint: "Please confirm your action.",
+                content: "If you delete this client secret, clients using it will no longer be able to " +
+                    "authenticate with it. Any other client secrets of the application remain valid, and " +
+                    "active tokens will not be revoked.",
+                header: "Are you sure?",
+                message: "This action is irreversible and permanently deletes the client secret. " +
+                    "Please proceed with caution."
+            }
+        },
+        dangerZone: {
+            revokeAll: {
+                actionTitle: "Revoke All",
+                confirmation: {
+                    assertionHint: "I understand this action is irreversible.",
+                    content: "Every tokens issued with the old secrets will also be revoked, and active " +
+                        "authentication flows will fail. Be sure to update your application with the " +
+                        "new client secret.",
+                    header: "Revoke all client secrets and generate a new one?",
+                    message: "This action is irreversible. All existing client secrets are permanently revoked " +
+                        "and replaced with a single new client secret."
+                },
+                header: "Revoke all & generate a new client secret",
+                subheader: "Permanently revokes every existing client secret and generates a single new one. " +
+                    "Authentication flows still using the old secrets will fail until you update your application."
+            }
+        },
+        expiry: {
+            expired: "Expired",
+            expiredAgo: "Expired {{duration}} ago",
+            expiredOn: "Expired on {{date}}",
+            expiresIn: "Expires in {{duration}}",
+            expiresOn: "Expires on {{date}}",
+            neverExpires: "Never expires"
+        },
+        expiryBanner: {
+            description: "At least one client secret is expiring soon. Rotate your secret to " +
+                "prevent authentication failures and application downtime.",
+            title: "Client Secret Expiring Soon",
+            viewSecrets: "View secret"
+        },
+        generateButton: "Generate New Secret",
+        hashedDisclaimer: "Client secret is hashed and cannot be viewed. If you need a new value, " +
+            "generate a new client secret.",
+        hidePreviousSecret: "Hide Previous Client Secret",
+        hidePreviousSecrets: "Hide Previous Client Secrets",
+        maxCountReachedHint: "You have reached the maximum of {{count}} client secrets. Delete an existing " +
+            "secret to generate a new one.",
+        notifications: {
+            deleteSecret: {
+                genericError: {
+                    description: "An error occurred while deleting the client secret.",
+                    message: "Something went wrong"
+                },
+                success: {
+                    description: "The client secret was deleted successfully.",
+                    message: "Client secret deleted"
+                }
+            },
+            generateSecret: {
+                error: {
+                    message: "Generation error"
+                },
+                genericError: {
+                    description: "An error occurred while generating the client secret.",
+                    message: "Something went wrong"
+                },
+                success: {
+                    description: "A new client secret was generated successfully.",
+                    message: "Client secret generated"
+                }
+            },
+            getSecrets: {
+                genericError: {
+                    description: "An error occurred while retrieving the client secrets.",
+                    message: "Something went wrong"
+                }
+            },
+            revokeAll: {
+                genericError: {
+                    description: "An error occurred while revoking the client secrets.",
+                    message: "Something went wrong"
+                },
+                success: {
+                    description: "All client secrets were revoked and a new secret was generated.",
+                    message: "Client secrets revoked"
+                }
+            }
+        },
+        rotationWarning: "Multiple client secrets enable seamless rotation, but keeping old secrets " +
+            "active longer than necessary increases security exposure. Remove old secrets once rotation " +
+            "is complete.",
+        viewPreviousSecret: "View Previous Client Secret",
+        viewPreviousSecrets: "View Previous Client Secrets",
+        wizard: {
+            customExpiry: {
+                label: "Custom Expiry Time (days)",
+                placeholder: "Enter the number of days",
+                validations: {
+                    invalid: "Enter a valid number of days.",
+                    required: "Enter the number of days until the secret expires."
+                }
+            },
+            expiration: {
+                label: "Expiration",
+                options: {
+                    custom: "Custom",
+                    days: "{{count}} days",
+                    neverExpire: "Never expires"
+                }
+            },
+            expiryWarning: "You can't change a client secret's expiry time after it's generated, so choose the " +
+                "expiration carefully.",
+            generateButton: "Generate",
+            heading: "Generate Client Secret",
+            subHeading: "Generate a new client secret for this application. Existing secrets remain valid."
+        }
+    },
     confirmations: {
         addSocialLogin: {
             content : "To add a new social login, we will need to route you to a different page and " +
@@ -242,7 +362,7 @@ export const applications: ApplicationsNS = {
                 assertionHint: "",
                 content: "",
                 header: "OAuth Application Credentials",
-                message: "The consumer secret value will be displayed in plain text only once. " +
+                message: "The client secret value will be displayed in plain text only once. " +
                     "Please make sure to copy and save it somewhere safe."
             }
         },
@@ -913,7 +1033,9 @@ export const applications: ApplicationsNS = {
                                             "be referenced in your scripts using the syntax <1>secrets.{secret name}</1>",
                                         plusIcon: "Add to the script"
                                     }
-                                }
+                                },
+                                subOrgInfoBanner: "Only shared users from the root organization can " +
+                                    "update this script."
                             },
                             stepBased: {
                                 actions: {
@@ -1195,9 +1317,8 @@ export const applications: ApplicationsNS = {
                                     message: "Email OTP requires at least one email field to be present in the flow."
                                 },
                                 passwordRecoveryRequiresFactors: {
-                                    message: "Password recovery requires at least one of the following " +
-                                        "factors to be present in the flow: Email OTP, SMS OTP, " +
-                                        "or Magic Link."
+                                    message: "Password recovery requires at least one recovery factor, such as " +
+                                        "Email OTP, SMS OTP or Magic Link, to be present in the flow."
                                 },
                                 passwordExecutorRequired: {
                                     message: "Forms with a Password field requires a 'Provision Password' Action to be configured for the button."
@@ -1307,24 +1428,23 @@ export const applications: ApplicationsNS = {
                 subject: {
                     fields:{
                         alternateSubjectAttribute: {
-                            hint: "This option will allow to use an alternate attribute as the subject identifier instead of the <1>userid</1>.",
+                            hint: "This option will allow to use an alternate attribute as the subject identifier instead of the " +
+                                "<1>{{defaultSubjectAttribute}}</1>.",
                             label: "Assign alternate subject identifier"
                         },
                         subjectAttribute: {
-                            hint: "Select which of the shared attributes you want to use as the" +
-                                " subject identifier of the user",
-                            hintOIDC: "Select which of the shared attributes you want to use as the" +
-                                " subject identifier of the user. This represents the <1>sub</1> claim of" +
-                                " the <1>id_token</1>.",
-                            hintSAML: "Select which of the shared attributes you want to use as the" +
-                                " subject identifier of the user. This represents the <1>subject</1>" +
-                                " element of the SAML assertion.",
+                            hint: "Select the attribute you want to use as the subject identifier of the user",
+                            hintOIDC: "Select the attribute you want to use as the subject identifier of the" +
+                                " user. This represents the <1>sub</1> claim of the <1>id_token</1>.",
+                            hintSAML: "Select the attribute you want to use as the subject identifier of the" +
+                                " user. This represents the <1>subject</1> element of the SAML assertion.",
                             label: "Subject attribute",
                             validations: {
                                 empty: "Select the subject attribute"
                             },
                             placeholder: "Select an attribute",
-                            info: "Alternate subject identifier's can be assigned only if user attributes are selected."
+                            info: "An alternate subject identifier can be assigned once the application has user" +
+                                " attributes to choose from."
                         },
                         subjectIncludeTenantDomain: {
                             hint: "This option will append the organization name to the local subject " +
@@ -1482,8 +1602,10 @@ export const applications: ApplicationsNS = {
                     }
                 },
                 platformSettings: {
+                    clientAttestationOnlySubTitle: "The following platform specific configurations are needed when enabling client-attestation related features.",
                     heading: "Platform Settings",
                     subTitle: "The following platform specific configurations are needed when enabling client-attestation or trusted app related features.",
+                    trustedAppsOnlySubTitle: "The following platform specific configurations are needed when enabling trusted app related features.",
                     fields: {
                         android: {
                             heading: "Android",
@@ -1667,8 +1789,8 @@ export const applications: ApplicationsNS = {
                     label: "Management Application"
                 },
                 isFapiApp: {
-                    hint: "Enable to allow the application to be FAPI compliant.",
-                    label: "FAPI Compliant Application"
+                    hint: "When enabled, the application enforces FAPI security profile requirements. Protocol configurations such as grant types, token binding, and client authentication methods will be restricted to conform to the selected FAPI profile.",
+                    label: "Enforce FAPI security profile compliance for this application"
                 },
                 name: {
                     label: "Name",
@@ -1848,6 +1970,14 @@ export const applications: ApplicationsNS = {
                         label: "Allow federated users"
                     },
                     heading: "Client Initiated Backchannel Authentication"
+                },
+                tokenExchange: {
+                    heading: "Token Exchange",
+                    restrictScopeIssuanceForFederatedTokens: {
+                        hint: "When enabled, the server does not issue scopes for tokens obtained " +
+                            "by exchanging a federated token.",
+                        label: "Restrict scope issuance for federated tokens"
+                    }
                 }
             },
             messages: {
@@ -1901,8 +2031,10 @@ export const applications: ApplicationsNS = {
                             },
                             description: "Select type <1>SSO-session</1> to allow {{productName}} to " +
                                 "bind the <3>access_token</3> and the <5>refresh_token</5> to the "+
-                                "login session and issue a new token per session. When the application " +
-                                "session ends, the tokens will also be revoked.",
+                                "{{productName}} login session and issue a new token per session. The tokens are " +
+                                "revoked when that login session is explicitly terminated, either through a logout " +
+                                "request or through the session management API. Session expiry alone does not " +
+                                "revoke the tokens.",
                             label: "Token binding type",
                             valueDescriptions: {
                                 cookie: "Bind the access token to a cookie with Secure " +
@@ -1937,7 +2069,8 @@ export const applications: ApplicationsNS = {
                             label: "Token type",
                             valueDescriptions: {
                                 "default": "Issue an opaque UUID as a token.",
-                                "jwt": "Issue a self-contained JWT token."
+                                "jwt": "Issue a self-contained JWT token.",
+                                "opaque": "Issue an opaque UUID as a token."
                             }
                         },
                         validateBinding: {
@@ -2068,11 +2201,10 @@ export const applications: ApplicationsNS = {
                             },
                             version300: {
                                 linkedLocalAccountAttributeHandling: {
-                                    instruction: "When you enable the use of linked local account attributes " +
-                                        "instead of federated attributes and mandate that a linked local account " +
-                                        "must exist, this configuration previously applied only to the <1>token " +
-                                        "exchange</1> flow. With this update, the same restriction now also " +
-                                        "applies to <3>login</3> scenarios."
+                                    instruction: "Previously, the \"Use linked local account attributes\" setting, " +
+                                        "when combined with the requirement for a linked local account, was enforced " +
+                                        "only during the <1>token exchange</1> flows. With this update, the same requirement " +
+                                        "will be enforced during <3>login</3> flows as well."
                                 }
                             }
                         }
@@ -2163,6 +2295,11 @@ export const applications: ApplicationsNS = {
                     },
                     heading: "Pushed Authorization Requests"
                 },
+                fapiProfile: {
+                    heading: "FAPI Profile",
+                    hint: "Select the FAPI security profile to enforce for this application. The selected profile restricts certain protocol configuration options to comply with the profile requirements.",
+                    unsupportedProfile: "The \"{{profile}}\" security profile is no longer enabled for this organization. Select a supported profile or contact your administrator."
+                },
                 requestObject: {
                     fields: {
                         requestObjectSigningAlg: {
@@ -2189,8 +2326,8 @@ export const applications: ApplicationsNS = {
                 refreshToken: {
                     fields: {
                         extendRenewedRefreshTokenExpiryTime: {
-                            hint: "Select to ensure renewed refresh tokens retain the remaining validity period from " +
-                                "the original token instead of receiving a fresh expiry time.",
+                            hint: "Select to ensure renewed refresh tokens receive a fresh expiry time " +
+                                "instead of retaining the remaining validity period from the original token.",
                             label: "Extend expiry time of renewed refresh tokens"
                         },
                         expiry: {
@@ -2210,6 +2347,35 @@ export const applications: ApplicationsNS = {
                             label: "Renew refresh token",
                             validations: {
                                 empty: "This is a required field."
+                            }
+                        },
+                        gracefulRefreshTokenRotation: {
+                            hint: "When enabled, the previous refresh token remains valid for a grace period " +
+                                "after rotation, instead of being revoked immediately.",
+                            label: "Rotate refresh token gracefully"
+                        },
+                        gracefulRefreshTokenRotationValidityPeriod: {
+                            hint: "Time in seconds the previous refresh token remains usable after a new one is issued.",
+                            label: "Graceful rotation validity period",
+                            placeholder: "Enter the graceful rotation validity period",
+                            validations: {
+                                belowMin: "Value cannot be less than 0.",
+                                empty: "Please fill the graceful rotation validity period",
+                                invalid: "Graceful rotation validity period should be in seconds. " +
+                                    "Decimal points and negative numbers are not allowed.",
+                                maxExceeded: "Value cannot exceed the configured maximum of {{max}} seconds."
+                            }
+                        },
+                        gracefulRefreshTokenReuseLimit: {
+                            hint: "Maximum number of times the previous refresh token may be used within the grace period.",
+                            label: "Refresh token reuse limit",
+                            placeholder: "Enter the refresh token reuse limit",
+                            validations: {
+                                belowMin: "Value must be at least 1.",
+                                empty: "Please fill the refresh token reuse limit",
+                                invalid: "Refresh token reuse limit should be a whole number. " +
+                                    "Decimal points and negative numbers are not allowed.",
+                                maxExceeded: "Value cannot exceed the configured maximum of {{max}}."
                             }
                         }
                     },
@@ -3100,6 +3266,12 @@ export const applications: ApplicationsNS = {
             success: {
                 description: "Successfully retrieved application details.",
                 message: "Retrieval successful"
+            }
+        },
+        fetchFapiConfig: {
+            genericError: {
+                description: "Couldn't retrieve FAPI configuration. Using default profile options.",
+                message: "Something went wrong"
             }
         },
         fetchMyAccountApplication: {

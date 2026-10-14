@@ -44,11 +44,13 @@ export class CommonAuthenticatorConstants {
     public static readonly CONNECTION_TEMPLATE_IDS: {
         APPLE: string;
         CUSTOM_AUTHENTICATOR: string;
+        DIGITAL_WALLET: string;
         DUO: string;
         ENTERPRISE: string;
         EXPERT_MODE: string;
         EXTERNAL_CUSTOM_AUTHENTICATOR: string;
         FACEBOOK: string;
+        FLOW_EXTENSION: string;
         GITHUB: string;
         GOOGLE: string;
         HYPR: string;
@@ -67,11 +69,13 @@ export class CommonAuthenticatorConstants {
     } = {
             APPLE: "apple-idp",
             CUSTOM_AUTHENTICATOR: "custom-authenticator",
+            DIGITAL_WALLET: "digital-wallet",
             DUO: "duo-idp",
             ENTERPRISE: "enterprise-idp",
             EXPERT_MODE: "expert-mode-idp",
             EXTERNAL_CUSTOM_AUTHENTICATOR: "external-custom-authenticator",
             FACEBOOK: "facebook-idp",
+            FLOW_EXTENSION: "flow-extension",
             GITHUB: "github-idp",
             GOOGLE: "google-idp",
             HYPR: "hypr-idp",

@@ -36,6 +36,7 @@ import { ReactComponent as CertificateIcon } from "../../themes/default/assets/i
 import { ReactComponent as ClaimsIcon } from "../../themes/default/assets/images/icons/claims-icon.svg";
 import { ReactComponent as CodeForkIcon } from "../../themes/default/assets/images/icons/code-fork.svg";
 import { ReactComponent as ConnectionIcon } from "../../themes/default/assets/images/icons/connection.svg";
+import { ReactComponent as ConsentsIcon } from "../../themes/default/assets/images/icons/consents.svg";
 import ConsoleIcon from "../../themes/default/assets/images/icons/console-icon.svg";
 import { ReactComponent as CrossIcon } from "../../themes/default/assets/images/icons/cross-icon.svg";
 import { ReactComponent as DashboardIcon } from "../../themes/default/assets/images/icons/dashboard-icon.svg";
@@ -106,8 +107,11 @@ import {
     ReactComponent as RemoteLoggingIcon
 } from "../../themes/default/assets/images/icons/outline-icons/remote-logging.svg";
 import {
-    ReactComponent as VerifiableCredentialsOutlineIcon
-} from "../../themes/default/assets/images/icons/outline-icons/verifiable-credentials-outline.svg";
+    ReactComponent as CredentialTemplatesOutlineIcon
+} from "../../themes/default/assets/images/icons/outline-icons/credential-templates-outline.svg";
+import {
+    ReactComponent as PresentationDefinitionsOutlineIcon
+} from "../../themes/default/assets/images/icons/outline-icons/presentation-definitions-outline.svg";
 import { ReactComponent as PinIcon } from "../../themes/default/assets/images/icons/pin-icon.svg";
 import { ReactComponent as PlugIcon } from "../../themes/default/assets/images/icons/plug-icon.svg";
 import {
@@ -276,6 +280,7 @@ type GetSidePanelIconsInterface = {
     approvals: FunctionComponent | ReactNode,
     certificate: FunctionComponent | ReactNode,
     customerData : FunctionComponent | ReactNode,
+    consents: FunctionComponent | ReactNode,
     childIcon: FunctionComponent | ReactNode,
     claims: FunctionComponent | ReactNode,
     connections: FunctionComponent | ReactNode,
@@ -305,6 +310,7 @@ type GetSidePanelIconsInterface = {
     users: FunctionComponent | ReactNode,
     insights: FunctionComponent | ReactNode,
     agents: FunctionComponent | ReactNode,
+    presentationDefinitions: FunctionComponent | ReactNode,
     verifiableCredentials: FunctionComponent | ReactNode,
 };
 
@@ -325,6 +331,7 @@ export const getSidePanelIcons = (): GetSidePanelIconsInterface => {
         applications: ApplicationsOutlineIcon,
         approvals: ApprovalsIcon,
         certificate: CertificateIcon,
+        consents: ConsentsIcon,
         childIcon: ArrowRight,
         claims: ClaimsIcon,
         connections: ConnectionIcon,
@@ -364,7 +371,8 @@ export const getSidePanelIcons = (): GetSidePanelIconsInterface => {
         sms: SMSIcon,
         userStore: DatabaseIcon,
         users: UserIcon,
-        verifiableCredentials: VerifiableCredentialsOutlineIcon
+        presentationDefinitions: PresentationDefinitionsOutlineIcon,
+        verifiableCredentials: CredentialTemplatesOutlineIcon
     };
 };
 

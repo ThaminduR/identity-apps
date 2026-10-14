@@ -437,6 +437,106 @@ export const myAccount: MyAccountNS = {
                 }
             }
         },
+        "preferenceManagement": {
+            "consentedOnLabel": "接受于",
+            "dangerZones": {
+                "revoke": {
+                    "actionTitle": "撤销",
+                    "header": "撤销营销同意",
+                    "subheader": "此操作将撤销您对此营销通信的同意。"
+                }
+            },
+            "elementsHeading": "管理您的营销通信同意。取消勾选需要撤销的属性，然后按更新按钮保存更改，或按撤销按钮删除所有属性的同意。",
+            "notifications": {
+                "fetch": {
+                    "error": {
+                        "description": "检索您的营销同意时发生错误。",
+                        "message": "检索失败"
+                    },
+                    "genericError": {
+                        "description": "检索您的营销同意时发生错误。",
+                        "message": "检索失败"
+                    },
+                    "success": {
+                        "description": "您的营销同意已成功检索。",
+                        "message": "检索成功"
+                    }
+                },
+                "revoke": {
+                    "error": {
+                        "description": "撤销营销同意时发生错误。",
+                        "message": "撤销失败"
+                    },
+                    "genericError": {
+                        "description": "撤销营销同意时发生错误。",
+                        "message": "撤销失败"
+                    },
+                    "success": {
+                        "description": "营销同意已成功撤销。",
+                        "message": "同意已撤销"
+                    }
+                },
+                "update": {
+                    "error": {
+                        "description": "更新营销同意时发生错误。",
+                        "message": "更新失败"
+                    },
+                    "genericError": {
+                        "description": "更新营销同意时发生错误。",
+                        "message": "更新失败"
+                    },
+                    "success": {
+                        "description": "您的营销同意偏好已成功更新。",
+                        "message": "同意已更新"
+                    }
+                }
+            },
+            "policyUrlLabel": "查看政策",
+            "versionLabel": "版本 {{version}}"
+        },
+        "policyConsentManagement": {
+            "consentedOnLabel": "活跃自",
+            "dangerZones": {
+                "revoke": {
+                    "actionTitle": "撤销",
+                    "header": "撤销政策同意",
+                    "subheader": "此操作将撤销您对此政策的同意。下次您访问该服务时，可能会要求您重新同意。"
+                }
+            },
+            "notifications": {
+                "fetch": {
+                    "error": {
+                        "description": "检索您的政策同意时出错。",
+                        "message": "检索失败"
+                    },
+                    "genericError": {
+                        "description": "检索您的政策同意时出错。",
+                        "message": "检索失败"
+                    },
+                    "success": {
+                        "description": "",
+                        "message": ""
+                    }
+                },
+                "revoke": {
+                    "error": {
+                        "description": "撤销政策同意时出错。",
+                        "message": "撤销失败"
+                    },
+                    "genericError": {
+                        "description": "撤销政策同意时出错。",
+                        "message": "撤销失败"
+                    },
+                    "success": {
+                        "description": "政策同意已成功撤销。",
+                        "message": "同意已撤销"
+                    }
+                }
+            },
+            "policyUrlLabel": "查看政策",
+            "versionLabel": "版本 {{version}}"
+        },
+        
         "cookieConsent": {
             "confirmButton": "知道了",
             "content": "我们使用cookie来确保您获得最佳的整体体验。这些cookie用于在提供流畅和个性化的服务的同时保持不间断的连续会话。要了解有关我们如何使用cookie的更多信息，请参阅我们的<1> cookie策略。"
@@ -925,6 +1025,7 @@ export const myAccount: MyAccountNS = {
                 "configuredDescription": "您可以使用已配置的推送认证器应用生成的登录提示进行双因素认证。如果您无法访问该应用，可以从这里设置一个新的认证器应用。",
                 "deleteHint": "移除",
                 "description": "您可以使用推送认证器应用，通过推送通知接收登录提示以进行双因素认证。",
+                "deviceLimitReachedHint": "已达到设备数量上限（{{limit}}）",
                 "heading": "推送认证器",
                 "hint": "查看",
                 "modals": {
@@ -955,6 +1056,12 @@ export const myAccount: MyAccountNS = {
                         "success": {
                             "description": "已成功移除注册设备",
                             "message": "设备已成功删除"
+                        }
+                    },
+                    "configFetchError": {
+                        "genericError": {
+                            "description": "检索推送认证配置时发生错误。",
+                            "message": "出了点问题"
                         }
                     },
                     "deviceListFetchError": {
@@ -1066,7 +1173,7 @@ export const myAccount: MyAccountNS = {
                 "profileStatus": {
                     "completionPercentage": "您的个人资料完成为{{percentage}}％",
                     "description": "管理您的个人资料",
-                    "header": "您的{{productName}}个人资料",
+                    "header": "您的个人资料",
                     "profileText": "您个人资料的详细信息",
                     "readOnlyDescription": "查看您的个人资料",
                     "userSourceText": "（通过{{source}}注册）"
@@ -1650,6 +1757,10 @@ export const myAccount: MyAccountNS = {
             "subTitle": "发现并访问您的应用程序",
             "title": "申请"
         },
+        "consents": {
+            "subTitle": "管理您为应用程序和已接受的政策提供的同意",
+            "title": "同意"
+        },
         "overview": {
             "subTitle": "管理您的个人信息，帐户安全和隐私设置",
             "title": "欢迎，{{firstName}}"
@@ -1747,6 +1858,24 @@ export const myAccount: MyAccountNS = {
             "placeholders": {
                 "emptyConsentList": {
                     "heading": "您尚未同意任何申请"
+                }
+            }
+        },
+        "preferenceManagement": {
+            "description": "查看您已同意的营销通信。",
+            "heading": "营销同意",
+            "placeholders": {
+                "emptyConsentList": {
+                    "heading": "您尚未接受任何营销同意"
+                }
+            }
+        },
+        "policyConsentManagement": {
+            "description": "查看您已接受的政策。",
+            "heading": "政策同意",
+            "placeholders": {
+                "emptyConsentList": {
+                    "heading": "您尚未接受任何政策同意"
                 }
             }
         },

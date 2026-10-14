@@ -27,6 +27,7 @@ import { AppState } from "@wso2is/admin.core.v1/store";
 import { EventPublisher } from "@wso2is/admin.core.v1/utils/event-publisher";
 import { applicationConfig } from "@wso2is/admin.extensions.v1";
 import { applicationListConfig } from "@wso2is/admin.extensions.v1/configs/application-list";
+import useRefreshAllFeatures from "@wso2is/admin.feature-gate.v1/hooks/use-refresh-all-features";
 import { OrganizationFeatureDictionaryKeys, OrganizationType } from "@wso2is/admin.organizations.v1/constants";
 import { OrganizationManagementConstants } from "@wso2is/admin.organizations.v1/constants/organization-constants";
 import { useGetCurrentOrganizationType } from "@wso2is/admin.organizations.v1/hooks/use-get-organization-type";
@@ -64,6 +65,7 @@ import { Dispatch } from "redux";
 import { Header, Icon, Label, SemanticICONS } from "semantic-ui-react";
 import { deleteApplication } from "../api/application";
 import { ApplicationManagementConstants } from "../constants/application-management";
+import TryItApplicationConstants from "../constants/try-it-constants";
 import {
     ApplicationAccessTypes,
     ApplicationInboundTypes,
@@ -159,6 +161,7 @@ export const ApplicationList: FunctionComponent<ApplicationListPropsInterface> =
     const { t } = useTranslation();
 
     const dispatch: Dispatch<any> = useDispatch();
+    const refreshAllFeatures: () => Promise<void> = useRefreshAllFeatures();
 
     const applicationTemplates: ApplicationTemplateListItemInterface[] = useSelector(
         (state: AppState) => state.application.templates);
@@ -280,6 +283,7 @@ export const ApplicationList: FunctionComponent<ApplicationListPropsInterface> =
                 }));
 
                 setShowDeleteConfirmationModal(false);
+                refreshAllFeatures();
                 onApplicationDelete();
             })
             .catch((error: AxiosError<HttpErrorResponseDataInterface>) => {
@@ -418,7 +422,9 @@ export const ApplicationList: FunctionComponent<ApplicationListPropsInterface> =
                                     )
                             }
                             <Header.Content>
-                                { app.name }
+                                { app.name === TryItApplicationConstants.DISPLAY_NAME
+                                    ? "WSO2 Identity Platform Try It"
+                                    : app.name }
                                 {
                                     app.advancedConfigurations?.fragment && (
                                         <Label size="mini">

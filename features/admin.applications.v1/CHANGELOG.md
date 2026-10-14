@@ -1,5 +1,368 @@
 # @wso2is/admin.applications.v1
 
+## 2.44.5
+
+### Patch Changes
+
+- [#10724](https://github.com/wso2/identity-apps/pull/10724) [`a291686630952bd31c1a6b605f31790ee99bd364`](https://github.com/wso2/identity-apps/commit/a291686630952bd31c1a6b605f31790ee99bd364) Thanks [@DonOmalVindula](https://github.com/DonOmalVindula)! - Show each application's own default subject identifier, list every available attribute in the subject attribute dropdown, and let the subject attribute's Requested and Mandatory states follow the makeSubjectMandatory config
+
+- Updated dependencies [[`a218d70a8b9bfe2f0ddbdab6c06ba3af393610fe`](https://github.com/wso2/identity-apps/commit/a218d70a8b9bfe2f0ddbdab6c06ba3af393610fe), [`47e361c251f999f5bae3b776368dbcfc600d4b8e`](https://github.com/wso2/identity-apps/commit/47e361c251f999f5bae3b776368dbcfc600d4b8e), [`a291686630952bd31c1a6b605f31790ee99bd364`](https://github.com/wso2/identity-apps/commit/a291686630952bd31c1a6b605f31790ee99bd364)]:
+  - @wso2is/admin.claims.v1@2.31.6
+  - @wso2is/admin.console-settings.v1@2.26.50
+  - @wso2is/admin.users.v1@2.38.55
+  - @wso2is/admin.extensions.v1@2.44.1
+  - @wso2is/i18n@2.46.3
+
+## 2.44.4
+
+### Patch Changes
+
+- [#10712](https://github.com/wso2/identity-apps/pull/10712) [`e39d187ca581475aa1cb7124c3c01e714a16a762`](https://github.com/wso2/identity-apps/commit/e39d187ca581475aa1cb7124c3c01e714a16a762) Thanks [@sadilchamishka](https://github.com/sadilchamishka)! - Fix the login flow editor crashing when the preferred flow builder mode is unavailable
+
+- Updated dependencies [[`e39d187ca581475aa1cb7124c3c01e714a16a762`](https://github.com/wso2/identity-apps/commit/e39d187ca581475aa1cb7124c3c01e714a16a762)]:
+  - @wso2is/admin.login-flow-builder.v1@2.29.15
+
+## 2.44.3
+
+### Patch Changes
+
+- [#10689](https://github.com/wso2/identity-apps/pull/10689) [`49008ebcbbda4e23bfe94dfb7e2da4c604b1edcd`](https://github.com/wso2/identity-apps/commit/49008ebcbbda4e23bfe94dfb7e2da4c604b1edcd) Thanks [@RovinKYK](https://github.com/RovinKYK)! - Add application level token exchange scope restriction configuration to Console
+
+* [#10705](https://github.com/wso2/identity-apps/pull/10705) [`963ac66647e4637075b9dfcafefd5e7cc8ffc5b2`](https://github.com/wso2/identity-apps/commit/963ac66647e4637075b9dfcafefd5e7cc8ffc5b2) Thanks [@pavinduLakshan](https://github.com/pavinduLakshan)! - Refresh the inbound protocol configuration after an application version update
+
+* Updated dependencies [[`49008ebcbbda4e23bfe94dfb7e2da4c604b1edcd`](https://github.com/wso2/identity-apps/commit/49008ebcbbda4e23bfe94dfb7e2da4c604b1edcd)]:
+  - @wso2is/i18n@2.46.2
+
+## 2.44.2
+
+### Patch Changes
+
+- [#10696](https://github.com/wso2/identity-apps/pull/10696) [`cda502803158435d0035b59d88d02c81bc934ad5`](https://github.com/wso2/identity-apps/commit/cda502803158435d0035b59d88d02c81bc934ad5) Thanks [@pavinduLakshan](https://github.com/pavinduLakshan)! - Fix the application dropdown in the branding page not filtering results when a search term is typed
+
+* [#10682](https://github.com/wso2/identity-apps/pull/10682) [`40557c5ac24c07c6c14b3e02e9041be42312f48d`](https://github.com/wso2/identity-apps/commit/40557c5ac24c07c6c14b3e02e9041be42312f48d) Thanks [@KD23243](https://github.com/KD23243)! - Accept any absolute URI as a SAML assertion audience, and stop hiding stored audiences that are not
+  conventional URLs. Audience entry previously required a `<scheme>://<authority>` shape, which rejected
+  URNs such as `urn:amazon:webservices`, and values failing the URL check were dropped at render, so a
+  non-compliant audience already present in the assertion could be neither seen nor removed. The non-TLS
+  warning on URL chips is also narrowed to plain `http`, so schemes with no transport of their own — such
+  as mobile deep links — are no longer flagged as insecure.
+* Updated dependencies [[`994927c01a532527e0271ffa16484f013978cd3e`](https://github.com/wso2/identity-apps/commit/994927c01a532527e0271ffa16484f013978cd3e), [`cda502803158435d0035b59d88d02c81bc934ad5`](https://github.com/wso2/identity-apps/commit/cda502803158435d0035b59d88d02c81bc934ad5), [`40557c5ac24c07c6c14b3e02e9041be42312f48d`](https://github.com/wso2/identity-apps/commit/40557c5ac24c07c6c14b3e02e9041be42312f48d)]:
+  - @wso2is/admin.users.v1@2.38.54
+  - @wso2is/admin.branding.v1@2.32.173
+  - @wso2is/core@2.13.7
+  - @wso2is/react-components@2.10.6
+
+## 2.44.1
+
+### Patch Changes
+
+- [#10652](https://github.com/wso2/identity-apps/pull/10652) [`2c37f26f43c1fa345acab92115e18c82f49fa24d`](https://github.com/wso2/identity-apps/commit/2c37f26f43c1fa345acab92115e18c82f49fa24d) Thanks [@NutharaNR](https://github.com/NutharaNR)! - Enable agent management and agent sign-in configuration in sub-organizations and preserve the existing agent owner when updating agent information
+
+* [#10683](https://github.com/wso2/identity-apps/pull/10683) [`f88857e0bce6e59be712b785e5be03d3fd2fd330`](https://github.com/wso2/identity-apps/commit/f88857e0bce6e59be712b785e5be03d3fd2fd330) Thanks [@RushanNanayakkara](https://github.com/RushanNanayakkara)! - Add an opt in option to route applications that rename attributes through a custom claim dialect to the local dialect attribute selector
+
+* Updated dependencies [[`2c37f26f43c1fa345acab92115e18c82f49fa24d`](https://github.com/wso2/identity-apps/commit/2c37f26f43c1fa345acab92115e18c82f49fa24d), [`f88857e0bce6e59be712b785e5be03d3fd2fd330`](https://github.com/wso2/identity-apps/commit/f88857e0bce6e59be712b785e5be03d3fd2fd330), [`ade6da5f684fa674369bb0a56813a6b0d45c4111`](https://github.com/wso2/identity-apps/commit/ade6da5f684fa674369bb0a56813a6b0d45c4111)]:
+  - @wso2is/admin.core.v1@2.59.6
+  - @wso2is/admin.roles.v2@2.27.387
+  - @wso2is/admin.identity-providers.v1@2.29.3
+  - @wso2is/admin.connections.v1@2.42.1
+
+## 2.44.0
+
+### Minor Changes
+
+- [#10679](https://github.com/wso2/identity-apps/pull/10679) [`8712ebbd15611b50ec27d41d0246e7f273d83df2`](https://github.com/wso2/identity-apps/commit/8712ebbd15611b50ec27d41d0246e7f273d83df2) Thanks [@Lakshan-Banneheke](https://github.com/Lakshan-Banneheke)! - Gate the enable/disable toggles of applications, enterprise connections and organizations behind the new `toggleEnable` feature gate flags, surface a plan limit exceeded alert on the respective listing pages, and refresh the feature gate after deleting one of these resources so the gate clears without a page reload
+
+### Patch Changes
+
+- [#10650](https://github.com/wso2/identity-apps/pull/10650) [`7c629fa28df75cb527c01f24a12b10ff165ece22`](https://github.com/wso2/identity-apps/commit/7c629fa28df75cb527c01f24a12b10ff165ece22) Thanks [@KD23243](https://github.com/KD23243)! - Keep the resolved default subject identifier when no subject claim is configured
+
+- Updated dependencies [[`8712ebbd15611b50ec27d41d0246e7f273d83df2`](https://github.com/wso2/identity-apps/commit/8712ebbd15611b50ec27d41d0246e7f273d83df2)]:
+  - @wso2is/admin.organizations.v1@2.29.0
+  - @wso2is/admin.feature-gate.v1@1.10.0
+  - @wso2is/admin.connections.v1@2.42.0
+  - @wso2is/admin.extensions.v1@2.44.0
+  - @wso2is/access-control@3.7.0
+  - @wso2is/i18n@2.46.0
+
+## 2.43.20
+
+### Patch Changes
+
+- [#10653](https://github.com/wso2/identity-apps/pull/10653) [`455c2bda8975febc2eb9f69bc5d50b4db9f2c724`](https://github.com/wso2/identity-apps/commit/455c2bda8975febc2eb9f69bc5d50b4db9f2c724) Thanks [@ashanthamara](https://github.com/ashanthamara)! - Add IDP sharing UI
+
+- Updated dependencies [[`455c2bda8975febc2eb9f69bc5d50b4db9f2c724`](https://github.com/wso2/identity-apps/commit/455c2bda8975febc2eb9f69bc5d50b4db9f2c724)]:
+  - @wso2is/admin.connections.v1@2.41.0
+  - @wso2is/admin.identity-providers.v1@2.29.2
+  - @wso2is/admin.core.v1@2.59.4
+  - @wso2is/i18n@2.45.8
+
+## 2.43.19
+
+### Patch Changes
+
+- [#10655](https://github.com/wso2/identity-apps/pull/10655) [`1a64c4996de3b9cb1ab42f48f074089cc725cac7`](https://github.com/wso2/identity-apps/commit/1a64c4996de3b9cb1ab42f48f074089cc725cac7) Thanks [@pavinduLakshan](https://github.com/pavinduLakshan)! - Respect the `makeSubjectMandatory` config when persisting the subject claim's mandatory flag, instead of always forcing it to mandatory regardless of the config value
+
+- Updated dependencies [[`1a64c4996de3b9cb1ab42f48f074089cc725cac7`](https://github.com/wso2/identity-apps/commit/1a64c4996de3b9cb1ab42f48f074089cc725cac7)]:
+  - @wso2is/admin.extensions.v1@2.43.12
+
+## 2.43.18
+
+### Patch Changes
+
+- [#10660](https://github.com/wso2/identity-apps/pull/10660) [`642d59bbd6f4ee2742c40f606dafd0c00614c0fb`](https://github.com/wso2/identity-apps/commit/642d59bbd6f4ee2742c40f606dafd0c00614c0fb) Thanks [@JeethJJ](https://github.com/JeethJJ)! - Fix the API Authorization tab not rendering for multi-protocol applications when the OIDC protocol is not first in the inbound protocol list.
+
+- Updated dependencies [[`3694e431ce7255f87924ae5d6312b13415902f33`](https://github.com/wso2/identity-apps/commit/3694e431ce7255f87924ae5d6312b13415902f33)]:
+  - @wso2is/admin.branding.v1@2.32.172
+  - @wso2is/admin.connections.v1@2.40.1
+  - @wso2is/admin.core.v1@2.59.2
+  - @wso2is/admin.extensions.v1@2.43.11
+  - @wso2is/admin.server-configurations.v1@2.38.59
+
+## 2.43.17
+
+### Patch Changes
+
+- [#10656](https://github.com/wso2/identity-apps/pull/10656) [`021521ffd4fd9cd38872723c06826739f88ee548`](https://github.com/wso2/identity-apps/commit/021521ffd4fd9cd38872723c06826739f88ee548) Thanks [@savindi7](https://github.com/savindi7)! - Use product name config in Try it app.
+
+- Updated dependencies [[`fd9aa87db360d2d96fdf310b97a65896324323b1`](https://github.com/wso2/identity-apps/commit/fd9aa87db360d2d96fdf310b97a65896324323b1)]:
+  - @wso2is/admin.claims.v1@2.31.5
+
+## 2.43.16
+
+### Patch Changes
+
+- [#10636](https://github.com/wso2/identity-apps/pull/10636) [`787918ac3a885ee9d0b49c883558bb1f1fcbc5b8`](https://github.com/wso2/identity-apps/commit/787918ac3a885ee9d0b49c883558bb1f1fcbc5b8) Thanks [@Malith-19](https://github.com/Malith-19)! - Hide app native authentication and client attestation settings for non-OIDC applications in the application advanced settings tab
+
+- Updated dependencies [[`787918ac3a885ee9d0b49c883558bb1f1fcbc5b8`](https://github.com/wso2/identity-apps/commit/787918ac3a885ee9d0b49c883558bb1f1fcbc5b8)]:
+  - @wso2is/i18n@2.45.4
+
+## 2.43.15
+
+### Patch Changes
+
+- [#10587](https://github.com/wso2/identity-apps/pull/10587) [`6185b49b267390c79cc3bf7fa7d51de6ccaa813d`](https://github.com/wso2/identity-apps/commit/6185b49b267390c79cc3bf7fa7d51de6ccaa813d) Thanks [@AfraHussaindeen](https://github.com/AfraHussaindeen)! - Add multiple client secrets support for OAuth/OIDC application
+
+- Updated dependencies [[`6185b49b267390c79cc3bf7fa7d51de6ccaa813d`](https://github.com/wso2/identity-apps/commit/6185b49b267390c79cc3bf7fa7d51de6ccaa813d)]:
+  - @wso2is/i18n@2.45.2
+
+## 2.43.14
+
+### Patch Changes
+
+- [#10616](https://github.com/wso2/identity-apps/pull/10616) [`053efa58e78944780d09ce984a9fd54865314af7`](https://github.com/wso2/identity-apps/commit/053efa58e78944780d09ce984a9fd54865314af7) Thanks [@RushanNanayakkara](https://github.com/RushanNanayakkara)! - Clarify the SSO-session token binding type description to state that tokens are revoked when the identity server login session is explicitly terminated, not when it expires
+
+- Updated dependencies [[`053efa58e78944780d09ce984a9fd54865314af7`](https://github.com/wso2/identity-apps/commit/053efa58e78944780d09ce984a9fd54865314af7)]:
+  - @wso2is/i18n@2.44.2
+
+## 2.43.13
+
+### Patch Changes
+
+- [#10568](https://github.com/wso2/identity-apps/pull/10568) [`ffdcc597bcd321a6bdbbaa79a4ad7888317fa246`](https://github.com/wso2/identity-apps/commit/ffdcc597bcd321a6bdbbaa79a4ad7888317fa246) Thanks [@KaveeshaPiumini](https://github.com/KaveeshaPiumini)! - Preserve complex regex callback URLs in migrated applications. A single `regexp=(...)` callback whose pattern contains a literal comma (e.g. a `{0,4}` quantifier) is now kept as one atomic value across display, edit and save instead of being split as a comma-separated list. Adding across syntaxes combines all alternatives into one de-duplicated `regexp=(...)`, and an input mixing both syntaxes is rejected.
+
+- Updated dependencies [[`ffdcc597bcd321a6bdbbaa79a4ad7888317fa246`](https://github.com/wso2/identity-apps/commit/ffdcc597bcd321a6bdbbaa79a4ad7888317fa246), [`8286096b632fda272a45d47f2a68018713925e14`](https://github.com/wso2/identity-apps/commit/8286096b632fda272a45d47f2a68018713925e14), [`39e7fb8e75d261b853007fe6527c20b8d6b16d48`](https://github.com/wso2/identity-apps/commit/39e7fb8e75d261b853007fe6527c20b8d6b16d48)]:
+  - @wso2is/react-components@2.10.4
+  - @wso2is/admin.users.v1@2.38.48
+  - @wso2is/admin.branding.v1@2.32.171
+
+## 2.43.12
+
+### Patch Changes
+
+- [#10571](https://github.com/wso2/identity-apps/pull/10571) [`933b1e5aff0b5b2b9781ae4850e8dc154c413963`](https://github.com/wso2/identity-apps/commit/933b1e5aff0b5b2b9781ae4850e8dc154c413963) Thanks [@DilshanSenarath](https://github.com/DilshanSenarath)! - Show the subject attribute even if it is not a requested attribute
+
+## 2.43.11
+
+### Patch Changes
+
+- [#10541](https://github.com/wso2/identity-apps/pull/10541) [`68f2289f4500b32f9f65e2e0988a791a5d63be79`](https://github.com/wso2/identity-apps/commit/68f2289f4500b32f9f65e2e0988a791a5d63be79) Thanks [@PasinduYeshan](https://github.com/PasinduYeshan)! - Persist the "Include organization name" and "Include user domain" options independently in the application subject identifier settings, so un-checking one no longer clears the other on save.
+
+- Updated dependencies [[`df07d6d1045f1296f42a36963d92e4d0ec2c4d19`](https://github.com/wso2/identity-apps/commit/df07d6d1045f1296f42a36963d92e4d0ec2c4d19)]:
+  - @wso2is/admin.core.v1@2.57.31
+  - @wso2is/admin.users.v1@2.38.44
+
+## 2.43.10
+
+### Patch Changes
+
+- [#10514](https://github.com/wso2/identity-apps/pull/10514) [`436349cca347d8b68b4fd78dca3832e93167d71b`](https://github.com/wso2/identity-apps/commit/436349cca347d8b68b4fd78dca3832e93167d71b) Thanks [@SujanSanjula96](https://github.com/SujanSanjula96)! - Support app ID as the CDS application identifier based on a config and always display application names in CDS UIs
+
+- Updated dependencies [[`436349cca347d8b68b4fd78dca3832e93167d71b`](https://github.com/wso2/identity-apps/commit/436349cca347d8b68b4fd78dca3832e93167d71b), [`bb1c1b635fe1cb646c27b9d2c7391108ea896f12`](https://github.com/wso2/identity-apps/commit/bb1c1b635fe1cb646c27b9d2c7391108ea896f12)]:
+  - @wso2is/admin.core.v1@2.57.29
+  - @wso2is/i18n@2.43.12
+  - @wso2is/admin.users.v1@2.38.42
+
+## 2.43.9
+
+### Patch Changes
+
+- [#10515](https://github.com/wso2/identity-apps/pull/10515) [`e5375c123ed807c87bc5b606c4d7fbb904d3bb91`](https://github.com/wso2/identity-apps/commit/e5375c123ed807c87bc5b606c4d7fbb904d3bb91) Thanks [@PasinduYeshan](https://github.com/PasinduYeshan)! - Preserve the configured role claim URI during application update instead of overwriting it with an empty value.
+
+- Updated dependencies [[`b3e74d2fba5a84a76ceed900cf6d8e05c7090779`](https://github.com/wso2/identity-apps/commit/b3e74d2fba5a84a76ceed900cf6d8e05c7090779), [`d44afc4e86b576c89b2ab59ffe2a5690f198777c`](https://github.com/wso2/identity-apps/commit/d44afc4e86b576c89b2ab59ffe2a5690f198777c)]:
+  - @wso2is/admin.core.v1@2.57.28
+  - @wso2is/core@2.13.5
+  - @wso2is/i18n@2.43.11
+  - @wso2is/admin.connections.v1@2.38.4
+
+## 2.43.8
+
+### Patch Changes
+
+- [#10290](https://github.com/wso2/identity-apps/pull/10290) [`03ad6b05794a2e9a784e78818d15a99bd9e7ac9c`](https://github.com/wso2/identity-apps/commit/03ad6b05794a2e9a784e78818d15a99bd9e7ac9c) Thanks [@VimukthiRajapaksha](https://github.com/VimukthiRajapaksha)! - Add FAPI 2 Support
+
+- Updated dependencies [[`03ad6b05794a2e9a784e78818d15a99bd9e7ac9c`](https://github.com/wso2/identity-apps/commit/03ad6b05794a2e9a784e78818d15a99bd9e7ac9c)]:
+  - @wso2is/admin.fapi-security-policy.v1@1.0.0
+  - @wso2is/admin.core.v1@2.57.26
+  - @wso2is/admin.server-configurations.v1@2.38.57
+  - @wso2is/i18n@2.43.10
+
+## 2.43.7
+
+### Patch Changes
+
+- [#10481](https://github.com/wso2/identity-apps/pull/10481) [`fdb049bb1b0faac7df4021ee0737eb808c5129dc`](https://github.com/wso2/identity-apps/commit/fdb049bb1b0faac7df4021ee0737eb808c5129dc) Thanks [@DilshanSenarath](https://github.com/DilshanSenarath)! - Remove the feature label from the Active Session Limit Handler
+
+## 2.43.6
+
+### Patch Changes
+
+- [#10435](https://github.com/wso2/identity-apps/pull/10435) [`5036ddbed5a42d6bbee5880fb81c0626b510580f`](https://github.com/wso2/identity-apps/commit/5036ddbed5a42d6bbee5880fb81c0626b510580f) Thanks [@DilshanSenarath](https://github.com/DilshanSenarath)! - Derive default token type label from issuer class
+
+- Updated dependencies [[`5036ddbed5a42d6bbee5880fb81c0626b510580f`](https://github.com/wso2/identity-apps/commit/5036ddbed5a42d6bbee5880fb81c0626b510580f)]:
+  - @wso2is/admin.core.v1@2.57.21
+  - @wso2is/i18n@2.43.5
+
+## 2.43.5
+
+### Patch Changes
+
+- [#10359](https://github.com/wso2/identity-apps/pull/10359) [`bc7a9e4ee1664b6eedb6434693d0dd4cdf41e006`](https://github.com/wso2/identity-apps/commit/bc7a9e4ee1664b6eedb6434693d0dd4cdf41e006) Thanks [@KD23243](https://github.com/KD23243)! - Add flow extension management support.
+
+- Updated dependencies [[`bc7a9e4ee1664b6eedb6434693d0dd4cdf41e006`](https://github.com/wso2/identity-apps/commit/bc7a9e4ee1664b6eedb6434693d0dd4cdf41e006)]:
+  - @wso2is/admin.connections.v1@2.38.1
+  - @wso2is/admin.core.v1@2.57.20
+  - @wso2is/i18n@2.43.4
+
+## 2.43.4
+
+### Patch Changes
+
+- [#10401](https://github.com/wso2/identity-apps/pull/10401) [`96b879f8cd5e49cb393e709727274fe9840b114a`](https://github.com/wso2/identity-apps/commit/96b879f8cd5e49cb393e709727274fe9840b114a) Thanks [@pavinduLakshan](https://github.com/pavinduLakshan)! - Increase app name length limit
+
+- Updated dependencies [[`780ba38b0b3d5607a1119ae3f4c76445da23b37d`](https://github.com/wso2/identity-apps/commit/780ba38b0b3d5607a1119ae3f4c76445da23b37d)]:
+  - @wso2is/admin.branding.v1@2.32.170
+
+## 2.43.3
+
+### Patch Changes
+
+- [#10389](https://github.com/wso2/identity-apps/pull/10389) [`5681d4cb3cf3ad707fb12fa3d58184a309fd40a1`](https://github.com/wso2/identity-apps/commit/5681d4cb3cf3ad707fb12fa3d58184a309fd40a1) Thanks [@ShanChathusanda93](https://github.com/ShanChathusanda93)! - Improve API Resources loading for authrization and role permissions
+
+- Updated dependencies [[`5681d4cb3cf3ad707fb12fa3d58184a309fd40a1`](https://github.com/wso2/identity-apps/commit/5681d4cb3cf3ad707fb12fa3d58184a309fd40a1)]:
+  - @wso2is/admin.api-resources.v2@2.26.12
+  - @wso2is/admin.roles.v2@2.27.385
+
+## 2.43.2
+
+### Patch Changes
+
+- [#10249](https://github.com/wso2/identity-apps/pull/10249) [`58f4a671d7ea3620d2b248f0773573b4521dad60`](https://github.com/wso2/identity-apps/commit/58f4a671d7ea3620d2b248f0773573b4521dad60) Thanks [@savindi7](https://github.com/savindi7)! - Update product branding.
+
+- Updated dependencies [[`58f4a671d7ea3620d2b248f0773573b4521dad60`](https://github.com/wso2/identity-apps/commit/58f4a671d7ea3620d2b248f0773573b4521dad60)]:
+  - @wso2is/admin.core.v1@2.57.17
+  - @wso2is/admin.extensions.v1@2.43.9
+
+## 2.43.1
+
+### Patch Changes
+
+- [#10369](https://github.com/wso2/identity-apps/pull/10369) [`b92163d50018fee53956290dbcb1e46d80f693a9`](https://github.com/wso2/identity-apps/commit/b92163d50018fee53956290dbcb1e46d80f693a9) Thanks [@pavinduLakshan](https://github.com/pavinduLakshan)! - Improve application v3 update message readability
+
+- Updated dependencies [[`23f5a8fd478b609f7f0d28f67c211c12a15450a5`](https://github.com/wso2/identity-apps/commit/23f5a8fd478b609f7f0d28f67c211c12a15450a5), [`b92163d50018fee53956290dbcb1e46d80f693a9`](https://github.com/wso2/identity-apps/commit/b92163d50018fee53956290dbcb1e46d80f693a9)]:
+  - @wso2is/admin.roles.v2@2.27.384
+  - @wso2is/i18n@2.43.2
+
+## 2.43.0
+
+### Minor Changes
+
+- [#10356](https://github.com/wso2/identity-apps/pull/10356) [`de8887b851eefa9c3e5330b6cd96c4687cb68b24`](https://github.com/wso2/identity-apps/commit/de8887b851eefa9c3e5330b6cd96c4687cb68b24) Thanks [@Thumimku](https://github.com/Thumimku)! - Add graceful refresh token rotation support.
+
+### Patch Changes
+
+- Updated dependencies [[`de8887b851eefa9c3e5330b6cd96c4687cb68b24`](https://github.com/wso2/identity-apps/commit/de8887b851eefa9c3e5330b6cd96c4687cb68b24)]:
+  - @wso2is/access-control@3.6.0
+  - @wso2is/i18n@2.43.0
+
+## 2.42.32
+
+### Patch Changes
+
+- [#10348](https://github.com/wso2/identity-apps/pull/10348) [`ccb2eabe8b5dd1e8cec9f1fc73ac4f1c0d5a8fc4`](https://github.com/wso2/identity-apps/commit/ccb2eabe8b5dd1e8cec9f1fc73ac4f1c0d5a8fc4) Thanks [@SujanSanjula96](https://github.com/SujanSanjula96)! - Hide the conditional authentication when evaluate call returns error
+
+- Updated dependencies [[`2282759fcffa31ca2d3ec513f353aaed00700185`](https://github.com/wso2/identity-apps/commit/2282759fcffa31ca2d3ec513f353aaed00700185), [`ccb2eabe8b5dd1e8cec9f1fc73ac4f1c0d5a8fc4`](https://github.com/wso2/identity-apps/commit/ccb2eabe8b5dd1e8cec9f1fc73ac4f1c0d5a8fc4)]:
+  - @wso2is/i18n@2.42.4
+  - @wso2is/admin.login-flow-builder.v1@2.29.14
+
+## 2.42.31
+
+### Patch Changes
+
+- [#10274](https://github.com/wso2/identity-apps/pull/10274) [`256daabddebaa032dc06c3a5e7822a84eec0bbd7`](https://github.com/wso2/identity-apps/commit/256daabddebaa032dc06c3a5e7822a84eec0bbd7) Thanks [@ashanthamara](https://github.com/ashanthamara)! - Provide support to block API resources in application api authorization and role permission assignment
+
+- Updated dependencies [[`5a79196bc94dd161fb167420d63ff9f57831cd15`](https://github.com/wso2/identity-apps/commit/5a79196bc94dd161fb167420d63ff9f57831cd15), [`256daabddebaa032dc06c3a5e7822a84eec0bbd7`](https://github.com/wso2/identity-apps/commit/256daabddebaa032dc06c3a5e7822a84eec0bbd7)]:
+  - @wso2is/admin.api-resources.v2@2.26.11
+  - @wso2is/admin.roles.v2@2.27.383
+  - @wso2is/admin.core.v1@2.57.15
+
+## 2.42.30
+
+### Patch Changes
+
+- [#10315](https://github.com/wso2/identity-apps/pull/10315) [`ac975d561432967173e01ca6242e27bf2259c455`](https://github.com/wso2/identity-apps/commit/ac975d561432967173e01ca6242e27bf2259c455) Thanks [@SujanSanjula96](https://github.com/SujanSanjula96)! - Add sub organiation adaptive auth governance support
+
+- Updated dependencies [[`ac975d561432967173e01ca6242e27bf2259c455`](https://github.com/wso2/identity-apps/commit/ac975d561432967173e01ca6242e27bf2259c455), [`99e9a4d928211d9616b48d7a03bed71331968f6c`](https://github.com/wso2/identity-apps/commit/99e9a4d928211d9616b48d7a03bed71331968f6c)]:
+  - @wso2is/admin.core.v1@2.57.11
+  - @wso2is/admin.login-flow-builder.v1@2.29.13
+  - @wso2is/i18n@2.41.3
+
+## 2.42.29
+
+### Patch Changes
+
+- [#10300](https://github.com/wso2/identity-apps/pull/10300) [`188876f6235b1f0e81c285187feabe92309ddfbd`](https://github.com/wso2/identity-apps/commit/188876f6235b1f0e81c285187feabe92309ddfbd) Thanks [@ShanChathusanda93](https://github.com/ShanChathusanda93)! - Fix issue when not loading the authorized API resources when only view permissions are assigned to the logged in user
+
+- Updated dependencies [[`93332f8b7d0731cbb8c435f5d991e616cade7ffb`](https://github.com/wso2/identity-apps/commit/93332f8b7d0731cbb8c435f5d991e616cade7ffb)]:
+  - @wso2is/admin.users.v1@2.38.39
+
+## 2.42.28
+
+### Patch Changes
+
+- [#10275](https://github.com/wso2/identity-apps/pull/10275) [`1b282113955a70809c1beb686757845a894bc512`](https://github.com/wso2/identity-apps/commit/1b282113955a70809c1beb686757845a894bc512) Thanks [@Malith-19](https://github.com/Malith-19)! - Update the refresh token extend expiry time description.
+
+- Updated dependencies [[`1b282113955a70809c1beb686757845a894bc512`](https://github.com/wso2/identity-apps/commit/1b282113955a70809c1beb686757845a894bc512)]:
+  - @wso2is/i18n@2.41.1
+
+## 2.42.27
+
+### Patch Changes
+
+- [#10204](https://github.com/wso2/identity-apps/pull/10204) [`3b11c4f98352aa1584865ea84e096665a6f7d608`](https://github.com/wso2/identity-apps/commit/3b11c4f98352aa1584865ea84e096665a6f7d608) Thanks [@pavinduLakshan](https://github.com/pavinduLakshan)! - Fix api resource search behaviour in authorize wizard in application edit view
+
+- Updated dependencies [[`2de3739f867501a0d18a29253f5091e37432d2bd`](https://github.com/wso2/identity-apps/commit/2de3739f867501a0d18a29253f5091e37432d2bd), [`bb7f3db51dd616c0a662db3a233730bbbc0c0b15`](https://github.com/wso2/identity-apps/commit/bb7f3db51dd616c0a662db3a233730bbbc0c0b15)]:
+  - @wso2is/admin.core.v1@2.57.8
+  - @wso2is/admin.users.v1@2.38.37
+  - @wso2is/i18n@2.41.0
+
+## 2.42.26
+
+### Patch Changes
+
+- [#10254](https://github.com/wso2/identity-apps/pull/10254) [`c331b91996fa0a2b84e73a5162aa46305d72539a`](https://github.com/wso2/identity-apps/commit/c331b91996fa0a2b84e73a5162aa46305d72539a) Thanks [@Thumimku](https://github.com/Thumimku)! - Fix Client secret hash support to console
+
+- Updated dependencies [[`2a6285ee9794b66bcd3e3257c8290883270dc13f`](https://github.com/wso2/identity-apps/commit/2a6285ee9794b66bcd3e3257c8290883270dc13f)]:
+  - @wso2is/admin.core.v1@2.57.7
+
 ## 2.42.25
 
 ### Patch Changes

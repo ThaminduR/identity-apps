@@ -1,5 +1,53 @@
 # @wso2is/theme
 
+## 2.11.0
+
+### Minor Changes
+
+- [#10615](https://github.com/wso2/identity-apps/pull/10615) [`48bc2416dfc2a2e40699f1fd8e95ddd4893e0a11`](https://github.com/wso2/identity-apps/commit/48bc2416dfc2a2e40699f1fd8e95ddd4893e0a11) Thanks [@Zeta201](https://github.com/Zeta201)! - Add UI implementation for OpenID4VP digital wallet authentication, including presentation definitions management, trusted issuer configuration, digital wallet connection wizard, and flow builder canvas support.
+
+## 2.10.8
+
+### Patch Changes
+
+- [#10428](https://github.com/wso2/identity-apps/pull/10428) [`6bb48ef7c7308065172e95a1dff385b43959e63b`](https://github.com/wso2/identity-apps/commit/6bb48ef7c7308065172e95a1dff385b43959e63b) Thanks [@KaveeshaPiumini](https://github.com/KaveeshaPiumini)! - Fix role mapping dropdown menu height in dynamic field
+
+## 2.10.7
+
+### Patch Changes
+
+- [#10444](https://github.com/wso2/identity-apps/pull/10444) [`5591da87a12f72f05d60a131d325ca7dc409af6b`](https://github.com/wso2/identity-apps/commit/5591da87a12f72f05d60a131d325ca7dc409af6b) Thanks [@savindi7](https://github.com/savindi7)! - Add tenant ID field in Microsoft Connection.
+
+## 2.10.6
+
+### Patch Changes
+
+- [#10388](https://github.com/wso2/identity-apps/pull/10388) [`6170f90d894fdea6cce8aa345cb4d4c71fa3a28f`](https://github.com/wso2/identity-apps/commit/6170f90d894fdea6cce8aa345cb4d4c71fa3a28f) Thanks [@savindi7](https://github.com/savindi7)! - Update logo styles.
+
+## 2.10.5
+
+### Patch Changes
+
+- [#10249](https://github.com/wso2/identity-apps/pull/10249) [`58f4a671d7ea3620d2b248f0773573b4521dad60`](https://github.com/wso2/identity-apps/commit/58f4a671d7ea3620d2b248f0773573b4521dad60) Thanks [@savindi7](https://github.com/savindi7)! - Update product branding.
+
+## 2.10.4
+
+### Patch Changes
+
+- [#10322](https://github.com/wso2/identity-apps/pull/10322) [`e995e67e2fead93f01fcf16a5f1c35378222d7a7`](https://github.com/wso2/identity-apps/commit/e995e67e2fead93f01fcf16a5f1c35378222d7a7) Thanks [@savindi7](https://github.com/savindi7)! - Add announcement banner.
+
+## 2.10.3
+
+### Patch Changes
+
+- [#10285](https://github.com/wso2/identity-apps/pull/10285) [`86edd97f85adc0496cc78ec2a8c8d1db7c434006`](https://github.com/wso2/identity-apps/commit/86edd97f85adc0496cc78ec2a8c8d1db7c434006) Thanks [@savindi7](https://github.com/savindi7)! - Add Changeset for revert branding PR changes.
+
+## 2.10.2
+
+### Patch Changes
+
+- [#10272](https://github.com/wso2/identity-apps/pull/10272) [`80f84ddeb8e4a73882f889b48660824ad364e30f`](https://github.com/wso2/identity-apps/commit/80f84ddeb8e4a73882f889b48660824ad364e30f) Thanks [@savindi7](https://github.com/savindi7)! - Update Branding logos.
+
 ## 2.10.1
 
 ### Patch Changes

@@ -64,8 +64,18 @@ export interface flowsNS {
                         termsOfUseUrl: string;
                     };
                     urlTypeLabel: string;
+                    linkTargetLabel: string;
+                    linkTargetHint: string;
+                    newTabHint: string;
+                    sameTabHint: string;
                 };
                 placeholder: string;
+            };
+            preferenceManagement: {
+                emptyState: string;
+            };
+            policyConsent: {
+                emptyState: string;
             };
             textPropertyField: {
                 i18nCard: {
@@ -112,9 +122,11 @@ export interface flowsNS {
                 confirmationCode: string;
                 default: string;
                 deviceRegistration: string;
+                digitalWallet: string;
                 facebook: string;
                 github: string;
                 google: string;
+                flowExtension: string;
                 microsoft: string;
                 passkeyEnrollment: string;
                 magicLink: string;
@@ -293,6 +305,24 @@ export interface flowsNS {
                     text: string;
                     variant: string;
                 };
+                preferenceManagement: {
+                    general: string;
+                    purposeAttributesRequired: string;
+                    purposesRequired: string;
+                };
+                policyConsent: {
+                    general: string;
+                    noPoliciesAvailable: string;
+                    policiesRequired: string;
+                };
+                flowExtension: {
+                    general: string;
+                    actionId: string;
+                };
+            };
+            userResolveExecutorFields: {
+                message: string;
+                messageWithUserIdentifier: string;
             };
         };
         steps: {

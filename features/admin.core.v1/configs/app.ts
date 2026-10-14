@@ -69,8 +69,10 @@ import { getUsersResourceEndpoints } from "@wso2is/admin.users.v1/configs/endpoi
 import { getUserstoreResourceEndpoints } from "@wso2is/admin.userstores.v1/configs/endpoints";
 import { PRIMARY_USERSTORE } from "@wso2is/admin.userstores.v1/constants/user-store-constants";
 import { getValidationServiceEndpoints } from "@wso2is/admin.validation.v1/configs";
+import { getPresentationDefinitionEndpoints } from "@wso2is/admin.presentation-definitions.v1/configs/endpoints";
 import { getVCTemplateEndpoints } from "@wso2is/admin.verifiable-credentials.v1/configs/endpoints";
 import { getWebhooksResourceEndpoints } from "@wso2is/admin.webhooks.v1/configs/endpoints";
+import { getConsentMgtResourceEndpoints } from "@wso2is/common.consents.v1/configs/endpoints";
 import { getApprovalsResourceEndpoints } from "@wso2is/common.workflow-approvals.v1";
 import {
     I18nModuleConstants,
@@ -79,7 +81,7 @@ import {
     SupportedLanguagesMeta,
     generateBackendPaths
 } from "@wso2is/i18n";
-import { getCompatibilitySettingsResourceEndpoints } from "./endpoints";
+import { getCompatibilitySettingsResourceEndpoints, getFlowExtensionResourceEndpoints } from "./endpoints";
 import { getWorkflowRequestsResourceEndpoints } from "../../admin.workflow-requests.v1/types/workflow-requests";
 import { AppConstants } from "../constants/app-constants";
 import { I18nConstants } from "../constants/i18n-constants";
@@ -112,6 +114,30 @@ export class Config {
         }
 
         return this.resolveTenantedServerHost(skipAuthzRuntimePath);
+    }
+
+    /**
+     * Resolves the server host with the super tenant path mandated.
+     *
+     * Behaves like {@link resolveServerHost} (and therefore honours the tenant-qualified URLs
+     * flag) but additionally guarantees a tenant segment for the super tenant: by default the
+     * super tenant resolves to the bare origin with no `/<tenant-prefix>/<super-tenant>` path,
+     * and this method appends it. Regular tenants and sub-organizations are returned unchanged.
+     *
+     * @returns Server host with the super tenant path always present.
+     */
+    public static resolveServerHostWithSuperTenant(): string {
+        const serverHost: string = this.resolveServerHost();
+
+        // Only the super tenant resolves to the bare origin (no /<tenant-prefix>/ or /o/ path).
+        if (this.isTenantQualifiedURLsEnabled() && serverHost === this.getDeploymentConfig()?.serverOrigin) {
+            const tenantPrefix: string = window[ "AppUtils" ]?.getTenantPrefix();
+            const superTenant: string = window[ "AppUtils" ]?.getSuperTenant();
+
+            return `${ serverHost }/${ tenantPrefix }/${ superTenant }`;
+        }
+
+        return serverHost;
     }
 
     /**
@@ -186,7 +212,7 @@ export class Config {
             adminApp: window[ "AppUtils" ]?.getConfig()?.adminApp,
             allowMultipleAppProtocols: window[ "AppUtils" ]?.getConfig()?.allowMultipleAppProtocols,
             appBaseName: window[ "AppUtils" ]?.getConfig()?.appBaseWithTenant,
-            appBaseNameWithoutTenant: window[ "AppUtils" ]?.getConfig()?.appBase,
+            appBaseNameWithoutTenant: window[ "AppUtils" ]?.getConfig()?.appBaseWithProxy,
             appHomePath: window[ "AppUtils" ]?.getConfig()?.routes?.home,
             appLoginPath: window[ "AppUtils" ]?.getConfig()?.routes?.login,
             appLogoutPath: window[ "AppUtils" ]?.getConfig()?.routes?.logout,
@@ -231,7 +257,7 @@ export class Config {
                 loadPath: (language: string[], namespace: string[]) => generateBackendPaths(
                     language,
                     namespace,
-                    window[ "AppUtils" ]?.getConfig()?.appBase,
+                    window[ "AppUtils" ]?.getConfig()?.appBaseWithProxy,
                     Config.getI18nConfig() ?? {
                         langAutoDetectEnabled: I18nConstants.LANG_AUTO_DETECT_ENABLED,
                         namespaceDirectories: I18nConstants.BUNDLE_NAMESPACE_DIRECTORIES,
@@ -291,6 +317,7 @@ export class Config {
                 I18nConstants.AI_NAMESPACE,
                 I18nConstants.TEMPLATE_CORE_NAMESPACE,
                 I18nConstants.APPLICATION_TEMPLATES_NAMESPACE,
+                I18nConstants.FAPI_SECURITY_POLICY_NAMESPACE,
                 I18nConstants.ACTIONS_NAMESPACE,
                 I18nConstants.TENANTS_NAMESPACE,
                 I18nConstants.CUSTOM_AUTHENTICATOR_NAMESPACE,
@@ -305,8 +332,13 @@ export class Config {
                 I18nConstants.DEVICES_NAMESPACE,
                 I18nConstants.FLOWS_NAMESPACE,
                 I18nConstants.COMMON_USERS_NAMESPACE,
+                I18nConstants.PRESENTATION_DEFINITIONS_NAMESPACE,
                 I18nConstants.VERIFIABLE_CREDENTIALS_NAMESPACE,
-                I18nConstants.CUSTOMER_DATA_SERVICE_NAMESPACE
+                I18nConstants.OPENID4VP_CONFIG_NAMESPACE,
+                I18nConstants.CUSTOMER_DATA_SERVICE_NAMESPACE,
+                I18nConstants.CONSENTS_NAMESPACE,
+                I18nConstants.FLOW_EXTENSION_NAMESPACE,
+                I18nConstants.CLI_SETTINGS_NAMESPACE
             ],
             preload: []
         };
@@ -343,6 +375,7 @@ export class Config {
             ...getApplicationsResourceEndpoints(this.resolveServerHost()),
             ...getApprovalsResourceEndpoints(this.resolveServerHostFromConfig()),
             ...getBrandingResourceEndpoints(this.resolveServerHost()),
+            ...getConsentMgtResourceEndpoints(this.resolveServerHost()),
             ...getClaimResourceEndpoints(this.resolveServerHostFromConfig(), this.resolveServerHost()),
             ...getCertificatesResourceEndpoints(this.resolveServerHostFromConfig()),
             ...getIDVPResourceEndpoints(this.resolveServerHost()),
@@ -381,8 +414,10 @@ export class Config {
             ...getWebhooksResourceEndpoints(this.resolveServerHost()),
             ...getAgentsResourceEndpoints(this.resolveServerHost()),
             ...getFlowBuilderCoreResourceEndpoints(this.resolveServerHost()),
+            ...getFlowExtensionResourceEndpoints(this.resolveServerHost()),
+            ...getPresentationDefinitionEndpoints(this.resolveServerHost()),
             ...getVCTemplateEndpoints(this.resolveServerHost()),
-            ...getCustomerDataServiceEndpoints(this.resolveServerHost()),
+            ...getCustomerDataServiceEndpoints(this.resolveServerHostWithSuperTenant(), this.getDeploymentConfig()),
             ...getCompatibilitySettingsResourceEndpoints(this.resolveServerHost(true)),
             CORSOrigins: `${ this.resolveServerHostFromConfig() }/api/server/v1/cors/origins`,
             asyncStatus: `${ this.resolveServerHost(false, true) }/api/server/v1/async-operations`,
@@ -423,9 +458,14 @@ export class Config {
             administratorRoleDisplayName: window[ "AppUtils" ]?.getConfig()?.ui?.administratorRoleDisplayName ??
                 UIConstants.ADMINISTRATOR_ROLE_DISPLAY_NAME,
             announcements: window[ "AppUtils" ]?.getConfig()?.ui?.announcements,
+            apiResourceManagement: {
+                blockedAPIResources: window[ "AppUtils" ]?.getConfig()?.ui?.apiResourceManagement
+                    ?.blocked_api_resources ?? []
+            },
             appCopyright: window[ "AppUtils" ]?.getConfig()?.ui?.appCopyright
                 .replace("${copyright}", "\u00A9")
                 .replace("${year}", new Date().getFullYear()),
+            appFaviconPath: window[ "AppUtils" ]?.getConfig()?.ui?.appFaviconPath,
             appLogo: {
                 defaultLogoPath: window[ "AppUtils" ]?.getConfig()?.ui?.appLogo?.defaultLogoPath
                     ?? window[ "AppUtils" ]?.getConfig()?.ui?.appLogoPath,
@@ -442,6 +482,7 @@ export class Config {
             cookiePolicyUrl: window[ "AppUtils" ]?.getConfig()?.ui?.cookiePolicyUrl,
             customContent: window[ "AppUtils" ]?.getConfig()?.ui?.customContent ??
                 UIConstants.DEFAULT_CUSTOM_CONTENT_CONFIGS,
+            defaultTokenIssuerClass: window[ "AppUtils" ]?.getConfig()?.ui?.defaultTokenIssuerClass,
             disableEmailTemplateForFreeTier: window[ "AppUtils" ]?.getConfig()?.ui?.disableEmailTemplateForFreeTier,
             emailTemplates: {
                 defaultLogoUrl: window[ "AppUtils" ]?.getConfig()?.ui?.emailTemplates?.defaultLogoUrl,
@@ -493,6 +534,8 @@ export class Config {
                 window[ "AppUtils" ]?.getConfig()?.ui?.isClaimUniquenessValidationEnabled ?? false,
             isClientSecretHashEnabled: window[ "AppUtils" ]?.getConfig()?.ui?.isClientSecretHashEnabled,
             isCookieConsentBannerEnabled: window[ "AppUtils" ]?.getConfig()?.ui?.isCookieConsentBannerEnabled,
+            isCustomClaimDialectRoutingEnabled:
+                window[ "AppUtils" ]?.getConfig()?.ui?.isCustomClaimDialectRoutingEnabled,
             isCustomClaimMappingEnabled: window[ "AppUtils" ]?.getConfig()?.ui?.isCustomClaimMappingEnabled,
             isCustomClaimMappingMergeEnabled: window[ "AppUtils" ]?.getConfig()?.ui?.isCustomClaimMappingMergeEnabled,
             isDefaultDialectEditingEnabled: window[ "AppUtils" ]?.getConfig()?.ui?.isDefaultDialectEditingEnabled,
@@ -528,6 +571,7 @@ export class Config {
             privacyPolicyUrl: window[ "AppUtils" ]?.getConfig()?.ui?.privacyPolicyUrl,
             productName: window[ "AppUtils" ]?.getConfig()?.ui?.productName,
             productVersionConfig: window[ "AppUtils" ]?.getConfig()?.ui?.productVersionConfig,
+            rebrandingBanner: window[ "AppUtils" ]?.getConfig()?.ui?.rebrandingBanner,
             routes: window[ "AppUtils" ]?.getConfig()?.ui?.routes ?? {
                 organizationEnabledRoutes: AppConstants.ORGANIZATION_ENABLED_ROUTES
             },

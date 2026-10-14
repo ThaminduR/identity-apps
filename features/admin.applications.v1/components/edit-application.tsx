@@ -60,7 +60,7 @@ import {
 import Axios, { AxiosError, AxiosResponse } from "axios";
 import cloneDeep from "lodash-es/cloneDeep";
 import isEmpty from "lodash-es/isEmpty";
-import React, { FormEvent, FunctionComponent, ReactElement, SyntheticEvent, useEffect, useState } from "react";
+import React, { FormEvent, FunctionComponent, ReactElement, SyntheticEvent, useEffect, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
@@ -143,6 +143,10 @@ interface EditApplicationPropsInterface extends SBACInterface<FeatureConfigInter
      * URL Search params received to the parent edit page component.
      */
     urlSearchParams?: URLSearchParams;
+    /**
+     * OIDC inbound config fetched by the SWR hook on the parent page.
+     */
+    applicationInboundConfigs?: OIDCDataInterface;
 }
 
 /**
@@ -168,6 +172,7 @@ export const EditApplication: FunctionComponent<EditApplicationPropsInterface> =
         template,
         readOnly,
         urlSearchParams,
+        applicationInboundConfigs,
         [ "data-componentid" ]: componentId
     } = props;
 
@@ -310,10 +315,13 @@ export const EditApplication: FunctionComponent<EditApplicationPropsInterface> =
         }
     };
 
+    const inboundProtocolRequestIdRef: React.MutableRefObject<number> = useRef<number>(0);
+
     /**
      * Finds the configured inbound protocol.
      */
     const findConfiguredInboundProtocol = (appId: string): void => {
+        const requestId: number = ++inboundProtocolRequestIdRef.current;
         let protocolConfigs: any = {};
         const selectedProtocolList: string[] = [];
         const inboundProtocolRequests: Promise<any>[] = [];
@@ -371,6 +379,11 @@ export const EditApplication: FunctionComponent<EditApplicationPropsInterface> =
                     }));
                 })
                 .finally(() => {
+                    // Discard the results if a newer lookup has started, so a stale batch doesn't overwrite it.
+                    if (requestId !== inboundProtocolRequestIdRef.current) {
+                        return;
+                    }
+
                     // Mutate the saml: NameIDFormat property according to the specification.
                     normalizeSAMLNameIDFormat(protocolConfigs);
                     setIsApplicationUpdated(true);
@@ -631,6 +644,7 @@ export const EditApplication: FunctionComponent<EditApplicationPropsInterface> =
                 appVersion={ application?.applicationVersion }
                 technology={ application.inboundProtocols }
                 claimConfigurations={ application.claimConfiguration }
+                advancedConfigurations={ application?.advancedConfigurations }
                 featureConfig={ featureConfig }
                 onlyOIDCConfigured={
                     (application?.templateId === CustomApplicationTemplate.id
@@ -678,6 +692,7 @@ export const EditApplication: FunctionComponent<EditApplicationPropsInterface> =
                 appId={ application.id }
                 advancedConfigurations={ application.advancedConfigurations }
                 authenticationSequence={ application.authenticationSequence }
+                inboundProtocols={ application?.inboundProtocols }
                 onUpdate={ handleApplicationUpdate }
                 featureConfig={ featureConfig }
                 readOnly={ readOnly }
@@ -1241,6 +1256,9 @@ export const EditApplication: FunctionComponent<EditApplicationPropsInterface> =
 
     /**
      * Watch for `inboundProtocols` array change and fetch configured protocols if there's a difference.
+     * The application version is also watched, since updating the version can change the inbound
+     * protocol configurations returned by the server. (e.g. `accessTokenAttributes` is reset when the
+     * application is upgraded to a version which supports access token attributes.)
      */
     useEffect(() => {
         if (!application?.inboundProtocols || !application?.id) {
@@ -1248,7 +1266,7 @@ export const EditApplication: FunctionComponent<EditApplicationPropsInterface> =
         }
 
         findConfiguredInboundProtocol(application.id);
-    }, [ JSON.stringify(application?.inboundProtocols) ]);
+    }, [ JSON.stringify(application?.inboundProtocols), application?.applicationVersion ]);
 
     useEffect(() => {
         if (samlConfigurations !== undefined) {
@@ -1357,18 +1375,20 @@ export const EditApplication: FunctionComponent<EditApplicationPropsInterface> =
 
         const isOIDCConfigured: boolean = inboundProtocolList.includes(SupportedAuthProtocolTypes.OIDC);
 
+        const oidcConfig: OIDCDataInterface = applicationInboundConfigs ?? inboundProtocolConfig?.oidc;
+
         if (!isOIDCConfigured
-            || isEmpty(inboundProtocolConfig?.oidc)
-            || !inboundProtocolConfig.oidc.clientId
-            || !inboundProtocolConfig.oidc.clientSecret) {
+            || isEmpty(oidcConfig)
+            || !oidcConfig.clientId
+            || !oidcConfig.clientSecret) {
 
             return null;
         }
 
         const clientSecret: string = clientSecretHashDisclaimerModalInputs.clientSecret
-            || inboundProtocolConfig.oidc.clientSecret;
+            || oidcConfig.clientSecret;
         const clientId: string = clientSecretHashDisclaimerModalInputs.clientId
-            || inboundProtocolConfig.oidc.clientId;
+            || oidcConfig.clientId;
 
         return (
             <ConfirmationModal

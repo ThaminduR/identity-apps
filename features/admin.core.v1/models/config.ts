@@ -19,6 +19,7 @@
 import { ResponseMode, Storage } from "@asgardeo/auth-react";
 import { FeatureAccessConfigInterface } from "@wso2is/access-control";
 import { ActionsResourceEndpointsInterface } from "@wso2is/admin.actions.v1/models/endpoints";
+import { AgentsResourceEndpointsInterface } from "@wso2is/admin.agents.v1/models/endpoints";
 import { ApplicationsTemplatesEndpointsInterface } from "@wso2is/admin.application-templates.v1/models/endpoints";
 import {
     ApplicationTemplateLoadingStrategies
@@ -51,6 +52,7 @@ import { TenantResourceEndpointsInterface } from "@wso2is/admin.tenants.v1/model
 import { UsersResourceEndpointsInterface } from "@wso2is/admin.users.v1/models/endpoints";
 import { UserstoreResourceEndpointsInterface } from "@wso2is/admin.userstores.v1/models/endpoints";
 import { ValidationServiceEndpointsInterface } from "@wso2is/admin.validation.v1/models";
+import { ConsentMgtResourceEndpointsInterface } from "@wso2is/common.consents.v1/models/endpoints";
 import {
     CommonConfigInterface,
     CommonDeploymentConfigInterface,
@@ -58,6 +60,7 @@ import {
 } from "@wso2is/core/models";
 import { I18nModuleOptionsInterface } from "@wso2is/i18n";
 import { WorkflowRequestsResourceEndpointsInterface } from "../../admin.workflow-requests.v1/configs/endpoints";
+import { FlowExtensionResourceEndpointsInterface } from "../configs/endpoints";
 
 type ConfigInterface = CommonConfigInterface<
     DeploymentConfigInterface,
@@ -146,6 +149,16 @@ export interface FeatureConfigInterface {
      */
     certificates?: FeatureAccessConfigInterface;
     /**
+     * CLI settings feature. Gates the CLI Settings page which manages the CLI
+     * application and its user assignments.
+     */
+    cliSettings?: FeatureAccessConfigInterface;
+    /**
+     * Console settings feature. Currently the only consumer is the console-roles permissions UI,
+     * which reads the granular-console-permissions flag from its `disabledFeatures` list.
+     */
+    consoleSettings?: FeatureAccessConfigInterface;
+    /**
      * Copilot AI assistant feature.
      */
     copilot?: FeatureAccessConfigInterface;
@@ -157,6 +170,10 @@ export interface FeatureConfigInterface {
      * Flow orchestration feature.
      */
     flows?: FeatureAccessConfigInterface;
+    /**
+     * Flow Extension feature.
+     */
+    flowExtensions?: FeatureAccessConfigInterface;
     /**
      * Getting started feature.
      */
@@ -198,6 +215,10 @@ export interface FeatureConfigInterface {
      */
     parentUserInvitation?: FeatureAccessConfigInterface;
     /**
+     * Connection sharing feature (share IdPs / connections with organizations).
+     */
+    connectionSharing?: FeatureAccessConfigInterface;
+    /**
      * Identity provider management feature.
      */
     identityProviders?: FeatureAccessConfigInterface;
@@ -205,6 +226,10 @@ export interface FeatureConfigInterface {
      * Identity provider groups feature.
      */
     identityProviderGroups?: FeatureAccessConfigInterface;
+    /**
+     * FAPI Security Policy feature.
+     */
+    fapi?: FeatureAccessConfigInterface;
     /**
      * Identity verification provider management feature.
      */
@@ -314,6 +339,10 @@ export interface FeatureConfigInterface {
      */
     ruleBasedPasswordExpiry?: FeatureAccessConfigInterface;
     /**
+     * Consent management feature.
+     */
+    consents?: FeatureAccessConfigInterface;
+    /**
      * Connection management feature.
      */
     connections?: ConnectionConfigInterface;
@@ -341,6 +370,10 @@ export interface FeatureConfigInterface {
      * Customer Data Service feature.
      */
     customerDataService?: FeatureAccessConfigInterface;
+    /**
+     * Presentation definitions (VP template) management feature.
+     */
+    presentationDefinitions?: FeatureAccessConfigInterface;
 }
 
 /**
@@ -465,6 +498,24 @@ interface ActionsUIConfigInterface {
 }
 
 /**
+ * CLI settings feature-specific properties.
+ *
+ * Configured under `cliSettings.properties` in the feature config. The CLI application
+ * name and client ID differ between Identity Server and Asgardeo, hence they are
+ * configurable per deployment.
+ */
+export interface CLISettingsPropertiesInterface {
+    /**
+     * Name of the application that backs the CLI tool.
+     */
+    applicationName?: string;
+    /**
+     * OAuth client ID of the CLI application.
+     */
+    clientId?: string;
+}
+
+/**
  * Portal UI config interface inheriting the common configs from core module.
  */
 export interface UIConfigInterface extends CommonUIConfigInterface<FeatureConfigInterface> {
@@ -480,6 +531,10 @@ export interface UIConfigInterface extends CommonUIConfigInterface<FeatureConfig
         plannedRollOutDate: string;
     };
     /**
+     * Path to the favicon of the application.
+     */
+    appFaviconPath?: string;
+    /**
      * How should the application templates be loaded.
      * If `LOCAL` is selected, app will resort to in app templates.
      * `REMOTE` will fetch templates from the template management REST API.
@@ -493,6 +548,14 @@ export interface UIConfigInterface extends CommonUIConfigInterface<FeatureConfig
      * Configuration to enable Google One Tap for specific tenants.
      */
     googleOneTapEnabledTenants?: string[];
+    /**
+     * Fully-qualified class name of the default token issuer.
+     */
+    defaultTokenIssuerClass?: string;
+    /**
+     * API resource management UI configurations.
+     */
+    apiResourceManagement?: APIResourceManagementUIConfigInterface;
     /**
      * Set of authenticators to be hidden in application sign on methods.
      */
@@ -622,6 +685,11 @@ export interface UIConfigInterface extends CommonUIConfigInterface<FeatureConfig
      * Enable signature validation certificate alias.
      */
     isSignatureValidationCertificateAliasEnabled?: boolean;
+    /**
+     * Send applications whose custom claim dialect renames at least one attribute to the local dialect
+     * attribute selector. Off by default; the scope grouped selector keeps handling them unless this is on.
+     */
+    isCustomClaimDialectRoutingEnabled?: boolean;
     /**
      * Enable/Disable the custom claim mapping feature.
      */
@@ -753,6 +821,17 @@ export interface UIConfigInterface extends CommonUIConfigInterface<FeatureConfig
         url: string;
     };
     /**
+     * Rebranding announcement banner configurations.
+     */
+    rebrandingBanner: {
+        announcementUrl: string;
+        buttonText: string;
+        description: string;
+        enabled: boolean;
+        subDescription: string;
+        title: string;
+    };
+    /**
      * Flow execution configurations.
      */
     flowExecution: {
@@ -777,6 +856,32 @@ export interface UIConfigInterface extends CommonUIConfigInterface<FeatureConfig
      * Flag to check whether the password reset enforcement scope configuration is enabled.
      */
     isPasswordResetEnforcementScopeEnabled?: boolean;
+}
+
+/**
+ * API resource management UI configurations.
+ */
+interface APIResourceManagementUIConfigInterface {
+    /**
+     * Per-resource block entries. A resource is blocked for a tenant if it is listed here
+     * and the tenant is not in the entry's `allowed_tenants` list.
+     */
+    blockedAPIResources?: APIResourceBlockEntryInterface[];
+}
+
+/**
+ * Single blocked API resource entry.
+ */
+export interface APIResourceBlockEntryInterface {
+    /**
+     * Tenant domains for which the block does not apply. When empty or omitted, the block applies
+     * to all tenants.
+     */
+    allowed_tenants?: string[];
+    /**
+     * API resource ID (UUID) of the resource to block.
+     */
+    api_id?: string;
 }
 
 /**
@@ -836,7 +941,8 @@ interface IdentityProviderTemplateConfigInterface {
 /**
  * Service resource endpoints config.
  */
-export interface ServiceResourceEndpointsInterface extends ClaimResourceEndpointsInterface,
+export interface ServiceResourceEndpointsInterface extends AgentsResourceEndpointsInterface,
+    ClaimResourceEndpointsInterface,
     CertificatesResourceEndpointsInterface,
     GroupsResourceEndpointsInterface,
     ServerConfigurationsResourceEndpointsInterface,
@@ -862,9 +968,12 @@ export interface ServiceResourceEndpointsInterface extends ClaimResourceEndpoint
     WorkflowRequestsResourceEndpointsInterface,
     RulesEndpointsInterface,
     RemoteLoggingResourceEndpointsInterface,
-    FlowBuilderCoreResourceEndpointsInterface {
+    FlowBuilderCoreResourceEndpointsInterface,
+    FlowExtensionResourceEndpointsInterface,
+    ConsentMgtResourceEndpointsInterface {
 
     CORSOrigins: string;
+    presentationDefinitions: string;
     copilot: string;
     devicePolicies: string;
     devicePolicyMetadata: string;

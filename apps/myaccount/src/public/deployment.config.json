@@ -53,6 +53,7 @@
         },
         "cookiePolicyUrl": "/authenticationendpoint/cookie_policy.do",
         "disableMFAForFederatedUsers": true,
+        "enableLegacyLocaleDropdown": false,
         "enableMFAUserWise": true,
         "features": {
             "applications": {
@@ -76,6 +77,16 @@
                     "update": [
                         "internal_approval_task_update"
                     ]
+                }
+            },
+            "consents": {
+                "disabledFeatures": [],
+                "enabled": true,
+                "scopes": {
+                    "create": [],
+                    "delete": [],
+                    "read": [],
+                    "update": []
                 }
             },
             "operations": {
@@ -118,6 +129,9 @@
                     "security.mfa.sms"
                 ],
                 "enabled": true,
+                "properties": {
+                    "multiplePushDeviceSupportEnabled": true
+                },
                 "scopes": {
                     "create": [],
                     "delete": [],

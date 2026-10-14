@@ -128,7 +128,7 @@ export class AppConstants {
      * @returns The app base name.
      */
     public static getAppBasename(): string {
-        return window["AppUtils"]?.getConfig()?.appBase;
+        return window["AppUtils"]?.getConfig()?.appBaseWithProxy;
     }
 
     /**
@@ -308,6 +308,14 @@ export class AppConstants {
             [ "CONNECTIONS", `${ AppConstants.getDeveloperViewBasePath() }/connections` ],
             [ "CONNECTION_TEMPLATES", `${ AppConstants.getDeveloperViewBasePath() }/connections/templates` ],
             [ "CONNECTION_EDIT", `${ AppConstants.getDeveloperViewBasePath() }/connections/:id` ],
+            [ "POLICY_CONSENTS", `${ AppConstants.getDeveloperViewBasePath() }/policy-consents` ],
+            [ "POLICY_CONSENTS_NEW", `${ AppConstants.getDeveloperViewBasePath() }/policy-consents/new` ],
+            [ "POLICY_CONSENTS_EDIT", `${ AppConstants.getDeveloperViewBasePath() }/policy-consents/:id` ],
+            [ "PRIVACY_POLICY", `${ AppConstants.getDeveloperViewBasePath() }/policy-consents/privacy-policy` ],
+            [ "TERMS_OF_SERVICE", `${ AppConstants.getDeveloperViewBasePath() }/policy-consents/terms-of-service` ],
+            [ "PREFERENCE_MANAGEMENT", `${ AppConstants.getDeveloperViewBasePath() }/preference-management` ],
+            [ "PREFERENCE_MANAGEMENT_NEW", `${ AppConstants.getDeveloperViewBasePath() }/preference-management/new` ],
+            [ "PREFERENCE_MANAGEMENT_EDIT", `${ AppConstants.getDeveloperViewBasePath() }/preference-management/:id` ],
             [ "CUSTOMIZE", `${ AppConstants.getMainViewBasePath() }/customize` ],
             [ "DEVELOPER_OVERVIEW", `${ AppConstants.getDeveloperViewBasePath() }/overview` ],
             [
@@ -348,6 +356,8 @@ export class AppConstants {
                 `${ AppConstants.getDeveloperViewBasePath() }/identity-verification-providers/templates`
             ],
             [ "IDVP_EDIT", `${ AppConstants.getDeveloperViewBasePath() }/identity-verification-providers/:id` ],
+            [ "FLOW_EXTENSION_EDIT",
+                `${ AppConstants.getDeveloperViewBasePath() }/flow-extensions/:id` ],
             [ "EVENT_EDIT", `${ AppConstants.getDeveloperViewBasePath() }/event-edit` ],
             [ "LOCAL_CLAIMS", `${ AppConstants.getAdminViewBasePath() }/attributes` ],
             [ "LOCAL_CLAIMS_EDIT", `${ AppConstants.getAdminViewBasePath() }/edit-attributes/:id` ],
@@ -370,6 +380,7 @@ export class AppConstants {
             [ "GOVERNANCE_CONNECTORS", `${AppConstants.getAdminViewBasePath()}/governance-connectors/:id` ],
             [ "MULTI_ATTRIBUTE_LOGIN", `${AppConstants.getAdminViewBasePath()}/multi-attribute-login` ],
             [ "UNAUTHORIZED", `${AppConstants.getMainViewBasePath()}/unauthorized` ],
+            [ "CUSTOMER_DATA_PROFILE", `${AppConstants.getMainViewBasePath()}/customer-data` ],
             [ "PROFILES", `${AppConstants.getMainViewBasePath()}/profiles` ],
             [ "PROFILE", `${AppConstants.getMainViewBasePath()}/profiles/:id` ],
             [ "UNIFICATION_RULES", `${AppConstants.getMainViewBasePath()}/unification-rules` ],
@@ -414,6 +425,7 @@ export class AppConstants {
             [ "ALTERNATIVE_LOGIN_IDENTIFIER_EDIT",
                 `${AppConstants.getAdminViewBasePath()}/edit-alternative-login-identifier` ],
             [ "INSIGHTS", `${AppConstants.getAdminViewBasePath()}/insights` ],
+            [ "INSIGHTS_SETTINGS", `${AppConstants.getAdminViewBasePath()}/insights/settings` ],
             [ "REMOTE_LOGGING", `${AppConstants.getAdminViewBasePath()}/server/logs` ],
             [ "LOGS", `${ AppConstants.getAdminViewBasePath() }/logs` ],
             [ "LOG_SETTINGS", `${ AppConstants.getAdminViewBasePath() }/log-settings` ],
@@ -424,6 +436,7 @@ export class AppConstants {
             [ "SAML2_CONFIGURATION",
                 `${AppConstants.getAdminViewBasePath()}/login-and-registration/saml2-configuration` ],
             [ "CONSOLE_SETTINGS", `${AppConstants.getAdminViewBasePath()}/settings` ],
+            [ "CLI_SETTINGS", `${AppConstants.getAdminViewBasePath()}/cli-settings` ],
             [ "CONSOLE_ADMINISTRATORS_EDIT", `${AppConstants.getAdminViewBasePath()}/settings/administrators/:id` ],
             [ "CONSOLE_ROLES_EDIT", `${AppConstants.getAdminViewBasePath()}/settings/roles/:id` ],
             [ "WSFED_CONFIGURATION",
@@ -435,8 +448,12 @@ export class AppConstants {
             [ "OUTBOUND_PROVISIONING_SETTINGS",
                 `${AppConstants.getAdminViewBasePath()}/outbound-provisioning-settings` ],
             [ "IMPERSONATION", `${AppConstants.getAdminViewBasePath()}/login-and-registration/impersonation` ],
+            [ "OPENID4VP_CONFIG",
+                `${AppConstants.getAdminViewBasePath()}/verifier-settings` ],
             [ "ISSUER_USAGE_SCOPE",
                 `${AppConstants.getAdminViewBasePath()}/login-and-registration/issuer-usage-scope` ],
+            [ "FAPI_SECURITY_POLICY",
+                `${AppConstants.getAdminViewBasePath()}/login-and-registration/fapi-security-policy` ],
             [ "ACTIONS",
                 `${AppConstants.getAdminViewBasePath()}/actions` ],
             [ "WEBHOOKS",
@@ -470,7 +487,9 @@ export class AppConstants {
                 `${ AppConstants.getAdminViewBasePath() }/login-and-registration/device-assurance-policies/:id` ],
             [ "DEVICE_DETAIL", `${ AppConstants.getAdminViewBasePath() }/devices/:id` ],
             [ "VC_TEMPLATES", `${AppConstants.getAdminViewBasePath()}/verifiable-credentials` ],
-            [ "VC_TEMPLATE_EDIT", `${ AppConstants.getDeveloperViewBasePath() }/verifiable-credentials/:id` ]
+            [ "VC_TEMPLATE_EDIT", `${ AppConstants.getDeveloperViewBasePath() }/verifiable-credentials/:id` ],
+            [ "VP_DEFINITIONS", `${AppConstants.getAdminViewBasePath()}/presentation-definitions` ],
+            [ "VP_DEFINITION_EDIT", `${ AppConstants.getDeveloperViewBasePath() }/presentation-definitions/:id` ]
         ]);
 
         return paths;
@@ -531,12 +550,14 @@ export class AppConstants {
         "accountSecurity": "v1.0.0",
         "actions": "v0.0.0",
         "admin-forced-password-reset": "v1.0.0",
+        "agents": "v1.0.0",
         "apiResources": "v0.0.0",
         "applications": "v0.0.0",
         "approvalWorkflows": "v0.0.0",
         "approvals": "v0.0.0",
         "attributeDialects": "v0.0.0",
         "branding": "v0.0.0",
+        "consents": "v0.0.0",
         "consoleSettings": "v0.0.0",
         "emailTemplates": "v0.0.0",
         "flows": "v0.0.0",
@@ -545,9 +566,11 @@ export class AppConstants {
         "groups": "v0.0.0",
         "identityProviders": "v0.0.0",
         "loginAndRegistration": "v1.0.0",
+        "mcpServers": "v0.0.0",
         "oidcScopes": "v0.0.0",
         "organizations": "v0.0.0",
         "password-recovery": "v1.0.0",
+        "presentationDefinitions": "v0.0.0",
         "residentOutboundProvisioning": "v0.0.0",
         "roles": "v0.0.0",
         "self-registration-connector": "v1.0.0",

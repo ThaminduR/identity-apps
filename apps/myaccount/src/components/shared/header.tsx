@@ -17,6 +17,7 @@
  */
 
 import { useColorScheme } from "@mui/material";
+import { Theme } from "@mui/material/styles";
 import Alert from "@oxygen-ui/react/Alert";
 import Box from "@oxygen-ui/react/Box";
 import Button from "@oxygen-ui/react/Button";
@@ -416,6 +417,20 @@ export const Header: FunctionComponent<HeaderPropsInterface> = (
     return (
         <OxygenHeader
             className="is-header"
+            sx={ (muiTheme: Theme) => ({
+                "&&.is-header.oxygen-header .oxygen-brand-logo": {
+                    [muiTheme.breakpoints.up("sm")]: {
+                        height: "40px",
+                        maxWidth: "unset",
+                        width: "216px"
+                    },
+                    img : {
+                        [muiTheme.breakpoints.up("sm")]: {
+                            width: "216px"
+                        }
+                    }
+                }
+            }) }
             brand={ {
                 logo: {
                     desktop: (
@@ -427,11 +442,11 @@ export const Header: FunctionComponent<HeaderPropsInterface> = (
                                         }/` +
                                         `${ StringUtils.removeSlashesFromPath(
                                             window[ "AppUtils" ].getConfig()
-                                                .appBase
+                                                .appBaseWithProxy
                                         ) !== ""
                                             ? StringUtils.removeSlashesFromPath(
                                                 window[ "AppUtils" ].getConfig()
-                                                    .appBase
+                                                    .appBaseWithProxy
                                             ) + "/"
                                             : ""
                                         }libs/themes/` +
@@ -451,11 +466,11 @@ export const Header: FunctionComponent<HeaderPropsInterface> = (
                                         }/` +
                                         `${ StringUtils.removeSlashesFromPath(
                                             window[ "AppUtils" ].getConfig()
-                                                .appBase
+                                                .appBaseWithProxy
                                         ) !== ""
                                             ? StringUtils.removeSlashesFromPath(
                                                 window[ "AppUtils" ].getConfig()
-                                                    .appBase
+                                                    .appBaseWithProxy
                                             ) + "/"
                                             : ""
                                         }libs/themes/` +

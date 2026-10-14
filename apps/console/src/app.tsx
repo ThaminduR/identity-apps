@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2023-2024, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) 2023-2026, WSO2 LLC. (https://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -43,19 +43,23 @@ import {
 import { AppState } from "@wso2is/admin.core.v1/store";
 import { EventPublisher } from "@wso2is/admin.core.v1/utils/event-publisher";
 import { commonConfig } from "@wso2is/admin.extensions.v1";
+import TrialExpiryWizard from "@wso2is/admin.extensions.v1/components/subscription/trial-expiry/trial-expiry-wizard";
 import { featureGateConfig } from "@wso2is/admin.extensions.v1/configs/feature-gate";
 import useGetAllFeatures from "@wso2is/admin.feature-gate.v1/api/use-get-all-features";
 import { useOnboardingStatus } from "@wso2is/admin.onboarding.v1/hooks/use-onboarding-status";
-import { activateTrial } from "@wso2is/admin.subscription.v1/api/activate-trial";
-import { useTrialStatus } from "@wso2is/admin.subscription.v1/hooks/use-trial-status";
-import { TrialStatus } from "@wso2is/admin.subscription.v1/models/trial";
+import TrialProvider from "@wso2is/admin.subscription.v1/providers/trial-provider";
 import { AGENT_USERSTORE_ID } from "@wso2is/admin.userstores.v1/constants/user-store-constants";
 import useUserStores from "@wso2is/admin.userstores.v1/hooks/use-user-stores";
 import { UserStoreListItem } from "@wso2is/admin.userstores.v1/models/user-stores";
 import UserStoresProvider from "@wso2is/admin.userstores.v1/providers/user-stores-provider";
 import { AppConstants as CommonAppConstants, CommonConstants } from "@wso2is/core/constants";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
-import { CommonHelpers, isPortalAccessGranted } from "@wso2is/core/helpers";
+import {
+    CommonHelpers,
+    isPortalAccessGranted,
+    resolveAppLogoFilePath,
+    shouldResolveAppLogoFilePath
+} from "@wso2is/core/helpers";
 import { RouteInterface, StorageIdentityAppsSettingsInterface, emptyIdentityAppsSettings } from "@wso2is/core/models";
 import { setI18nConfigs, setServiceResourceEndpoints } from "@wso2is/core/store";
 import { AuthenticateUtils, LocalStorageUtils } from "@wso2is/core/utils";
@@ -73,7 +77,7 @@ import dayjs from "dayjs";
 import has from "lodash-es/has";
 import isEmpty from "lodash-es/isEmpty";
 import set from "lodash-es/set";
-import React, { ReactElement, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import React, { ReactElement, Suspense, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Trans } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -188,6 +192,7 @@ const App = ({
     const loginInit: boolean = useSelector((state: AppState) => state.auth.loginInit);
     const isPrivilegedUser: boolean = useSelector((state: AppState) => state.auth.isPrivilegedUser);
     const config: ConfigReducerStateInterface = useSelector((state: AppState) => state.config);
+    const appFaviconPath: string = useSelector((state: AppState) => state?.config?.ui?.appFaviconPath);
     const appTitle: string = useSelector((state: AppState) => state?.config?.ui?.appTitle);
     const uuid: string = useSelector((state: AppState) => state.profile.profileInfo.id);
     const theme: string = useSelector((state: AppState) => state?.config?.ui?.theme?.name);
@@ -198,22 +203,36 @@ const App = ({
     const [ featureGateConfigData, setFeatureGateConfigData ] =
         useState<FeatureGateInterface | null>(featureGateConfigUpdated);
 
+    const faviconHref: string | undefined = useMemo(() => {
+        if (!appFaviconPath) {
+            return undefined;
+        }
+
+        if (!shouldResolveAppLogoFilePath(appFaviconPath)) {
+            return appFaviconPath;
+        }
+
+        if (!theme) {
+            return undefined;
+        }
+
+        // Resolve relative paths against the runtime clientOrigin/appBase (populated by AppUtils),
+        // mirroring how the branding subsystem builds its theme asset prefix. Avoids depending on
+        // window.publicPath, which is not set in the Console runtime.
+        const clientOrigin: string = (window[ "AppUtils" ]?.getConfig()?.clientOrigin ?? "").replace(/\/+$/, "");
+        const appBase: string = (window[ "AppUtils" ]?.getConfig()?.appBaseWithProxy ?? "")
+            .replace(/^\/+|\/+$/g, "");
+        const themePrefix: string = `${ clientOrigin }${ appBase ? "/" + appBase : "" }/libs/themes/${ theme }`;
+
+        return resolveAppLogoFilePath(appFaviconPath, themePrefix);
+    }, [ appFaviconPath, theme ]);
+
     const {
         data: allFeatures,
         error: featureGateAPIException
     } = useGetAllFeatures();
 
     const { shouldShowOnboarding, isLoading: isOnboardingStatusLoading } = useOnboardingStatus();
-
-    const {
-        trialStatus,
-        isResolved: isTrialResolved,
-        isLoading: isTrialStatusLoading
-    } = useTrialStatus();
-
-    const isTrialActivationEnabled: boolean =
-        (config?.deployment?.extensions as Record<string, Record<string, unknown>>)
-            ?.trial?.enabled === true;
 
     /**
      * Redirect to onboarding page if user should see onboarding.
@@ -240,35 +259,6 @@ const App = ({
             }
         }
     }, [ shouldShowOnboarding, isOnboardingStatusLoading ]);
-
-    /**
-     * Fire-and-forget trial activation when trial is not yet enabled.
-     */
-    const trialActivationAttempted: React.MutableRefObject<boolean> = useRef<boolean>(false);
-
-    useEffect(() => {
-        if (
-            !isTrialActivationEnabled
-            || isTrialStatusLoading
-            || !isTrialResolved
-            || trialStatus !== TrialStatus.DISABLED
-            || trialActivationAttempted.current
-        ) {
-            return;
-        }
-
-        trialActivationAttempted.current = true;
-
-        activateTrial().catch(() => {
-            // eslint-disable-next-line no-console
-            console.warn("Trial activation is pending.");
-        });
-    }, [
-        isTrialActivationEnabled,
-        isTrialStatusLoading,
-        isTrialResolved,
-        trialStatus
-    ]);
 
     /**
      * Set the deployment configs in redux state.
@@ -517,162 +507,170 @@ const App = ({
                                     features={ featureGateConfigData }
                                     organizationType={ organizationType }
                                 >
-                                    <SessionManagementProvider
-                                        onSessionTimeoutAbort={ handleSessionTimeoutAbort }
-                                        onSessionLogout={ handleSessionLogout }
-                                        onLoginAgain={ handleStayLoggedIn }
-                                        setSessionTimedOut={ handleSessionTimeOut }
-                                        sessionTimedOut={ sessionTimedOut }
-                                        modalOptions={ {
-                                            description: (
-                                                <Trans
-                                                    i18nKey={
-                                                        "console:common.modals.sessionTimeoutModal." +
-                                                        "description"
+                                    <TrialProvider>
+                                        <TrialExpiryWizard />
+                                        <SessionManagementProvider
+                                            onSessionTimeoutAbort={ handleSessionTimeoutAbort }
+                                            onSessionLogout={ handleSessionLogout }
+                                            onLoginAgain={ handleStayLoggedIn }
+                                            setSessionTimedOut={ handleSessionTimeOut }
+                                            sessionTimedOut={ sessionTimedOut }
+                                            modalOptions={ {
+                                                description: (
+                                                    <Trans
+                                                        i18nKey={
+                                                            "console:common.modals.sessionTimeoutModal." +
+                                                            "description"
+                                                        }
+                                                    >
+                                                        When you click on the <Code>Go back</Code> button, we
+                                                        will try to recover the session if it exists. If you
+                                                        don&apos;t have an active session, you will be
+                                                        redirected to the login page
+                                                    </Trans>
+                                                ),
+                                                headingI18nKey: "console:common.modals.sessionTimeoutModal" +
+                                                    ".heading",
+                                                loginAgainButtonText: (
+                                                    <Trans
+                                                        i18nKey={
+                                                            "console:common.modals" +
+                                                            ".sessionTimeoutModal.loginAgainButton"
+                                                        }>
+                                                        Login again
+                                                    </Trans>
+                                                ),
+                                                primaryButtonText: (
+                                                    <Trans
+                                                        i18nKey={
+                                                            "console:common.modals" +
+                                                            ".sessionTimeoutModal.primaryButton"
+                                                        }>
+                                                        Go back
+                                                    </Trans>
+                                                ),
+                                                secondaryButtonText: (
+                                                    <Trans
+                                                        i18nKey={
+                                                            "console:common.modals" +
+                                                            ".sessionTimeoutModal.secondaryButton"
+                                                        }>
+                                                        Logout
+                                                    </Trans>
+                                                ),
+                                                sessionTimedOutDescription: (
+                                                    <Trans
+                                                        i18nKey={
+                                                            "console:common.modals" +
+                                                            ".sessionTimeoutModal.sessionTimedOutDescription"
+                                                        }>
+                                                        Please log in again to continue from where you left off.
+                                                    </Trans>
+                                                ),
+                                                sessionTimedOutHeadingI18nKey: "console:common.modals" +
+                                                    ".sessionTimeoutModal.sessionTimedOutHeading"
+                                            } }
+                                            type={ SessionTimeoutModalTypes.DEFAULT }
+                                        >
+                                            <>
+                                                <Helmet>
+                                                    <title>{ appTitle }</title>
+                                                    {
+                                                        (window?.themeHash && window?.publicPath && theme)
+                                                            ? (
+                                                                <link
+                                                                    href={
+                                                                        `${
+                                                                            window?.origin
+                                                                        }${
+                                                                            window?.publicPath
+                                                                        }/libs/themes/${
+                                                                            theme
+                                                                        }/theme.${ window?.themeHash }.min.css`
+                                                                    }
+                                                                    rel="stylesheet"
+                                                                    type="text/css"
+                                                                />
+                                                            )
+                                                            : null
                                                     }
-                                                >
-                                                    When you click on the <Code>Go back</Code> button, we
-                                                    will try to recover the session if it exists. If you
-                                                    don&apos;t have an active session, you will be
-                                                    redirected to the login page
-                                                </Trans>
-                                            ),
-                                            headingI18nKey: "console:common.modals.sessionTimeoutModal" +
-                                                ".heading",
-                                            loginAgainButtonText: (
-                                                <Trans
-                                                    i18nKey={
-                                                        "console:common.modals" +
-                                                        ".sessionTimeoutModal.loginAgainButton"
-                                                    }>
-                                                    Login again
-                                                </Trans>
-                                            ),
-                                            primaryButtonText: (
-                                                <Trans
-                                                    i18nKey={
-                                                        "console:common.modals" +
-                                                        ".sessionTimeoutModal.primaryButton"
-                                                    }>
-                                                    Go back
-                                                </Trans>
-                                            ),
-                                            secondaryButtonText: (
-                                                <Trans
-                                                    i18nKey={
-                                                        "console:common.modals" +
-                                                        ".sessionTimeoutModal.secondaryButton"
-                                                    }>
-                                                    Logout
-                                                </Trans>
-                                            ),
-                                            sessionTimedOutDescription: (
-                                                <Trans
-                                                    i18nKey={
-                                                        "console:common.modals" +
-                                                        ".sessionTimeoutModal.sessionTimedOutDescription"
-                                                    }>
-                                                    Please log in again to continue from where you left off.
-                                                </Trans>
-                                            ),
-                                            sessionTimedOutHeadingI18nKey: "console:common.modals" +
-                                                ".sessionTimeoutModal.sessionTimedOutHeading"
-                                        } }
-                                        type={ SessionTimeoutModalTypes.DEFAULT }
-                                    >
-                                        <>
-                                            <Helmet>
-                                                <title>{ appTitle }</title>
-                                                {
-                                                    (window?.themeHash && window?.publicPath && theme)
-                                                        ? (
-                                                            <link
-                                                                href={
-                                                                    `${
-                                                                        window?.origin
-                                                                    }${
-                                                                        window?.publicPath
-                                                                    }/libs/themes/${
-                                                                        theme
-                                                                    }/theme.${ window?.themeHash }.min.css`
-                                                                }
-                                                                rel="stylesheet"
-                                                                type="text/css"
-                                                            />
-                                                        )
-                                                        : null
-                                                }
-                                            </Helmet>
-                                            <NetworkErrorModal
-                                                heading={
-                                                    (<Trans
-                                                        i18nKey={ "common:networkErrorMessage.heading" }
-                                                    >
-                                                        Your session has expired
-                                                    </Trans>)
-                                                }
-                                                description={
-                                                    (<Trans
-                                                        i18nKey={ "common:networkErrorMessage.description" }
-                                                    >
-                                                        Please try signing in again.
-                                                    </Trans>)
-                                                }
-                                                primaryActionText={
-                                                    (<Trans
-                                                        i18nKey={
-                                                            "common:networkErrorMessage.primaryActionText"
-                                                        }
-                                                    >
-                                                        Sign In
-                                                    </Trans>)
-                                                }
-                                                primaryAction={
-                                                    signOut
-                                                }
-                                            />
-                                            <ChunkErrorModal
-                                                heading={
-                                                    (<Trans
-                                                        i18nKey={
-                                                            "common:chunkLoadErrorMessage.heading"
-                                                        }
-                                                    >
-                                                        Something went wrong
-                                                    </Trans>)
-                                                }
-                                                description={
-                                                    (<Trans
-                                                        i18nKey={
-                                                            "common:chunkLoadErrorMessage.description"
-                                                        }
-                                                    >
-                                                        An error occurred when serving the requested
-                                                        application. Please try reloading the app.
-                                                    </Trans>)
-                                                }
-                                                primaryActionText={
-                                                    (<Trans
-                                                        i18nKey={
-                                                            "common:chunkLoadErrorMessage.primaryActionText"
-                                                        }
-                                                    >
-                                                        Reload the App
-                                                    </Trans>)
-                                                }
-                                            />
-                                            <UserStoresProvider>
-                                                <Base
-                                                    onAgentManagementEnableStatusChange={
-                                                        onAgentManagementEnableStatusChange
+                                                    {
+                                                        faviconHref
+                                                            ? <link rel="shortcut icon" href={ faviconHref } />
+                                                            : null
                                                     }
-                                                    onCustomerDataServiceStatusChange={
-                                                        onCustomerDataServiceStatusChange
+                                                </Helmet>
+                                                <NetworkErrorModal
+                                                    heading={
+                                                        (<Trans
+                                                            i18nKey={ "common:networkErrorMessage.heading" }
+                                                        >
+                                                            Your session has expired
+                                                        </Trans>)
+                                                    }
+                                                    description={
+                                                        (<Trans
+                                                            i18nKey={ "common:networkErrorMessage.description" }
+                                                        >
+                                                            Please try signing in again.
+                                                        </Trans>)
+                                                    }
+                                                    primaryActionText={
+                                                        (<Trans
+                                                            i18nKey={
+                                                                "common:networkErrorMessage.primaryActionText"
+                                                            }
+                                                        >
+                                                            Sign In
+                                                        </Trans>)
+                                                    }
+                                                    primaryAction={
+                                                        signOut
                                                     }
                                                 />
-                                            </UserStoresProvider>
-                                        </>
-                                    </SessionManagementProvider>
+                                                <ChunkErrorModal
+                                                    heading={
+                                                        (<Trans
+                                                            i18nKey={
+                                                                "common:chunkLoadErrorMessage.heading"
+                                                            }
+                                                        >
+                                                            Something went wrong
+                                                        </Trans>)
+                                                    }
+                                                    description={
+                                                        (<Trans
+                                                            i18nKey={
+                                                                "common:chunkLoadErrorMessage.description"
+                                                            }
+                                                        >
+                                                            An error occurred when serving the requested
+                                                            application. Please try reloading the app.
+                                                        </Trans>)
+                                                    }
+                                                    primaryActionText={
+                                                        (<Trans
+                                                            i18nKey={
+                                                                "common:chunkLoadErrorMessage.primaryActionText"
+                                                            }
+                                                        >
+                                                            Reload the App
+                                                        </Trans>)
+                                                    }
+                                                />
+                                                <UserStoresProvider>
+                                                    <Base
+                                                        onAgentManagementEnableStatusChange={
+                                                            onAgentManagementEnableStatusChange
+                                                        }
+                                                        onCustomerDataServiceStatusChange={
+                                                            onCustomerDataServiceStatusChange
+                                                        }
+                                                    />
+                                                </UserStoresProvider>
+                                            </>
+                                        </SessionManagementProvider>
+                                    </TrialProvider>
                                 </AccessControlProvider>
                             </MediaContextProvider>
                         </Suspense>

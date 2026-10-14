@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) 2025-2026, WSO2 LLC. (https://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -17,7 +17,7 @@
  */
 
 import Typography from "@oxygen-ui/react/Typography";
-import { FeatureAccessConfigInterface } from "@wso2is/access-control";
+import { FeatureAccessConfigInterface, useRequiredScopes } from "@wso2is/access-control";
 import { AppConstants } from "@wso2is/admin.core.v1/constants/app-constants";
 import { history } from "@wso2is/admin.core.v1/helpers/history";
 import { AppState } from "@wso2is/admin.core.v1/store";
@@ -28,19 +28,25 @@ import {
     AnimatedAvatar, ResourceTab, ResourceTabPaneInterface, TabPageLayout
 } from "@wso2is/react-components";
 import React, { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import { Label } from "semantic-ui-react";
 import AgentCredentials from "../components/edit/agent-credentials";
 import AgentGroups from "../components/edit/agent-groups";
 import AgentOverview from "../components/edit/agent-overview";
 import AgentRoles from "../components/edit/agent-roles";
+import { ShareAgentForm } from "../components/edit/share-agent-form";
 import { AGENT_FEATURE_DICTIONARY } from "../constants/agents";
 import useGetAgent from "../hooks/use-get-agent";
+import isAgentManagedByParentOrg from "../utils/is-agent-managed-by-parent-org";
 
 type EditAgentPageProps = IdentifiableComponentInterface;
 
 export default function EditAgent({
     [ "data-componentid" ]: componentId = "edit-agent"
 }: EditAgentPageProps) {
+
+    const { t } = useTranslation();
 
     const agentId: string = useMemo(() => {
         const path: string[] = history?.location?.pathname?.split("/");
@@ -53,10 +59,21 @@ export default function EditAgent({
     const agentFeatureConfig: FeatureAccessConfigInterface = useSelector(
         (state: AppState) => state?.config?.ui?.features?.agents);
 
+    const agentSharingFeatureConfig: Omit<FeatureAccessConfigInterface, "subFeatures"> | undefined =
+        agentFeatureConfig?.subFeatures?.agentSharing;
+    const isSharedAccessEnabled: boolean = agentSharingFeatureConfig?.enabled ?? false;
+    const hasSharedAccessReadPermission: boolean = useRequiredScopes(agentSharingFeatureConfig?.scopes?.read ?? []);
+    const hasSharedAccessUpdatePermission: boolean = useRequiredScopes(agentSharingFeatureConfig?.scopes?.update ?? []);
+
     const {
         data: agentInfo,
         isLoading: isAgentInfoLoading
     } = useGetAgent(agentId);
+
+    const isManagedByParentOrg: boolean = useMemo(
+        (): boolean => isAgentManagedByParentOrg(agentInfo),
+        [ agentInfo ]
+    );
 
     /**
      * The list of tab panes rendered in the final render.
@@ -93,9 +110,26 @@ export default function EditAgent({
             });
         }
 
+        // Agents shared down from a parent organization cannot be re-shared with sub organizations.
+        if (isSharedAccessEnabled && hasSharedAccessReadPermission && !isManagedByParentOrg) {
+            tabPanes.push({
+                componentId: "shared-access",
+                menuItem: "Shared Access",
+                render: () => (
+                    <ResourceTab.Pane>
+                        <ShareAgentForm
+                            agent={ agentInfo }
+                            readOnly={ !hasSharedAccessUpdatePermission }
+                        />
+                    </ResourceTab.Pane>
+                )
+            });
+        }
+
         return tabPanes;
 
-    }, [ agentFeatureConfig ]);
+    }, [ agentFeatureConfig, agentInfo, isSharedAccessEnabled, hasSharedAccessReadPermission,
+        hasSharedAccessUpdatePermission, isManagedByParentOrg ]);
 
     const [ agentOwnerDisplayName, setAgentOwnerDisplayName ] = useState<string>("");
 
@@ -138,7 +172,15 @@ export default function EditAgent({
                 { agentOwnerDisplayName && (
                     <Typography variant="body1">Created by <strong>{ agentOwnerDisplayName }</strong></Typography>
                 ) }
-
+                { isManagedByParentOrg && (
+                    <Label
+                        size="mini"
+                        className="client-id-label"
+                        data-componentid={ `${ componentId }-managed-by-parent-org-label` }
+                    >
+                        { t("parentOrgInvitations:invitedUserLabel") }
+                    </Label>
+                ) }
             </>) }
             isLoading={ isAgentInfoLoading }
             backButton={ {

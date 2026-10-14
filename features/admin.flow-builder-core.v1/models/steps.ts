@@ -73,11 +73,19 @@ export enum ExecutionTypes {
     PasskeyEnrollment = "FIDO2Executor",
     ConfirmationCode = "ConfirmationCodeValidationExecutor",
     MagicLinkExecutor = "MagicLinkExecutor",
+    FlowExtension = "FlowExtensionExecutor",
+    DigitalWalletFederation = "PresentationExecutor",
     DeviceRegistration = "DeviceRegistrationExecutor"
 }
 
 export enum ExecutionStepViewTypes {
     Default = "Execution",
     MagicLinkView = "Magic Link View",
-    PasskeyView = "Passkey View"
+    PasskeyView = "Passkey View",
+    WalletView = "Digital Wallet"
+}
+
+export enum ViewStepVariants {
+    PolicyConsent = "POLICY_CONSENT",
+    PreferenceManagement = "PREFERENCE_MANAGEMENT"
 }

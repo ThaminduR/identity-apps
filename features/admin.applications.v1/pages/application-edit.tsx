@@ -76,15 +76,18 @@ import { Icon, Label } from "semantic-ui-react";
 import { updateApplicationDetails } from "../api/application";
 import { useGetApplication } from "../api/use-get-application";
 import useGetApplicationInboundConfigs from "../api/use-get-application-inbound-configs";
+import SecretExpiryBanner from "../components/banners/secret-expiry-banner";
 import { EditApplication } from "../components/edit-application";
 import { InboundProtocolDefaultFallbackTemplates } from "../components/meta/inbound-protocols.meta";
 import { ApplicationManagementConstants } from "../constants/application-management";
+import TryItApplicationConstants from "../constants/try-it-constants";
 import CustomApplicationTemplate
     from "../data/application-templates/templates/custom-application/custom-application.json";
 import {
     ApplicationAccessTypes,
     ApplicationInterface,
     ApplicationTemplateListItemInterface,
+    InboundProtocolListItemInterface,
     idpInfoTypeInterface
 } from "../models/application";
 import {
@@ -325,8 +328,15 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
          */
         if (!clonedApplication?.advancedConfigurations?.fragment && !clonedApplication?.templateId) {
             if (clonedApplication?.inboundProtocols?.length > 0) {
+                const fallbackProtocolType: string = clonedApplication.inboundProtocols.some(
+                    (protocol: InboundProtocolListItemInterface) =>
+                        protocol?.type === SupportedAuthProtocolTypes.OAUTH2
+                )
+                    ? SupportedAuthProtocolTypes.OAUTH2
+                    : clonedApplication.inboundProtocols[ 0 ]?.type;
+
                 clonedApplication.templateId = InboundProtocolDefaultFallbackTemplates.get(
-                    clonedApplication?.inboundProtocols?.[ 0 /*We pick the first*/ ]?.type
+                    fallbackProtocolType
                 ) ?? ApplicationManagementConstants.CUSTOM_APPLICATION_OIDC;
 
                 return determineApplicationTemplate(clonedApplication);
@@ -840,12 +850,10 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
                                                     + ".version300.linkedLocalAccountAttributeHandling.instruction")
                                                 }
                                             >
-                                                When you enable the use of linked local account attributes
-                                                instead of federated attributes and mandate that a linked local account
-                                                must exist, this configuration previously applied only to the
-                                                <Code withBackground>token exchange</Code> flow. With this update,
-                                                the same restriction now also applies to
-                                                <Code withBackground>login</Code> scenarios.
+                                                Previously, the "Use linked local account attributes" setting, when
+                                                combined with the requirement for a linked local account, was enforced
+                                                only during the <Code withBackground>token exchange</Code> flows. With this update, the same
+                                                requirement will be enforced during <Code withBackground>login</Code> flows as well.
                                             </Trans>
                                         </Typography>
                                         <DocumentationLink
@@ -1002,7 +1010,11 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
             pageTitle="Edit Application"
             title={ (
                 <>
-                    <span>{ moderatedApplicationData?.name }</span>
+                    <span>
+                        { moderatedApplicationData?.name === TryItApplicationConstants.DISPLAY_NAME
+                            ? "WSO2 Identity Platform Try It"
+                            : moderatedApplicationData?.name }
+                    </span>
                     { /*TODO - Application status is not shown until the backend support for disabling is given
                         @link https://github.com/wso2/product-is/issues/11453
                         { resolveApplicationStatusLabel() }*/ }
@@ -1092,7 +1104,23 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
                 text: isConnectedAppsRedirect ? t("idp:connectedApps.applicationEdit.back",
                     { idpName: callBackIdpName }) : t("console:develop.pages.applicationsEdit.backButton")
             } }
-            alertBanner={ resolveAlertBanner() }
+            alertBanner={ (
+                <>
+                    { applicationInboundConfigs && (
+                        <SecretExpiryBanner
+                            appId={ applicationId }
+                            isOIDCApplication={ inboundProtocolList?.includes(SupportedAuthProtocolTypes.OIDC) }
+                            isPublicClient={ applicationInboundConfigs.publicClient }
+                            latestClientSecretExpiresAt={ applicationInboundConfigs.clientSecretExpiresAt }
+                            multipleClientSecretsConfigured={
+                                applicationInboundConfigs.multipleClientSecretsConfigured
+                            }
+                            data-componentid={ `${ componentId }-secret-expiry-banner` }
+                        />
+                    ) }
+                    { resolveAlertBanner() }
+                </>
+            ) }
             titleTextAlign="left"
             bottomMargin={ false }
             pageHeaderMaxWidth={ true }
@@ -1126,6 +1154,7 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
                         template={ applicationTemplate }
                         data-componentid={ componentId }
                         urlSearchParams={ urlSearchParams }
+                        applicationInboundConfigs={ applicationInboundConfigs }
                         getConfiguredInboundProtocolsList={ (list: string[]) => {
                             setInboundProtocolList(list);
                         } }

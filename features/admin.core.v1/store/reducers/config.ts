@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2020-2025, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) 2020-2026, WSO2 LLC. (https://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -90,6 +90,9 @@ export const commonConfigReducerInitialState: CommonConfigReducerStateInterface<
             accountRecovery: "",
             actions: "",
             adminAdvisoryBanner: "",
+            agentCredentials: "",
+            agentSharing: "",
+            agents: "",
             apiRoot: "",
             applicationTemplate: "",
             applicationTemplateMetadata: "",
@@ -111,6 +114,9 @@ export const commonConfigReducerInitialState: CommonConfigReducerStateInterface<
             certificates: "",
             claims: "",
             clientCertificates: "",
+            consentMgtElements: "",
+            consentMgtPurposes: "",
+            consentPolicyApps: "",
             copilot: "",
             createSecret: "",
             createSecretType: "",
@@ -130,8 +136,11 @@ export const commonConfigReducerInitialState: CommonConfigReducerStateInterface<
             externalClaims: "",
             fidoConfigs: "",
             flow: "",
+            flowExtension: "",
+            flowExtensionContextTree: "",
             flowMeta: "",
             fraudDetectionConfigurations: "",
+            fapiConfigurations: "",
             getSecret: "",
             getSecretList: "",
             getSecretType: "",
@@ -142,6 +151,7 @@ export const commonConfigReducerInitialState: CommonConfigReducerStateInterface<
             guestsList: "",
             identityProviders: "",
             impersonationConfigurations: "",
+            openid4vpConfigurations: "",
             issuerUsageScope: "",
             localAuthenticators: "",
             localClaims: "",
@@ -150,6 +160,7 @@ export const commonConfigReducerInitialState: CommonConfigReducerStateInterface<
             multiFactorAuthenticators: "",
             myAccountConfigMgt: "",
             oidcScopes: "",
+            orgGovernanceEvaluate: "",
             organizations: "",
             passiveStsConfigurations: "",
             passwordExpiry: "",
@@ -159,6 +170,7 @@ export const commonConfigReducerInitialState: CommonConfigReducerStateInterface<
             passwordPolicy: "",
             permission: "",
             publicCertificates: "",
+            pushDeviceMgtConfigs: "",
             remoteLogPublishEndpoint: "",
             remoteLogging: "",
             requestPathAuthenticators: "",
@@ -181,6 +193,8 @@ export const commonConfigReducerInitialState: CommonConfigReducerStateInterface<
             smsTemplates: "",
             tenantAssociationApi: "",
             tenantManagementApi: "",
+            tenantMoesifAnalytics: "",
+            tenantMoesifDashboardInfo: "",
             tenantSubscriptionApi: "",
             tenants: "",
             updateSecret: "",
@@ -196,6 +210,7 @@ export const commonConfigReducerInitialState: CommonConfigReducerStateInterface<
             wellKnown: "",
             workflowAssociations: "",
             workflowInstances: "",
+            presentationDefinitions: "",
             workflows: ""
         },
         features: {
@@ -223,6 +238,9 @@ export const commonConfigReducerInitialState: CommonConfigReducerStateInterface<
                 plannedRollOutDate: undefined
             },
             announcements: [],
+            apiResourceManagement: {
+                blockedAPIResources: []
+            },
             appCopyright: "",
             appLogo: {
                 defaultLogoPath: "",
@@ -309,6 +327,7 @@ export const commonConfigReducerInitialState: CommonConfigReducerStateInterface<
             isClaimUniquenessValidationEnabled: undefined,
             isClientSecretHashEnabled: undefined,
             isCookieConsentBannerEnabled: undefined,
+            isCustomClaimDialectRoutingEnabled: undefined,
             isCustomClaimMappingEnabled: undefined,
             isCustomClaimMappingMergeEnabled: undefined,
             isDefaultDialectEditingEnabled: undefined,
@@ -336,6 +355,14 @@ export const commonConfigReducerInitialState: CommonConfigReducerStateInterface<
             privacyPolicyConfigs: null,
             productName: "",
             productVersionConfig: null,
+            rebrandingBanner: {
+                announcementUrl: "",
+                buttonText: "",
+                description: "",
+                enabled: false,
+                subDescription: "",
+                title: ""
+            },
             routes: {
                 organizationEnabledRoutes: undefined
             },

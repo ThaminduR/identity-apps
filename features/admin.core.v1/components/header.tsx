@@ -51,7 +51,7 @@ import { useGetCurrentOrganizationType } from "@wso2is/admin.organizations.v1/ho
 import useOrganizations from "@wso2is/admin.organizations.v1/hooks/use-organizations";
 import useSubscription, { UseSubscriptionInterface } from "@wso2is/admin.subscription.v1/hooks/use-subscription";
 import { useTrialDetails } from "@wso2is/admin.subscription.v1/hooks/use-trial-details";
-import { TenantTier } from "@wso2is/admin.subscription.v1/models/tenant-tier";
+import { isFreeTier } from "@wso2is/admin.subscription.v1/models/tenant-tier";
 import useRuntimeConfig from "@wso2is/common.ui.v1/hooks/use-runtime-config";
 import { resolveAppLogoFilePath } from "@wso2is/core/helpers";
 import { IdentifiableComponentInterface, ProfileInfoInterface } from "@wso2is/core/models";
@@ -204,6 +204,7 @@ const Header: FunctionComponent<HeaderPropsInterface> = ({
     const [ languageSwitcherAnchorEl, setLanguageSwitcherAnchorEl ] = useState<
         HTMLElement
     >(null);
+    const isSAASDeployment: boolean = useSelector((state: AppState) => state?.config?.ui?.isSAASDeployment);
 
     const { isOrganizationManagementEnabled } = useGlobalVariables();
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
@@ -486,7 +487,7 @@ const Header: FunctionComponent<HeaderPropsInterface> = ({
                 </Menu>
             </>
         ),
-        (tierName === TenantTier.FREE || tenantHasTrial) &&
+        (isFreeTier(tierName) || tenantHasTrial) &&
             billingPortalURL &&
             !isPrivilegedUser &&
             window["AppUtils"].getConfig().extensions.upgradeButtonEnabled && (
@@ -547,7 +548,7 @@ const Header: FunctionComponent<HeaderPropsInterface> = ({
         return accountAppURL;
     };
 
-    const LOGO_IMAGE = () => {
+    const LogoImage = () => {
         return (
             <Image
                 src={ resolveAppLogoFilePath(
@@ -555,8 +556,8 @@ const Header: FunctionComponent<HeaderPropsInterface> = ({
                         window["AppUtils"].getConfig().ui.appLogoPath,
                     `${window["AppUtils"].getConfig().clientOrigin}/` +
                         `${
-                            StringUtils.removeSlashesFromPath(window["AppUtils"].getConfig().appBase) !== ""
-                                ? StringUtils.removeSlashesFromPath(window["AppUtils"].getConfig().appBase) + "/"
+                            StringUtils.removeSlashesFromPath(window["AppUtils"].getConfig().appBaseWithProxy) !== ""
+                                ? StringUtils.removeSlashesFromPath(window["AppUtils"].getConfig().appBaseWithProxy) + "/"
                                 : ""
                         }libs/themes/` +
                         config.ui.theme.name
@@ -626,16 +627,16 @@ const Header: FunctionComponent<HeaderPropsInterface> = ({
     return (
         <>
             <OxygenHeader
-                className="is-header"
+                className={ isSAASDeployment ? "is-header saas-header" : "is-header" }
                 brand={ {
                     logo: {
-                        desktop: <LOGO_IMAGE />,
-                        mobile: <LOGO_IMAGE />
+                        desktop: <LogoImage />,
+                        mobile: <LogoImage />
                     },
                     onClick: () =>
                         hasGettingStartedViewPermission &&
                         history.push(config.deployment.appHomePath),
-                    title: config.ui.appName
+                    title: isSAASDeployment ? "" : config.ui.appName
                 } }
                 user={ {
                     email: resolveEmail(),

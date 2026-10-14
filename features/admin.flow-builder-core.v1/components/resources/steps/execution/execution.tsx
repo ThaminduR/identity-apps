@@ -62,6 +62,20 @@ const Execution: FC<ExecutionPropsInterface> = memo(({
     */
     const resolveResource = (executionType: ExecutionTypes): Step | undefined => {
         switch (executionType) {
+            case ExecutionTypes.DigitalWalletFederation: {
+                const resource: Step | undefined = resources?.find((resource: Step) =>
+                    resource.display.label === ExecutionStepViewTypes.WalletView);
+
+                if (resource) {
+                    const resourceCopy: Step | undefined = cloneDeep(resource);
+
+                    resourceCopy.display.displayname = t("flows:core.executions.names.digitalWallet");
+
+                    return resourceCopy;
+                }
+
+                return resource;
+            }
             case ExecutionTypes.PasskeyEnrollment: {
                 const resource: Step | undefined = resources?.find((resource: Step) =>
                     resource.display.label === ExecutionStepViewTypes.PasskeyView);
@@ -181,6 +195,8 @@ const Execution: FC<ExecutionPropsInterface> = memo(({
                 return t("flows:core.executions.names.magicLink");
             case ExecutionTypes.DeviceRegistration:
                 return t("flows:core.executions.names.deviceRegistration");
+            case ExecutionTypes.DigitalWalletFederation:
+                return t("flows:core.executions.names.digitalWallet");
             default:
                 return t("flows:core.executions.names.default");
         }

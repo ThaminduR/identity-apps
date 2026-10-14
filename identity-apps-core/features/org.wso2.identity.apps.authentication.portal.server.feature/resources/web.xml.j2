@@ -209,6 +209,18 @@
     {% endif %}
     <!-- *************** End of Layout Store URL Configuration ********************** -->
 
+    <!-- *************** App Level Custom Layout Inheritance Configuration ********************** -->
+    <!-- When an application inherits its branding from an ancestor organization, the custom layout is read
+         from the organization & the application the branding was resolved from. Set this to false to read it
+         from the requesting organization & application instead, which is how it behaved before this fix. -->
+    {% if webappscommon.inherit_app_level_custom_layout is defined %}
+    <context-param>
+        <param-name>inheritAppLevelCustomLayout</param-name>
+        <param-value>{{ webappscommon.inherit_app_level_custom_layout }}</param-value>
+    </context-param>
+    {% endif %}
+    <!-- *************** End of App Level Custom Layout Inheritance Configuration ********************** -->
+
     <filter>
         <filter-name>HttpHeaderSecurityFilter</filter-name>
         <filter-class>org.apache.catalina.filters.HttpHeaderSecurityFilter</filter-class>
@@ -364,6 +376,7 @@
         {"name": "passivests_login.do", "jsp": "/login.jsp", "url": "/passivests_login.do"},
         {"name": "tenantlistrefresher.do", "jsp": "/tenant_refresh_endpoint.jsp", "url": "/tenantlistrefresher.do"},
         {"name": "consent.do", "jsp": "/consent.jsp", "url": "/consent.do"},
+        {"name": "policy_consent.do", "jsp": "/policy_consent.jsp", "url": "/policy_consent.do"},
         {"name": "cookie_policy.do", "jsp": "/cookie_policy.jsp", "url": "/cookie_policy.do"},
         {"name": "privacy_policy.do", "jsp": "/privacy_policy.jsp", "url": "/privacy_policy.do"},
         {"name": "authenticate.do", "jsp": "/authenticate.jsp", "url": "/authenticate.do"},

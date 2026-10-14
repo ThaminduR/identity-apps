@@ -52,7 +52,14 @@
     if (Boolean.parseBoolean(request.getParameter(Constants.AUTH_FAILURE))) {
         authenticationFailed = "true";
 
-        if (request.getParameter(Constants.AUTH_FAILURE_MSG) != null) {
+        String errorCode = request.getParameter("errorCode");
+        if (StringUtils.isNotBlank(errorCode)) {
+            String errorCodeKey = "error.email.notification." + errorCode;
+            String errorCodeMsg = AuthenticationEndpointUtil.i18n(resourceBundle, errorCodeKey);
+            if (!errorCodeMsg.equalsIgnoreCase(errorCodeKey)) {
+                errorMessage = errorCodeMsg;
+            }
+        } else if (request.getParameter(Constants.AUTH_FAILURE_MSG) != null) {
             String error = request.getParameter(Constants.AUTH_FAILURE_MSG);
 
             if (error.equalsIgnoreCase("authentication.fail.message")) {
@@ -65,7 +72,8 @@
 %>
 <%
     boolean reCaptchaEnabled = false;
-    if (request.getParameter("reCaptcha") != null && Boolean.parseBoolean(request.getParameter("reCaptcha"))) {
+    if (request.getParameter("reCaptcha") != null && Boolean.parseBoolean(request.getParameter("reCaptcha")) &&
+        !CaptchaUtil.isCaptchaDisabledForApplication(request.getParameter("spId"), tenantDomain)) {
         reCaptchaEnabled = true;
     }
 %>
@@ -116,15 +124,10 @@
                     = '<div id="error-msg" class="ui negative message"><%=AuthenticationEndpointUtil.i18n(resourceBundle, "error.enter.code")%></div>'
                     +'<div class="ui divider hidden"></div>';
             } else {
-                if ($('#codeForm').data("submitted") === true) {
-                    console.warn("Prevented a possible double submit event");
-                } else {
-                    trackEvent("authentication-portal-email-otp-click-continue", {
-                        "tenant": insightsTenantIdentifier !== "null" ? insightsTenantIdentifier : ""
-                    });
-                    $('#codeForm').data("submitted", true);
-                    $('#codeForm').submit();
-                }
+                trackEvent("authentication-portal-email-otp-click-continue", {
+                    "tenant": insightsTenantIdentifier !== "null" ? insightsTenantIdentifier : ""
+                });
+                $('#codeForm').submit();
             }
         }
     </script>
@@ -167,7 +170,7 @@
                 <div id="alertDiv"></div>
                 <%
                     String resendCode = request.getParameter("resendCode");
-                    if (resendCode != null && "true".equals(resendCode)) {
+                    if (resendCode != null && "true".equals(resendCode) && !"true".equals(authenticationFailed)) {
                 %>
                 <div id="resend-msg" class="ui positive message"><%=AuthenticationEndpointUtil.i18n(resourceBundle, "resend.code.success")%></div>
                 <div class="ui divider hidden"></div>
@@ -319,6 +322,17 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
+            // Guard at the form level so it catches both manual button clicks
+            // and autofill auto-submission, which bypasses the button click handler entirely.
+            $('#codeForm').on('submit', function(e) {
+                if ($(this).data("submitted") === true) {
+                    console.warn("Prevented a possible double submit event");
+                    e.preventDefault();
+                    return false;
+                }
+                $(this).data("submitted", true);
+            });
+
             $('#authenticate').click(function () {
                 <% if (!reCaptchaEnabled) { %>
                     submitForm();

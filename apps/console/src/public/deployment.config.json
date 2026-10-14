@@ -30,10 +30,20 @@
     "docSiteUrl": "https://is.docs.wso2.com/en/latest",
     "extensions": {
         "analytics": {
+            "collectorKey": {
+                "settingsEnabled": false
+            },
             "moesif": {
-                "applicationId": ""
+                "advancedAnalyticsUpgradeEnabled": false,
+                "dashboardEnabled": false,
+                "embeddedPortalUrl": "",
+                "moesifTermsOfServiceUrl": "https://www.moesif.com/terms/",
+                "termsOfServiceUrl": ""
             }
         },
+        "cdsApplicationIdentifierType": "client_id",
+        "cdsHost": "",
+        "cdsUnifiedProfileView": false,
         "defaultBrandedLoginScreenCopyright": "${copyright} ${year} WSO2 LLC.",
         "emailTemplates": [
             {
@@ -324,6 +334,9 @@
         },
         "administratorRoleDisplayName": "Administrator",
         "announcements": [],
+        "apiResourceManagement": {
+            "blocked_api_resources": []
+        },
         "appCopyright": "${copyright} ${year} WSO2 LLC.",
         "appFaviconPath": "/assets/images/branding/favicon.ico",
         "appLogoPath": "/assets/images/branding/logo.svg",
@@ -466,6 +479,33 @@
                     "update": [
                        "internal_agent_mgt_update"
                     ]
+                },
+                "subFeatures": {
+                    "agentSharing": {
+                        "disabledFeatures": [],
+                        "enabled": false,
+                        "scopes": {
+                            "create": [
+                                    "internal_agent_share"
+                            ],
+                            "delete": [
+                                    "internal_agent_unshare"
+                            ],
+                            "read": [
+                                    "internal_agent_mgt_list",
+                                    "internal_agent_mgt_view",
+                                    "internal_agent_shared_access_view",
+                                    "internal_governance_view",
+                                    "internal_group_mgt_view",
+                                    "internal_organization_view",
+                                    "internal_role_mgt_view",
+                                    "internal_userstore_view"
+                            ],
+                            "update": [
+                                    "internal_agent_shared_access_update"
+                            ]
+                        }
+                    }
                 }
             },
             "ai": {
@@ -544,9 +584,16 @@
                 "disabledFeatures": [
                     "applications.loginFlow.legacyEditor",
                     "applications.sharedAccess.status",
-                    "applications.sharedApp.adaptiveAuth"
+                    "applications.sharedApp.adaptiveAuth",
+                    "applications.adaptiveAuth.orgGovernance"
                 ],
                 "enabled": true,
+                "properties": {
+                    "makeSubjectMandatory": true,
+                    "maxGracefulRefreshTokenReuseLimit": 5,
+                    "maxGracefulRefreshTokenRotationValidityPeriod": 60,
+                    "multipleClientSecretsMaxCount": 2
+                },
                 "featureFlags": [
                     {
                         "feature": "applications",
@@ -619,10 +666,9 @@
                         "featureFlags": [],
                         "scopes": {
                             "create": [ "internal_application_mgt_client_secret_create" ],
-                            "delete": [],
+                            "delete": [ "internal_application_mgt_client_secret_delete" ],
                             "feature": [],
-                            "read": [ "internal_application_mgt_client_secret_view" ],
-                            "update": []
+                            "read": [ "internal_application_mgt_client_secret_view" ]
                         }
                     },
                     "applicationInternalAPIAuthorization": {
@@ -832,10 +878,92 @@
                     ]
                 }
             },
+            "cliSettings": {
+                "disabledFeatures": [],
+                "enabled": false,
+                "featureFlags": [],
+                "properties": {
+                    "applicationName": "",
+                    "clientId": ""
+                },
+                "scopes": {
+                    "create": [
+                        "internal_application_mgt_create"
+                    ],
+                    "delete": [],
+                    "feature": [
+                        "console:cliSettings"
+                    ],
+                    "read": [
+                        "internal_application_mgt_view",
+                        "internal_role_mgt_view",
+                        "internal_user_mgt_list"
+                    ],
+                    "update": [
+                        "internal_application_mgt_update",
+                        "internal_role_mgt_update",
+                        "internal_role_mgt_users_update"
+                    ]
+                }
+            },
+            "connectionSharing": {
+                "disabledFeatures": [],
+                "enabled": true,
+                "scopes": {
+                    "create": [
+                        "internal_idp_share"
+                    ],
+                    "delete": [
+                        "internal_idp_unshare"
+                    ],
+                    "feature": [
+                        "console:connectionSharing"
+                    ],
+                    "read": [
+                        "internal_idp_shared_access_view",
+                        "internal_organization_view"
+                    ],
+                    "update": [
+                        "internal_idp_share",
+                        "internal_idp_unshare"
+                    ]
+                }
+            },
+            "consents": {
+                "disabledFeatures": [],
+                "enabled": true,
+                "scopes": {
+                    "create": [
+                        "internal_consent_mgt_element_create",
+                        "internal_consent_mgt_purpose_create"
+                    ],
+                    "delete": [
+                        "internal_consent_mgt_element_delete",
+                        "internal_consent_mgt_purpose_delete"
+                    ],
+                    "feature": [
+                        "console:consents"
+                    ],
+                    "read": [
+                        "internal_application_mgt_view",
+                        "internal_claim_meta_view",
+                        "internal_consent_mgt_element_view",
+                        "internal_consent_mgt_purpose_app_view",
+                        "internal_consent_mgt_purpose_view"
+                    ],
+                    "update": [
+                        "internal_branding_preference_policy_update",
+                        "internal_consent_mgt_purpose_app_create",
+                        "internal_consent_mgt_purpose_app_delete",
+                        "internal_consent_mgt_purpose_update"
+                    ]
+                }
+            },
             "consoleSettings": {
                 "disabledFeatures": [
                     "consoleSettings.invitedExternalAdmins",
-                    "consoleSettings.privilegedUsers"
+                    "consoleSettings.privilegedUsers",
+                    "consoleSettings.useGranularConsolePermissions"
                 ],
                 "enabled": true,
                 "featureFlags": [],
@@ -1133,6 +1261,40 @@
                     "update": []
                 }
             },
+            "flowExtensions": {
+                "disabledFeatures": [],
+                "enabled": true,
+                "featureFlags": [
+                    {
+                        "feature": "flowExtensions",
+                        "flag": ""
+                    }
+                ],
+                "properties": {
+                    "nonModifiablePaths": [
+                        "/user/claims[uri=http://wso2.org/claims/userid]",
+                        "/user/claims[uri=http://wso2.org/claims/created]"
+                    ]
+                },
+                "scopes": {
+                    "create": [
+                        "internal_flow_extension_create"
+                    ],
+                    "delete": [
+                        "internal_flow_extension_delete"
+                    ],
+                    "feature": [
+                        "console:flowExtensions"
+                    ],
+                    "read": [
+                        "internal_flow_extension_view",
+                        "internal_claim_meta_view"
+                    ],
+                    "update": [
+                        "internal_flow_extension_update"
+                    ]
+                }
+            },
             "gettingStarted": {
                 "disabledFeatures": [],
                 "enabled": true,
@@ -1233,6 +1395,11 @@
                 ],
                 "enabled": true,
                 "featureFlags": [],
+                "properties": {
+                    "maxPushDeviceLimitPerUser": 10,
+                    "multiplePushDeviceSupportEnabled": true,
+                    "pushDeviceRegistrationNotificationsEnabled": true
+                },
                 "scopes": {
                     "create": [
                         "internal_idp_create"
@@ -1327,6 +1494,14 @@
                     },
                     {
                         "feature": "loginAndRegistration.userOnboarding.registrationFlowBuilder",
+                        "flag": ""
+                    },
+                    {
+                        "feature": "consents.policyConsents",
+                        "flag": ""
+                    },
+                    {
+                        "feature": "consents.preferenceManagement",
                         "flag": ""
                     }
                 ],
@@ -1534,6 +1709,44 @@
                     "feature": [],
                     "read": [],
                     "update": []
+                }
+            },
+            "presentationDefinitions": {
+                "disabledFeatures": [],
+                "enabled": false,
+                "featureFlags": [],
+                "scopes": {
+                    "create": [
+                        "internal_presentation_definition_create"
+                    ],
+                    "delete": [
+                        "internal_presentation_definition_delete"
+                    ],
+                    "feature": [
+                        "console:presentation_definitions"
+                    ],
+                    "read": [
+                        "internal_presentation_definition_view"
+                    ],
+                    "update": [
+                        "internal_presentation_definition_update"
+                    ]
+                },
+                "subFeatures": {
+                    "verifiablePresentationSettings": {
+                        "disabledFeatures": [],
+                        "enabled": false,
+                        "scopes": {
+                            "create": [],
+                            "delete": [],
+                            "read": [
+                                "internal_config_view"
+                            ],
+                            "update": [
+                                "internal_config_update"
+                            ]
+                        }
+                    }
                 }
             },
             "pushProviders": {
@@ -2134,6 +2347,17 @@
                     "read": [],
                     "update": []
                 }
+            },
+            "fapi": {
+                "disabledFeatures": [],
+                "enabled": true,
+                "featureFlags": [],
+                "scopes": {
+                    "create": [],
+                    "delete": [],
+                    "read": [],
+                    "update": []
+                }
             }
         },
         "flowExecution": {
@@ -2180,6 +2404,7 @@
         "isClaimUniquenessValidationEnabled": false,
         "isClientSecretHashEnabled": false,
         "isCookieConsentBannerEnabled": true,
+        "isCustomClaimDialectRoutingEnabled": false,
         "isCustomClaimMappingEnabled": true,
         "isCustomClaimMappingMergeEnabled": true,
         "isDefaultDialectEditingEnabled": false,
@@ -2228,6 +2453,7 @@
                 "accountSecurity": "v1.0.0",
                 "actions": "v0.0.0",
                 "admin-forced-password-reset": "v1.0.0",
+                "agents": "v1.0.0",
                 "apiResources": "v0.0.0",
                 "applications": "v0.0.0",
                 "approvalWorkflows": "v0.0.0",
@@ -2235,6 +2461,7 @@
                 "attributeDialects": "v0.0.0",
                 "attributeUpdateVerificationSettings": "v1.0.0",
                 "branding": "v0.0.0",
+                "consents": "v0.0.0",
                 "consoleSettings": "v0.0.0",
                 "emailTemplates": "v0.0.0",
                 "flows": "v1.0.0",
@@ -2243,9 +2470,11 @@
                 "groups": "v0.0.0",
                 "identityProviders": "v0.0.0",
                 "loginAndRegistration": "v1.0.0",
+                "mcpServers": "v0.0.0",
                 "oidcScopes": "v0.0.0",
                 "organizations": "v0.0.0",
                 "password-recovery": "v1.0.0",
+                "presentationDefinitions": "v0.0.0",
                 "residentOutboundProvisioning": "v0.0.0",
                 "roles": "v0.0.0",
                 "self-registration-connector": "v1.0.0",

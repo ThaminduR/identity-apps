@@ -21,14 +21,20 @@ import TextField from "@oxygen-ui/react/TextField";
 import {
     CommonResourcePropertiesPropsInterface
 } from "@wso2is/admin.flow-builder-core.v1/components/resource-property-panel/resource-properties";
+// eslint-disable-next-line max-len
+import FlowExtensionProperties from "@wso2is/admin.flow-builder-core.v1/components/resource-property-panel/flow-extension-properties/flow-extension-properties";
 import { FieldKey, FieldValue } from "@wso2is/admin.flow-builder-core.v1/models/base";
 import { Element, ElementCategories, ElementTypes } from "@wso2is/admin.flow-builder-core.v1/models/elements";
 import { Resource } from "@wso2is/admin.flow-builder-core.v1/models/resources";
 import { ExecutionTypes, StepCategories, StepTypes } from "@wso2is/admin.flow-builder-core.v1/models/steps";
+import useExtensionExecutor from "@wso2is/admin.flow-builder-core.v1/hooks/use-extension-executor";
+import { ExtensionExecutorInterface } from "@wso2is/admin.flow-builder-core.v1/models/metadata";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
 import isEmpty from "lodash-es/isEmpty";
 import React, { ChangeEvent, FunctionComponent, ReactElement, useMemo } from "react";
 import ButtonExtendedProperties from "./extended-properties/button-extended-properties";
+import PreferenceManagementExtendedProperties from "./extended-properties/preference-management-extended-properties";
+import PolicyConsentExtendedProperties from "./extended-properties/policy-consent-extended-properties";
 import FieldExtendedProperties from "./extended-properties/field-extended-properties";
 import RulesProperties from "./nodes/rules-properties";
 import ResourcePropertyFactory from "./resource-property-factory";
@@ -57,6 +63,10 @@ const ResourceProperties: FunctionComponent<ResourcePropertiesPropsInterface> = 
     const selectedVariant: Element = useMemo(() => {
         return resource?.variants?.find((_element: Element) => _element.variant === resource.variant);
     }, [ resource.variants, resource.variant ]);
+
+    const extensionExecutor: ExtensionExecutorInterface | null = useExtensionExecutor(
+        resource?.data?.action?.executor?.name
+    );
 
     const renderElementId = (): ReactElement => {
         return (
@@ -126,6 +136,34 @@ const ResourceProperties: FunctionComponent<ResourcePropertiesPropsInterface> = 
 
             break;
         case ElementCategories.Field:
+            if (resource.type === ElementTypes.Policy) {
+                return (
+                    <>
+                        { renderElementId() }
+                        <PolicyConsentExtendedProperties
+                            resource={ resource }
+                            onChange={ onChange }
+                            data-componentid="policy-consent-extended-properties"
+                        />
+                        { renderElementPropertyFactory() }
+                    </>
+                );
+            }
+
+            if (resource.type === ElementTypes.Preference) {
+                return (
+                    <>
+                        { renderElementId() }
+                        <PreferenceManagementExtendedProperties
+                            resource={ resource }
+                            onChange={ onChange }
+                            data-componentid="preference-management-extended-properties"
+                        />
+                        { renderElementPropertyFactory() }
+                    </>
+                );
+            }
+
             return (
                 <>
                     { renderElementId() }
@@ -181,10 +219,25 @@ const ResourceProperties: FunctionComponent<ResourcePropertiesPropsInterface> = 
                 );
             }
 
+            if (executorName === ExecutionTypes.FlowExtension) {
+                return (
+                    <>
+                        { renderElementId() }
+                        <FlowExtensionProperties
+                            resource={ resource }
+                            data-componentid="flow-extension-properties"
+                            onChange={ onChange }
+                        />
+                        { renderElementPropertyFactory() }
+                    </>
+                );
+            }
+
             return (
                 <>
                     { renderElementId() }
                     {
+                        extensionExecutor?.requiresConnection !== false &&
                         !RegistrationFlowBuilderConstants.FEDERATION_CONFIG_SKIPPED_EXECUTORS.includes(
                             executorName as ExecutionTypes) && (
                             <FederationProperties

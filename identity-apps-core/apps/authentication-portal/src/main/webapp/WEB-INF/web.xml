@@ -263,6 +263,11 @@
     </servlet>
 
     <servlet>
+        <servlet-name>policy_consent.do</servlet-name>
+        <jsp-file>/policy_consent.jsp</jsp-file>
+    </servlet>
+
+    <servlet>
         <servlet-name>cookie_policy.do</servlet-name>
         <jsp-file>/cookie_policy.jsp</jsp-file>
     </servlet>
@@ -345,6 +350,11 @@
     <servlet>
         <servlet-name>sms_otp_error.do</servlet-name>
         <jsp-file>/smsOtpError.jsp</jsp-file>
+    </servlet>
+
+    <servlet>
+        <servlet-name>wallet_login.do</servlet-name>
+        <jsp-file>/wallet_login.jsp</jsp-file>
     </servlet>
 
     <servlet>
@@ -440,6 +450,11 @@
     <servlet-mapping>
         <servlet-name>sms_otp_error.do</servlet-name>
         <url-pattern>/sms_otp_error.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>wallet_login.do</servlet-name>
+        <url-pattern>/wallet_login.do</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
@@ -575,6 +590,11 @@
     <servlet-mapping>
         <servlet-name>consent.do</servlet-name>
         <url-pattern>/consent.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>policy_consent.do</servlet-name>
+        <url-pattern>/policy_consent.do</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

@@ -38,3 +38,10 @@ declare module "*.png" {
 }
 
 declare module "*.md";
+declare module "*.css";
+
+declare module "*?worker" {
+    const WorkerFactory: new () => Worker;
+
+    export default WorkerFactory;
+}

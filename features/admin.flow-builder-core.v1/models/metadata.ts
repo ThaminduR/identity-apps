@@ -51,6 +51,14 @@ export interface MetadataInterface {
      */
     executorConnections: ExecutorConnectionInterface[];
     /**
+     * List of active flow extension connections from metadata.
+     */
+    flowExtensionConnections?: FlowExtensionConnectionInterface[];
+    /**
+     * Executors registered by an connector deployed on the server.
+     */
+    extensionExecutors?: ExtensionExecutorInterface[];
+    /**
      * Is a Workflow engagement enabled?
      */
     workflowEnabled: boolean;
@@ -108,4 +116,56 @@ export interface ExecutorConnectionInterface {
      * List of connections for the executor.
      */
     connections: string[];
+}
+
+/**
+ * Interface for an executor registered dynamically by an extension deployed on the server.
+ */
+export interface ExtensionExecutorInterface {
+    /**
+     * Unique name of the executor, as registered with the flow execution engine.
+     */
+    name: string;
+    /**
+     * Human readable name shown in the palette and on the canvas node.
+     */
+    displayName: string;
+    /**
+     * Short explanation of what the step does, shown under the label in the palette.
+     */
+    description?: string;
+    /**
+     * Whether the executor authenticates the user.
+     */
+    isAuthenticationExecutor?: boolean;
+    /**
+     * Icon for the executor.
+     */
+    icon?: string;
+    /**
+     * Whether a connection has to be selected before a step using this executor is valid.
+     */
+    requiresConnection?: boolean;
+    /**
+     * Name of the authenticator backing this executor.
+     */
+    associatedAuthenticator?: string;
+}
+
+/**
+ * Interface for flow extension connection info from flow metadata.
+ */
+export interface FlowExtensionConnectionInterface {
+    /**
+     * The action ID.
+     */
+    actionId: string;
+    /**
+     * The display name of the connection.
+     */
+    name: string;
+    /**
+     * Optional icon URL for the connection.
+     */
+    iconUrl?: string;
 }

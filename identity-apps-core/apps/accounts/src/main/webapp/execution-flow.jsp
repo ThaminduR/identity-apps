@@ -37,6 +37,7 @@
     screenNames.add ("password-recovery");
     screenNames.add("password-reset");
     screenNames.add("password-reset-success");
+    screenNames.add("flow-extension");
 %>
 
 <%-- Branding Preferences --%>
@@ -71,6 +72,7 @@
     String flowType = request.getParameter("flowType");
     String mlt = request.getParameter("mlt");
     String flowId = request.getParameter("flowId");
+    String sessionDataKey = request.getParameter("sessionDataKey");
 
     final String REGISTRATION = "REGISTRATION";
     final String INVITED_USER_REGISTRATION = "INVITED_USER_REGISTRATION";
@@ -86,6 +88,18 @@
             }
         } catch (Exception e) {
             // Ignored and send the default value.
+        }
+    }
+%>
+
+<%
+    String anonymousProfileTracker = null;
+    if (cookies != null) {
+        for (javax.servlet.http.Cookie cookie : cookies) {
+            if ("cds_profile".equals(cookie.getName())) {
+                anonymousProfileTracker = cookie.getValue();
+                break;
+            }
         }
     }
 %>
@@ -112,6 +126,19 @@
             console.log("Received the recaptcha token.");
         };
     </script>
+
+    <script src="${pageContext.request.contextPath}/js/qrCodeGenerator.js"></script>
+    <style>
+        .wallet-reg-spinner {
+            display: inline-block; width: 16px; height: 16px;
+            border: 2px solid #ddd; border-top-color: #ff7300;
+            border-radius: 50%; animation: wallet-reg-spin 1s linear infinite;
+            vertical-align: middle; margin-right: 8px;
+        }
+        @keyframes wallet-reg-spin { to { transform: rotate(360deg); } }
+        .wallet-reg-steps { text-align: left; padding-left: 20px; }
+        .wallet-reg-steps li { margin-bottom: 8px; color: #444; font-size: 13px; }
+    </style>
 
 </head>
 <body class="login-portal layout authentication-portal-layout" data-page="<%= request.getAttribute("pageName") %>">
@@ -177,7 +204,7 @@
                 return;
             }
 
-            const { createElement, useEffect, useState } = React;
+            const { createElement, useEffect, useState, useRef } = React;
             const { DynamicContent, GlobalContextProvider, I18nProvider, executeFido2FLow, PasskeyEnrollment } = ReactUICore;
 
             const Content = () => {
@@ -191,6 +218,21 @@
                 const mlt = "<%= Encode.forJavaScript(mlt) != null ? Encode.forJavaScript(mlt) : null %>";
                 const flowId = "<%= Encode.forJavaScript(flowId) != null ? Encode.forJavaScript(flowId) : null %>";
                 const spId = "<%= !StringUtils.isBlank(spId) && spId != "null" ? Encode.forJavaScript(spId) : "new-application" %>";
+                const pageSessionDataKey = "<%= sessionDataKey != null ? Encode.forJavaScript(sessionDataKey) : null %>";
+
+                const anonymousProfileTracker = "<%= Encode.forJavaScript(anonymousProfileTracker) != null ? Encode.forJavaScript(anonymousProfileTracker) : null %>";
+                const extendedInputResolvers = [
+                    (initiatingFlowType) => initiatingFlowType === "REGISTRATION" && anonymousProfileTracker !== "null"
+                        ? { anonymous_profile_tracker: anonymousProfileTracker }
+                        : {}
+                ];
+                const getExtendedFlowInputs = (initiatingFlowType) => {
+                    const inputs = extendedInputResolvers.reduce(
+                        (collected, resolveInputs) => ({ ...collected, ...resolveInputs(initiatingFlowType) }),
+                        {}
+                    );
+                    return Object.keys(inputs).length > 0 ? { inputs } : {};
+                };
 
                 const [ flowData, setFlowData ] = useState(null);
                 const [ components, setComponents ] = useState([]);
@@ -198,10 +240,13 @@
                 const [ error, setError ] = useState(null);
                 const [ postBody, setPostBody ] = useState(undefined);
                 const [ flowError, setFlowError ] = useState(undefined);
+                const [ flowMessages, setFlowMessages ] = useState(undefined);
                 const [confirmationEffectDone, setConfirmationEffectDone] = useState(false);
                 const [userAssertion, setUserAssertion] = useState(null);
                 const [flowType, setFlowType] = useState("<%= Encode.forJavaScript(flowType) != null ? Encode.forJavaScript(flowType) : null %>");
                 const [ countDownRedirection, setCountDownRedirection ] = useState(null);
+                const [ walletQR, setWalletQR ] = useState(null);
+                const walletPollRef = useRef(null);
 
                 useEffect(() => {
                     const savedFlowId = localStorage.getItem("flowId");
@@ -245,9 +290,9 @@
 
                 useEffect(() => {
                     if (!postBody && code === "null" && confirmationCode === "null" && mlt === "null" && flowId === "null" && flowType == "null") {
-                        setPostBody({ applicationId: spId, flowType: "REGISTRATION" });
+                        setPostBody({ applicationId: spId, flowType: "REGISTRATION", ...getExtendedFlowInputs("REGISTRATION") });
                     } else if (!postBody && code === "null" && confirmationCode === "null" && mlt === "null" && flowId === "null" && flowType !== "null") {
-                        setPostBody({ applicationId: spId, flowType: flowType });
+                        setPostBody({ applicationId: spId, flowType: flowType, ...getExtendedFlowInputs(flowType) });
                     }
                 }, []);
 
@@ -302,8 +347,223 @@
                 }, [ postBody ]);
 
                 useEffect(() => {
+                    if (!walletQR) return;
+
+                    const { url, requestId, flowId } = walletQR;
+
+                    if (!requestId) {
+                        setError({ code: "VP-65001", message: "Wallet session identifier is missing. Please try again." });
+                        setWalletQR(null);
+                        return;
+                    }
+
+                    function submitPostForm(action, fields) {
+                        var form = document.createElement("form");
+                        form.method = "POST";
+                        form.action = action;
+                        form.style.display = "none";
+                        Object.keys(fields).forEach(function(name) {
+                            var input = document.createElement("input");
+                            input.type = "hidden";
+                            input.name = name;
+                            input.value = fields[name];
+                            form.appendChild(input);
+                        });
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+
+                    // VP-scoped polling guards — local to this effect invocation.
+                    var vpPollInFlight = false;
+                    var vpSubmitted = false;
+                    var vpNetworkErrors = 0;
+                    var VP_MAX_NETWORK_ERRORS = 5;
+                    var VP_POLL_INTERVAL = 2000;
+                    // Must be shorter than VP_POLL_INTERVAL so a hung request is aborted
+                    // before the next poll fires (avoids the vpPollInFlight early-return
+                    // leaving no reschedule registered).
+                    var VP_POLL_TIMEOUT = 1500;
+                    // Client-side guard: stop polling after 2 min even if the server
+                    // never sends a terminal status (e.g. cache expiry bug).
+                    var VP_MAX_DURATION_MS = walletQR.sessionTtlMs > 0 ? walletQR.sessionTtlMs : 120000;
+                    var vpPollStart = Date.now();
+
+                    var vpStatusEndpoint = baseUrl + "/oid4vp/verification-sessions/"
+                        + encodeURIComponent(requestId) + "/status";
+
+                    // Holds the AbortController for the in-flight fetch so the cleanup
+                    // function can cancel it on unmount.
+                    var vpCurrentController = null;
+
+                    function schedulePoll() {
+                        walletPollRef.current = setTimeout(poll, VP_POLL_INTERVAL);
+                    }
+
+                    // Called exactly once when status is VERIFIED — drives the flow engine
+                    // to complete the step and advance to the next one.
+                    var ADVANCE_FLOW_TIMEOUT = 15000;
+
+                    function advanceFlow() {
+                        var controller = new AbortController();
+                        var timeoutId = setTimeout(function() { controller.abort(); }, ADVANCE_FLOW_TIMEOUT);
+
+                        fetch(executionFlowApiProxyPath, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                flowId: flowId,
+                                actionId: "",
+                                inputs: { vp_request_id: requestId }
+                            }),
+                            signal: controller.signal
+                        })
+                        .then(function(r) {
+                            clearTimeout(timeoutId);
+                            return r.json();
+                        })
+                        .then(function(data) {
+                            if (data.error) {
+                                if (data.error.flowType) setFlowType(data.error.flowType);
+                                setError(data.error);
+                                setWalletQR(null);
+                                return;
+                            }
+                            if (data.flowId) localStorage.setItem("flowId", data.flowId);
+                            if (data.flowType) setFlowType(data.flowType);
+
+                            var vpUserAssertion = data.data && data.data.additionalData && data.data.additionalData.userAssertion;
+                            if (data.flowStatus === "COMPLETE" && vpUserAssertion && pageSessionDataKey && pageSessionDataKey !== "null") {
+                                submitPostForm(baseUrl + "/commonauth", { sessionDataKey: pageSessionDataKey, userAssertion: vpUserAssertion });
+                                return;
+                            }
+
+                            var isEnded = handleFlowStatus(data);
+                            if (!isEnded) {
+                                handleStepType(data);
+                                setFlowData(data);
+                            }
+                            setWalletQR(null);
+                        })
+                        .catch(function() {
+                            clearTimeout(timeoutId);
+                            setError({ code: "VP-65002", message: "Unable to complete authentication. Please try again." });
+                            setWalletQR(null);
+                        });
+                    }
+
+                    function poll() {
+                        if (vpSubmitted || vpPollInFlight) return;
+                        if (Date.now() - vpPollStart > VP_MAX_DURATION_MS) {
+                            vpSubmitted = true;
+                            setError({ code: "VP-60002" });
+                            setWalletQR(null);
+                            return;
+                        }
+                        vpPollInFlight = true;
+
+                        var controller = new AbortController();
+                        vpCurrentController = controller;
+                        var timeoutId = setTimeout(function() { controller.abort(); }, VP_POLL_TIMEOUT);
+
+                        fetch(vpStatusEndpoint, {
+                            method: "GET",
+                            headers: { "Accept": "application/json" },
+                            signal: controller.signal
+                        })
+                        .then(function(r) {
+                            clearTimeout(timeoutId);
+                            var httpStatus = r.status;
+                            return r.json().then(function(data) {
+                                return { httpStatus: httpStatus, data: data };
+                            });
+                        })
+                        .then(function(result) {
+                            vpPollInFlight = false;
+                            vpCurrentController = null;
+                            vpNetworkErrors = 0;
+
+                            var httpStatus = result.httpStatus;
+                            var data = result.data;
+
+                            if (httpStatus === 404) {
+                                vpSubmitted = true;
+                                setError({ code: "VP-60002" });
+                                setWalletQR(null);
+                                return;
+                            }
+
+                            if (httpStatus !== 200) {
+                                vpSubmitted = true;
+                                setError({ code: "VP-65001" });
+                                setWalletQR(null);
+                                return;
+                            }
+
+                            var status = data.status ? data.status.toUpperCase() : "";
+
+                            if (status === "ACTIVE") {
+                                schedulePoll();
+                            } else if (status === "VERIFIED") {
+                                vpSubmitted = true;
+                                advanceFlow();
+                            } else if (status === "FAILED") {
+                                vpSubmitted = true;
+                                var vpFailureMsgKeys = {
+                                    'VPV-60004': 'wallet.vp.error.invalid_signature.message',
+                                    'VPV-60005': 'wallet.vp.error.expired_credential.message',
+                                    'VPV-60007': 'wallet.vp.error.nonce_mismatch.message'
+                                };
+                                var vpMsgKey = data.errorType && vpFailureMsgKeys[data.errorType];
+                                setError({ code: "VP-60001", message: vpMsgKey || "" });
+                                setWalletQR(null);
+                            } else {
+                                vpSubmitted = true;
+                                setError({ code: "VP-65001" });
+                                setWalletQR(null);
+                            }
+                        })
+                        .catch(function(err) {
+                            clearTimeout(timeoutId);
+                            vpPollInFlight = false;
+                            vpCurrentController = null;
+                            if (vpSubmitted) return;
+
+                            // AbortError means the per-request timeout fired (or cleanup ran).
+                            // Don't count it as a network error — just retry.
+                            if (err.name === "AbortError") {
+                                schedulePoll();
+                                return;
+                            }
+
+                            vpNetworkErrors++;
+                            if (vpNetworkErrors < VP_MAX_NETWORK_ERRORS) {
+                                schedulePoll();
+                            } else {
+                                vpSubmitted = true;
+                                setError({ code: "VP-65002", message: "Unable to reach the server. Please check your connection and try again." });
+                                setWalletQR(null);
+                            }
+                        });
+                    }
+
+                    schedulePoll();
+
+                    return function() {
+                        vpSubmitted = true;
+                        if (walletPollRef.current) {
+                            clearTimeout(walletPollRef.current);
+                            walletPollRef.current = null;
+                        }
+                        if (vpCurrentController) {
+                            vpCurrentController.abort();
+                            vpCurrentController = null;
+                        }
+                    };
+                }, [ walletQR ]);
+
+                useEffect(() => {
                     if (error && error.code) {
-                        const errorDetails = getI18nKeyForError(error.code, flowType, error.description);
+                        const errorDetails = getI18nKeyForError(error.code, flowType, error.message, error.description);
                         let portal_url = accountsPortalUrl + "/register";
                         if (flowType === "PASSWORD_RECOVERY") {
                             portal_url = accountsPortalUrl + "/recovery";
@@ -322,12 +582,16 @@
                         window.location.href = errorPageURL;
                     }
 
+                    setFlowMessages(flowData && flowData.data && flowData.data.messages);
+
                     if (flowData && flowData.data && flowData.data.additionalData && flowData.data.additionalData.error) {
                         setFlowError(flowData.data.additionalData.error);
                         return;
                     }
                     setFlowError(undefined);
-                }, [ error, flowType, flowData && flowData.data && flowData.data.additionalData && flowData.data.additionalData.error ]);
+                }, [ error, flowType,
+                    flowData && flowData.data && flowData.data.additionalData && flowData.data.additionalData.error,
+                    flowData && flowData.data && flowData.data.messages ]);
 
                 const handleInternalPrompt = (flowData) => {
                     let providedInputs = {};
@@ -403,10 +667,19 @@
                             handleViewStep(flow);
                             setComponents(flow.data.components || []);
                             break;
-                        case "REDIRECTION":
-                            setLoading(true);
-                            window.location.href = flow.data.redirectURL;
+                        case "REDIRECTION": {
+                            var redirectURL = flow.data.redirectURL;
+                            if (redirectURL && redirectURL.startsWith("openid4vp://")) {
+                                var requestId = flow.data.additionalData && flow.data.additionalData.vp_request_id;
+                                var ttlMs = flow.data.additionalData && parseInt(flow.data.additionalData.sessionTtlMs, 10);
+                                setWalletQR({ url: redirectURL, requestId: requestId, flowId: flow.flowId, sessionTtlMs: (ttlMs >= 30000 && ttlMs <= 180000 ? ttlMs : 0) });
+                                setLoading(false);
+                            } else {
+                                setLoading(true);
+                                window.location.href = redirectURL;
+                            }
                             break;
+                        }
 
                         case "INTERNAL_PROMPT":
                             handleInternalPrompt(flow);
@@ -426,18 +699,6 @@
                             console.log(`Flow step type: ${flow.type}. No special action.`);
                     }
                 };
-
-                if (flowData && flowData.type === "WEBAUTHN") {
-                    return createElement(
-                        "div",
-                        { className: "registration-content-container loaded" },
-                        createElement(
-                            PasskeyEnrollment, {
-                                passkeyError: flowError
-                            }
-                        )
-                    );
-                }
 
                 const AutoLoginForm = (data) => {
                     const formRef = React.useRef();
@@ -467,10 +728,149 @@
                     );
                 }
 
+                const { useTranslations } = ReactUICore;
+
+                const WalletQRView = function() {
+                    var deepLinkTimerRef = useRef(null);
+                    var deepLinkHandlerRef = useRef(null);
+                    var [ qrStatus, setQrStatus ] = useState("pending");
+                    var [ qrErrorMsg, setQrErrorMsg ] = useState("");
+                    var [ deepLinkMsg, setDeepLinkMsg ] = useState("");
+                    var i18n = useTranslations();
+                    var t = function(key, fallback) {
+                        return (i18n && i18n.translations && i18n.translations[key]) || fallback;
+                    };
+
+                    useEffect(function() {
+                        return function() {
+                            if (deepLinkTimerRef.current) clearTimeout(deepLinkTimerRef.current);
+                            if (deepLinkHandlerRef.current) window.removeEventListener("blur", deepLinkHandlerRef.current);
+                        };
+                    }, []);
+
+                    useEffect(function() {
+                        if (!walletQR || !walletQR.url) {
+                            setQrStatus("error");
+                            setQrErrorMsg(t("wallet.vp.qr.error.generate", "Unable to generate QR code. Please restart the registration flow."));
+                            return;
+                        }
+                        if (typeof setupqr === "undefined") {
+                            setQrStatus("error");
+                            setQrErrorMsg(t("wallet.vp.qr.error.load", "QR code could not be loaded. Please restart the registration flow."));
+                            return;
+                        }
+                        try {
+                            wd = 280; ht = 280;
+                            setupqr();
+                            doqr(walletQR.url);
+                            setQrStatus("ok");
+                        } catch (e) {
+                            setQrStatus("error");
+                            setQrErrorMsg(t("wallet.vp.qr.error.generate", "Unable to generate QR code. Please restart the registration flow."));
+                        }
+                    }, [walletQR && walletQR.url]);
+
+                    function handleWalletLinkClick(e) {
+                        e.preventDefault();
+                        if (deepLinkHandlerRef.current) {
+                            window.removeEventListener("blur", deepLinkHandlerRef.current);
+                            deepLinkHandlerRef.current = null;
+                        }
+                        if (deepLinkTimerRef.current) {
+                            clearTimeout(deepLinkTimerRef.current);
+                            deepLinkTimerRef.current = null;
+                        }
+                        deepLinkTimerRef.current = setTimeout(function() {
+                            deepLinkTimerRef.current = null;
+                            setDeepLinkMsg(t("wallet.vp.qr.mobile.no.wallet", "No wallet app detected. Use the QR code on a mobile device with your wallet installed."));
+                        }, 1500);
+                        deepLinkHandlerRef.current = function() {
+                            clearTimeout(deepLinkTimerRef.current);
+                            deepLinkTimerRef.current = null;
+                            deepLinkHandlerRef.current = null;
+                            setDeepLinkMsg("");
+                        };
+                        window.addEventListener("blur", deepLinkHandlerRef.current, { once: true });
+                        window.location.href = walletQR && walletQR.url;
+                    }
+
+                    return createElement("div", { className: "segment-form" },
+                        createElement("h3", { className: "ui header text-center" }, t("wallet.vp.qr.heading", "Register with Digital Wallet")),
+                        createElement("p", { className: "text-center", style: { color: "#666", fontSize: "14px" } },
+                            t("wallet.vp.qr.subtitle", "Scan the QR code below with your digital wallet to share your credentials")
+                        ),
+                        createElement("div", { className: "ui divider hidden" }),
+                        createElement("div", { className: "field text-center", style: { minHeight: "280px" } },
+                            createElement("input", { type: "hidden", id: "ecc", value: "2" }),
+                            createElement("canvas", {
+                                id: "qrcanv",
+                                style: {
+                                    display: "block",
+                                    width: "280px",
+                                    marginLeft: "calc(50% - 122px)",
+                                    borderRadius: "8px",
+                                    visibility: qrStatus === "error" ? "hidden" : "visible"
+                                }
+                            })
+                        ),
+                        createElement("div", { className: "ui divider hidden" }),
+                        qrStatus === "error"
+                            ? createElement("div", { className: "ui warning message", style: { textAlign: "center" } },
+                                createElement("span", null, qrErrorMsg)
+                              )
+                            : createElement("div", { className: "text-center" },
+                                createElement("span", { className: "wallet-reg-spinner" }),
+                                createElement("span", null, t("wallet.vp.qr.waiting", "Waiting for wallet..."))
+                              ),
+                        createElement("div", { className: "ui info message", style: { marginTop: "16px" } },
+                            createElement("div", { className: "header", style: { fontSize: "14px", marginBottom: "10px" } }, t("wallet.vp.qr.howto.heading", "How to register")),
+                            createElement("ol", { className: "wallet-reg-steps" },
+                                createElement("li", null, t("wallet.vp.qr.howto.step1", "Open your digital wallet app (e.g. Heidi)")),
+                                createElement("li", null, t("wallet.vp.qr.howto.step2", "Scan the QR code above")),
+                                createElement("li", null, t("wallet.vp.qr.howto.step3", "Review the credential request")),
+                                createElement("li", null, t("wallet.vp.qr.howto.step4", "Approve to share your credentials"))
+                            )
+                        ),
+                        createElement("div", { className: "ui divider hidden" }),
+                        createElement("div", { className: "text-center" },
+                            createElement("p", { style: { color: "#888", fontSize: "13px", marginBottom: "10px" } },
+                                t("wallet.vp.qr.mobile.cta", "Or tap below if you're on mobile:")
+                            ),
+                            createElement("a", { href: walletQR && walletQR.url, className: "ui primary fluid large button", onClick: handleWalletLinkClick },
+                                t("wallet.vp.qr.mobile.button", "Open in Wallet")
+                            ),
+                            deepLinkMsg ? createElement("p", { style: { marginTop: "8px", color: "#856404", fontSize: "13px" } }, deepLinkMsg) : null
+                        )
+                    );
+                };
+
+                // An auto-login assertion means the flow has completed. Submit the auto-login form
+                // regardless of the previous step type, so a passkey (WEBAUTHN) step that completes
+                // the flow does not get re-rendered and stall the auto-login.
                 if (userAssertion) {
                     return createElement(
                         AutoLoginForm,
                         { userAssertion: userAssertion }
+                    );
+                }
+
+                if (flowData && flowData.type === "WEBAUTHN") {
+                    return createElement(
+                        "div",
+                        { className: "registration-content-container loaded" },
+                        createElement(
+                            PasskeyEnrollment, {
+                                passkeyError: flowError
+                            }
+                        )
+                    );
+                }
+
+                if (walletQR) {
+                    return createElement(
+                        "div",
+                        { className: "registration-content-container loaded" },
+                        createElement(WalletQRView, null)
                     );
                 }
 
@@ -502,7 +902,8 @@
                                     inputs: formValues
                                 });
                             },
-                            error: flowError
+                            error: flowError,
+                            messages: flowMessages
                         }
                     )
                 );

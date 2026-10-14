@@ -184,7 +184,6 @@ export class GovernanceConnectorUtils {
     public static getCombinedPredefinedConnectorCategories(): Array<any> {
 
         return this.getPredefinedConnectorCategories().map((category: any) => {
-
             const additionalConnectors: any = serverConfigurationConfig.getConnectorCategoryExtension()
                 .find((el: any) => el.id === category.id);
 
@@ -375,6 +374,42 @@ export class GovernanceConnectorUtils {
             {
                 connectors: [
                     {
+                        description: I18n.instance.t("governanceConnectors:connectorCategories" +
+                            ".consentManagement.connectors.policyConsents.description"),
+                        friendlyName: I18n.instance.t("governanceConnectors:connectorCategories" +
+                            ".consentManagement.connectors.policyConsents.friendlyName"),
+                        header: I18n.instance.t("governanceConnectors:connectorCategories" +
+                            ".consentManagement.connectors.policyConsents.header"),
+                        id: ServerConfigurationsConstants.POLICY_CONSENTS_CONNECTOR_ID,
+                        isCustom: false,
+                        name: "policyConsents",
+                        route: AppConstants.getPaths().get("POLICY_CONSENTS"),
+                        status: FeatureFlagConstants.FEATURE_FLAG_KEY_MAP.CONSENTS_POLICY_CONSENTS,
+                        testId: "policy-consents-card"
+                    },
+                    {
+                        description: I18n.instance.t("governanceConnectors:connectorCategories" +
+                            ".consentManagement.connectors.preferenceManagement.description"),
+                        friendlyName: I18n.instance.t("governanceConnectors:connectorCategories" +
+                            ".consentManagement.connectors.preferenceManagement.friendlyName"),
+                        header: I18n.instance.t("governanceConnectors:connectorCategories" +
+                            ".consentManagement.connectors.preferenceManagement.header"),
+                        id: ServerConfigurationsConstants.PREFERENCE_MANAGEMENT_CONNECTOR_ID,
+                        isCustom: false,
+                        name: "preferenceManagement",
+                        route: AppConstants.getPaths().get("PREFERENCE_MANAGEMENT"),
+                        status: FeatureFlagConstants.FEATURE_FLAG_KEY_MAP.CONSENTS_PREFERENCE_MANAGEMENT,
+                        testId: "preference-management-card"
+                    }
+                ],
+                displayOrder: 1,
+                id: ServerConfigurationsConstants.CONSENT_MANAGEMENT_CATEGORY_ID,
+                title: I18n.instance.t("governanceConnectors:connectorCategories" +
+                    ".consentManagement.categoryTitle")
+            },
+            {
+                connectors: [
+                    {
                         description: "Enable self-service password recovery for users on the login page.",
                         header: "Password Recovery",
                         id: ServerConfigurationsConstants.PASSWORD_RECOVERY,
@@ -467,6 +502,15 @@ export class GovernanceConnectorUtils {
                         status: FeatureFlagConstants.FEATURE_FLAG_KEY_MAP
                             .LOGIN_AND_REGISTRATION_ORGANIZATION_ISSUER_USAGE_SCOPE,
                         testId: "issuer-usage-scope-card"
+                    },
+                    {
+                        description: I18n.instance.t("pages:fapiSecurityPolicy.subTitle"),
+                        header: I18n.instance.t("pages:fapiSecurityPolicy.title"),
+                        id: ServerConfigurationsConstants.FAPI_SECURITY_POLICY,
+                        route: AppConstants.getPaths().get("FAPI_SECURITY_POLICY"),
+                        status: FeatureFlagConstants.FEATURE_FLAG_KEY_MAP
+                            .LOGIN_AND_REGISTRATION_ORGANIZATION_FAPI_SECURITY_POLICY,
+                        testId: "fapi-security-policy-card"
                     }
                 ],
                 displayOrder: 0,

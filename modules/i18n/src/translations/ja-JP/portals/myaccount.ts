@@ -437,6 +437,106 @@ export const myAccount: MyAccountNS = {
                 }
             }
         },
+        "preferenceManagement": {
+            "consentedOnLabel": "承諾日",
+            "dangerZones": {
+                "revoke": {
+                    "actionTitle": "取り消す",
+                    "header": "マーケティング同意の取り消し",
+                    "subheader": "このアクションにより、このマーケティングコミュニケーションへの同意が取り消されます。"
+                }
+            },
+            "elementsHeading": "マーケティングコミュニケーションの同意を管理します。取り消す必要がある属性のチェックを外し、更新ボタンを押して変更を保存するか、取り消しボタンを押してすべての属性の同意を削除してください。",
+            "notifications": {
+                "fetch": {
+                    "error": {
+                        "description": "マーケティング同意の取得中にエラーが発生しました。",
+                        "message": "取得に失敗しました"
+                    },
+                    "genericError": {
+                        "description": "マーケティング同意の取得中にエラーが発生しました。",
+                        "message": "取得に失敗しました"
+                    },
+                    "success": {
+                        "description": "マーケティング同意が正常に取得されました。",
+                        "message": "取得成功"
+                    }
+                },
+                "revoke": {
+                    "error": {
+                        "description": "マーケティング同意の取り消し中にエラーが発生しました。",
+                        "message": "取り消しに失敗しました"
+                    },
+                    "genericError": {
+                        "description": "マーケティング同意の取り消し中にエラーが発生しました。",
+                        "message": "取り消しに失敗しました"
+                    },
+                    "success": {
+                        "description": "マーケティング同意が正常に取り消されました。",
+                        "message": "同意が取り消されました"
+                    }
+                },
+                "update": {
+                    "error": {
+                        "description": "マーケティング同意の更新中にエラーが発生しました。",
+                        "message": "更新に失敗しました"
+                    },
+                    "genericError": {
+                        "description": "マーケティング同意の更新中にエラーが発生しました。",
+                        "message": "更新に失敗しました"
+                    },
+                    "success": {
+                        "description": "マーケティング同意の設定が正常に更新されました。",
+                        "message": "同意が更新されました"
+                    }
+                }
+            },
+            "policyUrlLabel": "ポリシーを表示",
+            "versionLabel": "バージョン {{version}}"
+        },
+        "policyConsentManagement": {
+            "consentedOnLabel": "有効開始日",
+            "dangerZones": {
+                "revoke": {
+                    "actionTitle": "取り消す",
+                    "header": "ポリシー同意を取り消す",
+                    "subheader": "このアクションはこのポリシーに対するあなたの同意を取り消します。次回サービスにアクセスするときに、再度同意するよう求められる場合があります。"
+                }
+            },
+            "notifications": {
+                "fetch": {
+                    "error": {
+                        "description": "ポリシー同意を取得中にエラーが発生しました。",
+                        "message": "取得に失敗しました"
+                    },
+                    "genericError": {
+                        "description": "ポリシー同意を取得中にエラーが発生しました。",
+                        "message": "取得に失敗しました"
+                    },
+                    "success": {
+                        "description": "",
+                        "message": ""
+                    }
+                },
+                "revoke": {
+                    "error": {
+                        "description": "ポリシー同意を取り消し中にエラーが発生しました。",
+                        "message": "取り消しに失敗しました"
+                    },
+                    "genericError": {
+                        "description": "ポリシー同意を取り消し中にエラーが発生しました。",
+                        "message": "取り消しに失敗しました"
+                    },
+                    "success": {
+                        "description": "ポリシー同意は正常に取り消されました。",
+                        "message": "同意が取り消されました"
+                    }
+                }
+            },
+            "policyUrlLabel": "ポリシーを表示",
+            "versionLabel": "バージョン {{version}}"
+        },
+        
         "cookieConsent": {
             "confirmButton": "わかった",
             "content": "Cookieを使用して、最高の全体的な体験を確実に得ることができます。これらのCookieは、スムーズでパーソナライズされたサービスを提供しながら、途切れない連続セッションを維持するために使用されます。Cookieの使用方法の詳細については、<1> Cookieポリシーを参照してください。"
@@ -925,6 +1025,7 @@ export const myAccount: MyAccountNS = {
                 "configuredDescription": "設定済みのプッシュ認証アプリから生成されたログインプロンプトを使用して、二要素認証を行うことができます。アプリにアクセスできない場合は、ここから新しい認証アプリを設定できます。",
                 "deleteHint": "削除",
                 "description": "プッシュ認証アプリを使用して、二要素認証のためのログインプロンプトをプッシュ通知として受け取ることができます。",
+                "deviceLimitReachedHint": "デバイスの最大登録数（{{limit}}台）に達しました",
                 "heading": "プッシュ認証アプリ",
                 "hint": "表示",
                 "modals": {
@@ -955,6 +1056,12 @@ export const myAccount: MyAccountNS = {
                         "success": {
                             "description": "登録されたデバイスが正常に削除されました",
                             "message": "デバイスが正常に削除されました"
+                        }
+                    },
+                    "configFetchError": {
+                        "genericError": {
+                            "description": "プッシュ認証設定の取得中にエラーが発生しました。",
+                            "message": "問題が発生しました"
                         }
                     },
                     "deviceListFetchError": {
@@ -1066,7 +1173,7 @@ export const myAccount: MyAccountNS = {
                 "profileStatus": {
                     "completionPercentage": "あなたのプロファイルの完了は{{percentage}}％です",
                     "description": "プロフィールを管理します",
-                    "header": "あなたの{{productName}}プロファイル",
+                    "header": "あなたのプロファイル",
                     "profileText": "あなたの個人的なプロフィールの詳細",
                     "readOnlyDescription": "あなたのプロフィールを表示します",
                     "userSourceText": "（{{source}}経由でサインアップ）"
@@ -1649,6 +1756,10 @@ export const myAccount: MyAccountNS = {
             "subTitle": "アプリケーションを発見してアクセスします",
             "title": "アプリケーション"
         },
+        "consents": {
+            "subTitle": "アプリケーションと受け入れられたポリシーに提供した同意を管理します",
+            "title": "同意"
+        },
         "overview": {
             "subTitle": "個人情報、アカウントセキュリティ、プライバシー設定を管理する",
             "title": "ようこそ、{{firstName}}"
@@ -1746,6 +1857,24 @@ export const myAccount: MyAccountNS = {
             "placeholders": {
                 "emptyConsentList": {
                     "heading": "お客様は、アプリケーションに同意を与えていません"
+                }
+            }
+        },
+        "preferenceManagement": {
+            "description": "同意したマーケティングコミュニケーションを確認します。",
+            "heading": "マーケティング同意",
+            "placeholders": {
+                "emptyConsentList": {
+                    "heading": "マーケティング同意をまだ承諾していません"
+                }
+            }
+        },
+        "policyConsentManagement": {
+            "description": "受け入れたポリシーを確認します。",
+            "heading": "ポリシー同意",
+            "placeholders": {
+                "emptyConsentList": {
+                    "heading": "ポリシーの同意を受け入れていません"
                 }
             }
         },

@@ -22,8 +22,9 @@ import { fullPermissions } from "./__mocks__/getting-started-permissions";
 import HomePage from "../home-page";
 import "@testing-library/jest-dom";
 
-jest.mock("@wso2is/admin.onboarding.v1/public-api", () => ({
-    OnboardingFab: () => null
+vi.mock("@wso2is/admin.onboarding.v1/public-api", () => ({
+    buildOnboardingWizardPath: () => "",
+    useOnboardingWizardAccess: () => ({ canAccessWizard: false })
 }));
 
 describe("Test if the Getting Started page is working as expected", () => {

@@ -56,6 +56,10 @@ export interface FeatureConfigInterface {
      * Pending operation tasks feature.
      */
     operations?: FeatureAccessConfigInterface;
+    /**
+     * Consents management feature.
+     */
+    consents?: FeatureAccessConfigInterface;
 }
 
 /**
@@ -85,6 +89,7 @@ export interface ServiceResourceEndpointsInterface {
     preference: string;
     profileSchemas: string;
     push: string;
+    serverConfigPreferences: string;
     sessions: string;
     otpCodeValidate: string;
     token: string;
@@ -124,6 +129,13 @@ export interface ServiceResourceEndpointsInterface {
      * from server configurations.
      * @see fetchHomeRealmIdentifiers to see the usages.
      */
+    /**
+     * Endpoints for the Consent Management v2.0 API.
+     */
+    consentMgtV2: {
+        consents: string;
+    };
+
     homeRealmIdentifiers: string;
 }
 
@@ -138,7 +150,7 @@ interface AuthenticatorAppInterface {
 /**
  * Dev portal UI config interface.
  */
-export interface UIConfigInterface extends CommonUIConfigInterface {
+export interface UIConfigInterface extends CommonUIConfigInterface<FeatureConfigInterface> {
     /**
      * Copyright text for the footer.
      */
@@ -182,6 +194,12 @@ export interface UIConfigInterface extends CommonUIConfigInterface {
      * If the value is not overridden, the default SCIM2 user schema URI is returned.
      */
     userSchemaURI?: string;
+    /**
+     * Enable/Disable the legacy locale dropdown (using supported i18n languages from store)
+     * in the profile locale field. When true, the old dropdown is shown instead of the new
+     * autocomplete input that lists all locales.
+     */
+    enableLegacyLocaleDropdown?: boolean;
 }
 
 /**
