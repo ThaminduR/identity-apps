@@ -395,21 +395,6 @@ export interface flowsNS {
             };
         };
     };
-    deviceRegistrationFlow: {
-        flowDisplayName: string;
-        notifications: {
-            updateDeviceRegistrationFlow: {
-                genericError: {
-                    description: string;
-                    message: string;
-                };
-                success: {
-                    description: string;
-                    message: string;
-                };
-            };
-        };
-    };
     registrationFlow: {
         flowDisplayName: string;
         notifications: {

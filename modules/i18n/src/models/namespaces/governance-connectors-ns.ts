@@ -806,6 +806,9 @@ export interface governanceConnectorsNS {
                 };
             };
         };
+        policies: {
+            categoryTitle: string;
+        };
         sessionManagement: {
             description: string;
         };

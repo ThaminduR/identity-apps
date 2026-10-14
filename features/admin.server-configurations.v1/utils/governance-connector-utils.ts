@@ -306,10 +306,7 @@ export class GovernanceConnectorUtils {
                         testId: "bot-detection-card"
                     },
                     {
-                        description: I18n.instance.t(
-                            "sessionManagement:description",
-                            { defaultValue: "Manage and configure user session settings and preferences." }
-                        ),
+                        description: "Manage and configure user session settings and preferences.",
                         header: I18n.instance.t("sessionManagement:title"),
                         id: ServerConfigurationsConstants.SESSION_MANAGEMENT_CONNECTOR_ID,
                         route: AppConstants.getPaths().get("SESSION_MANAGEMENT"),
@@ -318,19 +315,13 @@ export class GovernanceConnectorUtils {
                 ],
                 displayOrder: 1,
                 id: "login-security",
-                title: I18n.instance.t("governanceConnectors:categories.loginSecurity.title", {
-                    defaultValue: "Login Security"
-                })
+                title: "Login Security"
             },
             {
                 connectors: [
                     {
-                        description: I18n.instance.t("devices:assurancePolicies.connector.description", {
-                            defaultValue: "Define and manage device assurance policies for your organization."
-                        }),
-                        header: I18n.instance.t("devices:assurancePolicies.connector.header", {
-                            defaultValue: "Device Assurance"
-                        }),
+                        description: I18n.instance.t("devices:assurancePolicies.connector.description"),
+                        header: I18n.instance.t("devices:assurancePolicies.connector.header"),
                         id: "device-assurance-policies",
                         route: AppConstants.getPaths().get("DEVICE_ASSURANCE_POLICIES"),
                         testId: "device-assurance-policies-card"
@@ -338,9 +329,7 @@ export class GovernanceConnectorUtils {
                 ],
                 displayOrder: 1,
                 id: "policies",
-                title: I18n.instance.t("governanceConnectors:categories.policies.title", {
-                    defaultValue: "Policies"
-                })
+                title: I18n.instance.t("governanceConnectors:connectorCategories.policies.categoryTitle")
             },
             {
                 connectors: [

@@ -763,6 +763,9 @@ export const governanceConnectors: governanceConnectorsNS = {
                 }
             }
         },
+        policies: {
+            categoryTitle: "Policies"
+        },
         sessionManagement: {
             description: "Manage settings related to the session of your users."
         },

@@ -61,6 +61,7 @@ export interface DevicesNS {
                     policyNamePlaceholder: string;
                     conditionsHeading: string;
                     conditionsDescription: string;
+                    policyNameHint: string;
                 };
                 executionRules: {
                     title: string;
@@ -96,6 +97,9 @@ export interface DevicesNS {
                         loginFlow: string;
                         otherFlows: string;
                     };
+                    and: string;
+                    notSet: string;
+                    or: string;
                 };
             };
             platforms: {
@@ -134,6 +138,12 @@ export interface DevicesNS {
                         description: string;
                     };
                 };
+            };
+            validations: {
+                nameMinLength: string;
+                nameRequired: string;
+                platformRequired: string;
+                ruleRequired: string;
             };
         };
         connector: {
@@ -202,6 +212,10 @@ export interface DevicesNS {
                         operator: string;
                         value: string;
                     };
+                    values: {
+                        disabled: string;
+                        enabled: string;
+                    };
                 };
             };
             notifications: {
@@ -245,5 +259,6 @@ export interface DevicesNS {
                 };
             };
         };
+        title: string;
     };
 }

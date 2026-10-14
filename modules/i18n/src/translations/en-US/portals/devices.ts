@@ -75,6 +75,8 @@ export const devices: DevicesNS = {
                     heading: "Review",
                     noRuleNote: "Applies to all {{platform}} devices",
                     noRules: "No conditions configured.",
+                    notSet: "(not set)",
+                    or: "OR",
                     platforms: "Platforms",
                     policyName: "Policy Name",
                     rules: "Conditions",
@@ -82,6 +84,7 @@ export const devices: DevicesNS = {
                     sectionRules: "Execution rules",
                     title: "Review & Save",
                     appliesToAll: "Applies to all {{platform}} devices",
+                    and: "AND",
                     assignHint: {
                         loginFlow: "To assign this policy in a <strong>login flow</strong>, use an Adaptive Authentication script.",
                         otherFlows: "To assign this policy in other flows (e.g. User Registration, Self Registration), click the <strong>cogwheel icon</strong> on the executor step and select this policy.",
@@ -94,6 +97,7 @@ export const devices: DevicesNS = {
                     description: "Define a name and configure the conditions for this policy.",
                     heading: "Configure Policy",
                     policyNameLabel: "Policy Name",
+                    policyNameHint: "A short, recognizable label. 3–80 characters.",
                     policyNamePlaceholder: "Enter a name for this policy",
                     title: "Configure"
                 }
@@ -134,6 +138,12 @@ export const devices: DevicesNS = {
                         message: "Failed to load metadata"
                     }
                 }
+            },
+            validations: {
+                nameMinLength: "Use at least 3 characters.",
+                nameRequired: "Policy name is required.",
+                platformRequired: "Select at least one platform.",
+                ruleRequired: "Configure an execution rule for at least one platform before proceeding."
             }
         },
         connector: {
@@ -197,7 +207,11 @@ export const devices: DevicesNS = {
                         value: "Value"
                     },
                     description: "The following conditions must all be met for this policy to pass.",
-                    heading: "Conditions"
+                    heading: "Conditions",
+                    values: {
+                        disabled: "Disabled",
+                        enabled: "Enabled"
+                    }
                 },
                 platform: {
                     heading: "Platform"
@@ -246,6 +260,7 @@ export const devices: DevicesNS = {
                 },
                 heading: "Device Information"
             }
-        }
+        },
+        title: "Device Details"
     }
 };

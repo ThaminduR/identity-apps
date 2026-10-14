@@ -1095,7 +1095,7 @@
         "display": {
             "label": "Basic + Device Register",
             "description": "Self-registration flow with device registration at sign-up",
-            "image": "assets/images/icons/smartphone.svg",
+            "image": "assets/images/icons/device-registration.svg",
             "showOnResourcePanel": true
         },
         "config": {

@@ -62,13 +62,6 @@ interface DevicePolicyEditPagePathParams {
 type DevicePolicyEditPagePropsInterface = IdentifiableComponentInterface &
     RouteComponentProps<DevicePolicyEditPagePathParams>;
 
-const PLATFORM_DISPLAY_NAMES: Record<string, string> = {
-    android: "Android",
-    ios: "iOS",
-    macos: "macOS",
-    windows: "Windows"
-};
-
 const DevicePolicyEditPage: FunctionComponent<DevicePolicyEditPagePropsInterface> = ({
     match,
     "data-componentid": componentId = "device-policy-edit-page"
@@ -170,15 +163,30 @@ const DevicePolicyEditPage: FunctionComponent<DevicePolicyEditPagePropsInterface
         [ allRawMeta ]
     );
 
+    const resolvePlatformDisplayName = (platform: string): string =>
+        t(`devices:assurancePolicies.wizard.platforms.${ platform }`, { defaultValue: platform });
+
     const formatValue = (expression: DevicePolicyExpressionInterface): ReactNode => {
         const raw: string = expression.value?.value ?? "";
 
         if (raw === "true") {
-            return <Chip label="Enabled" color="success" size="small" />;
+            return (
+                <Chip
+                    label={ t("devices:assurancePolicies.edit.sections.conditions.values.enabled") }
+                    color="success"
+                    size="small"
+                />
+            );
         }
 
         if (raw === "false") {
-            return <Chip label="Disabled" color="error" size="small" />;
+            return (
+                <Chip
+                    label={ t("devices:assurancePolicies.edit.sections.conditions.values.disabled") }
+                    color="error"
+                    size="small"
+                />
+            );
         }
 
         if (raw.includes(",")) {
@@ -209,7 +217,7 @@ const DevicePolicyEditPage: FunctionComponent<DevicePolicyEditPagePropsInterface
                         );
 
                     return {
-                        menuItem: PLATFORM_DISPLAY_NAMES[platform] ?? platform,
+                        menuItem: resolvePlatformDisplayName(platform),
                         render: (): ReactElement => (
                             <ResourceTab.Pane
                                 controlledSegmentation
@@ -220,7 +228,7 @@ const DevicePolicyEditPage: FunctionComponent<DevicePolicyEditPagePropsInterface
                                     <p className="sub-heading">
                                         { t(
                                             "devices:assurancePolicies.wizard.steps.review.noRuleNote",
-                                            { platform: PLATFORM_DISPLAY_NAMES[platform] ?? platform }
+                                            { platform: resolvePlatformDisplayName(platform) }
                                         ) }
                                     </p>
                                 ) : (

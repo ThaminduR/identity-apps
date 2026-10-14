@@ -614,7 +614,7 @@ export const getAppViewRoutes = (): RouteInterface[] => {
             ),
             exact: true,
             id: "deviceDetail",
-            name: "Device Detail",
+            name: "devices:detail.title",
             order: 9,
             path: AppConstants.getPaths().get("DEVICE_DETAIL"),
             protected: true,

@@ -316,17 +316,17 @@ const CreateDevicePolicyWizard: FunctionComponent<CreateDevicePolicyWizardPropsI
         const trimmed: string = policyName.trim();
 
         if (trimmed.length === 0) {
-            setNameError(t("devices:assurancePolicies.wizard.notifications.create.genericError.description"));
+            setNameError(t("devices:assurancePolicies.wizard.validations.nameRequired"));
             valid = false;
         } else if (trimmed.length < 3) {
-            setNameError("Use at least 3 characters.");
+            setNameError(t("devices:assurancePolicies.wizard.validations.nameMinLength"));
             valid = false;
         } else {
             setNameError("");
         }
 
         if (selectedPlatforms.length === 0) {
-            setPlatformsError("Select at least one platform.");
+            setPlatformsError(t("devices:assurancePolicies.wizard.validations.platformRequired"));
             valid = false;
         } else {
             setPlatformsError("");
@@ -352,9 +352,7 @@ const CreateDevicePolicyWizard: FunctionComponent<CreateDevicePolicyWizardPropsI
         );
 
         if (!anyConfigured) {
-            setRulesValidationError(
-                "Configure an execution rule for at least one platform before proceeding."
-            );
+            setRulesValidationError(t("devices:assurancePolicies.wizard.validations.ruleRequired"));
 
             return;
         }
@@ -448,7 +446,7 @@ const CreateDevicePolicyWizard: FunctionComponent<CreateDevicePolicyWizardPropsI
                     "devices:assurancePolicies.wizard.steps.ruleBuilder.policyNamePlaceholder"
                 ) }
                 error={ nameError.length > 0 }
-                helperText={ nameError || "A short, recognizable label. 3–80 characters." }
+                helperText={ nameError || t("devices:assurancePolicies.wizard.steps.ruleBuilder.policyNameHint") }
                 onChange={ (e: ChangeEvent<HTMLInputElement>): void => {
                     setPolicyName(e.target.value);
                     if (nameError) {

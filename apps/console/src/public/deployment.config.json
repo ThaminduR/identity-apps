@@ -1247,10 +1247,6 @@
                     {
                         "feature": "flows.types.list.inviteUserToSetPassword",
                         "flag": ""
-                    },
-                    {
-                        "feature": "flows.types.list.deviceRegistration",
-                        "flag": ""
                     }
                 ],
                 "scopes": {
