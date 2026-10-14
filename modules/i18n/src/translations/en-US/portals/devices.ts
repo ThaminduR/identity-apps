@@ -83,8 +83,8 @@ export const devices: DevicesNS = {
                     sectionPolicy: "Policy",
                     sectionRules: "Execution rules",
                     title: "Review & Save",
-                    appliesToAll: "Applies to all {{platform}} devices",
                     and: "AND",
+                    appliesToAll: "Applies to all {{platform}} devices",
                     assignHint: {
                         loginFlow: "To assign this policy in a <strong>login flow</strong>, use an Adaptive Authentication script.",
                         otherFlows: "To assign this policy in other flows (e.g. User Registration, Self Registration), click the <strong>cogwheel icon</strong> on the executor step and select this policy.",
@@ -96,8 +96,8 @@ export const devices: DevicesNS = {
                     conditionsHeading: "Conditions",
                     description: "Define a name and configure the conditions for this policy.",
                     heading: "Configure Policy",
-                    policyNameLabel: "Policy Name",
                     policyNameHint: "A short, recognizable label. 3–80 characters.",
+                    policyNameLabel: "Policy Name",
                     policyNamePlaceholder: "Enter a name for this policy",
                     title: "Configure"
                 }

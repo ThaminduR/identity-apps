@@ -264,6 +264,9 @@ export const flows: flowsNS = {
             enableFlow: "Enable the {{flowType}} flow"
         },
         validation: {
+            deviceRegistrationFactors: {
+                message: "Device registration requires at least one of the following factors to be present in the flow: Email OTP or SMS OTP."
+            },
             fields: {
                 button: {
                     action: "Button must have an action type defined for proper functionality.",
@@ -323,9 +326,6 @@ export const flows: flowsNS = {
                     text: "Typography must have text content to be displayed to users.",
                     variant: "Typography must have a variant defined for proper text styling."
                 }
-            },
-            deviceRegistrationFactors: {
-                message: "Device registration requires at least one of the following factors to be present in the flow: Email OTP or SMS OTP."
             },
             userResolveExecutorFields: {
                 message: "Forms with a 'Resolve User' action can only contain a text input field mapped to Username.",
