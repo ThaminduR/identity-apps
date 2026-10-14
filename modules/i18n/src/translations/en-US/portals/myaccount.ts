@@ -1578,6 +1578,114 @@ export const myAccount: MyAccountNS = {
             infoPopover: "This image has been retrieved from <1>Gravatar</1> service.",
             urlUpdateHeader: "Enter an image URL to set your profile picture"
         },
+        userDevices: {
+            actions: {
+                activate: "Activate",
+                deactivate: "Deactivate",
+                remove: "Remove",
+                rename: "Rename"
+            },
+            forms: {
+                rename: {
+                    heading: "Rename device",
+                    inputs: {
+                        deviceName: {
+                            label: "Device name",
+                            placeholder: "Enter a name for the device",
+                            validations: {
+                                empty: "Device name is required.",
+                                maxLength: "Device name cannot exceed {{length}} characters."
+                            }
+                        }
+                    }
+                }
+            },
+            modals: {
+                removeDevice: {
+                    assertionHint: "Please confirm your action.",
+                    content: "You will need to register the device again to use it to sign in.",
+                    heading: "Are you sure?",
+                    message: "This action will remove the device from your account."
+                }
+            },
+            notifications: {
+                activateDevice: {
+                    error: {
+                        description: "{{description}}",
+                        message: "Couldn't activate the device"
+                    },
+                    genericError: {
+                        description: "Something went wrong while activating the device.",
+                        message: "Couldn't activate the device"
+                    },
+                    success: {
+                        description: "The device can now be used to sign in.",
+                        message: "Device activated"
+                    }
+                },
+                deactivateDevice: {
+                    error: {
+                        description: "{{description}}",
+                        message: "Couldn't deactivate the device"
+                    },
+                    genericError: {
+                        description: "Something went wrong while deactivating the device.",
+                        message: "Couldn't deactivate the device"
+                    },
+                    success: {
+                        description: "The device can no longer be used to sign in until it is activated again.",
+                        message: "Device deactivated"
+                    }
+                },
+                fetchDevices: {
+                    error: {
+                        description: "{{description}}",
+                        message: "Couldn't retrieve your devices"
+                    },
+                    genericError: {
+                        description: "Something went wrong while retrieving your devices.",
+                        message: "Couldn't retrieve your devices"
+                    },
+                    success: {
+                        description: "Successfully retrieved your devices.",
+                        message: "Devices retrieved"
+                    }
+                },
+                removeDevice: {
+                    error: {
+                        description: "{{description}}",
+                        message: "Couldn't remove the device"
+                    },
+                    genericError: {
+                        description: "Something went wrong while removing the device.",
+                        message: "Couldn't remove the device"
+                    },
+                    success: {
+                        description: "The device was removed from your account.",
+                        message: "Device removed"
+                    }
+                },
+                renameDevice: {
+                    error: {
+                        description: "{{description}}",
+                        message: "Couldn't rename the device"
+                    },
+                    genericError: {
+                        description: "Something went wrong while renaming the device.",
+                        message: "Couldn't rename the device"
+                    },
+                    success: {
+                        description: "The device name was updated.",
+                        message: "Device renamed"
+                    }
+                }
+            },
+            registeredOn: "Registered {{date}}",
+            status: {
+                active: "Active",
+                inactive: "Inactive"
+            }
+        },
         userSessions: {
             browserAndOS: "{{browser}} on {{os}} {{version}}",
             dangerZones: {
@@ -1962,6 +2070,11 @@ export const myAccount: MyAccountNS = {
             },
             description: "Download all your profile data including personal data, and linked accounts",
             heading: "Export Profile"
+        },
+        userDevices: {
+            description: "Manage the devices registered to your account. Deactivate or remove a device you no " +
+                "longer use or don't recognize.",
+            heading: "Registered devices"
         },
         userSessions: {
             actionTitles: {

@@ -42,6 +42,7 @@ import {
     Consents,
     LoginVerifyingData,
     MultiFactorAuthentication,
+    UserDevicesComponent,
     UserSessionsComponent
 } from "../components";
 import { AppConstants, CommonConstants } from "../constants";
@@ -263,6 +264,18 @@ const AccountSecurityPage: FunctionComponent<AccountSecurityPagePropsInterface>=
                                 <div ref={ accountActivity }>
                                     <UserSessionsComponent onAlertFired={ handleAlerts } />
                                 </div>
+                            </Grid.Column>
+                        </Grid.Row>
+                    ) : null }
+
+                { hasRequiredScopes(accessConfig?.security, accessConfig?.security?.scopes?.read, allowedScopes) &&
+                    isFeatureEnabled(
+                        accessConfig?.security,
+                        AppConstants.FEATURE_DICTIONARY.get("SECURITY_DEVICES")
+                    ) ? (
+                        <Grid.Row>
+                            <Grid.Column width={ 16 }>
+                                <UserDevicesComponent onAlertFired={ handleAlerts } />
                             </Grid.Column>
                         </Grid.Row>
                     ) : null }

@@ -1023,6 +1023,49 @@ export interface MyAccountNS {
             infoPopover: string;
             urlUpdateHeader: string;
         };
+        userDevices?: {
+            actions: {
+                activate: string;
+                deactivate: string;
+                remove: string;
+                rename: string;
+            };
+            forms: {
+                rename: {
+                    heading: string;
+                    inputs: {
+                        deviceName: {
+                            label: string;
+                            placeholder: string;
+                            validations: {
+                                empty: string;
+                                maxLength: string;
+                            };
+                        };
+                    };
+                };
+            };
+            modals: {
+                removeDevice: {
+                    assertionHint: string;
+                    content: string;
+                    heading: string;
+                    message: string;
+                };
+            };
+            notifications: {
+                activateDevice: Notification;
+                deactivateDevice: Notification;
+                fetchDevices: Notification;
+                removeDevice: Notification;
+                renameDevice: Notification;
+            };
+            registeredOn: string;
+            status: {
+                active: string;
+                inactive: string;
+            };
+        };
         userSessions: {
             browserAndOS: string;
             dangerZones: {
@@ -1184,6 +1227,10 @@ export interface MyAccountNS {
             actionTitles: {
                 export: string;
             };
+            description: string;
+            heading: string;
+        };
+        userDevices?: {
             description: string;
             heading: string;
         };

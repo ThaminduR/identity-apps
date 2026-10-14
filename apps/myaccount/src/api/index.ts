@@ -24,6 +24,7 @@ export * from "./profile";
 export * from "./security-questions";
 export * from "./multi-factor-fido";
 export * from "./user-sessions";
+export * from "./user-devices";
 export * from "./multi-factor-totp";
 export * from "./verify-mobile-smsotp";
 export * from "./preference";

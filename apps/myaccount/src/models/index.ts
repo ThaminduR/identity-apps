@@ -28,6 +28,7 @@ export * from "./security-questions";
 export * from "./storage";
 export * from "./tokens";
 export * from "./user-sessions";
+export * from "./user-devices";
 export * from "./global";
 export * from "./loaders";
 export * from "./app-config";

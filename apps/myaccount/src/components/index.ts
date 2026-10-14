@@ -28,5 +28,6 @@ export * from "./policy-consent";
 export * from "./profile";
 export * from "./shared";
 export * from "./user-sessions";
+export * from "./user-devices";
 export * from "./federated-associations";
 export * from "./login-verify-data";
