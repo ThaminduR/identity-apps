@@ -116,7 +116,6 @@ export const buildFlatRule = (rule: RuleWithoutIdInterface | null): PolicyRuleIn
                 )
             })
         )
-        // Drop empty AND-groups so the payload satisfies the API's `expressions` minItems constraint.
         .filter((group: PolicyANDRuleInterface): boolean => group.expressions.length > 0);
 
     return { condition: "OR", rules };

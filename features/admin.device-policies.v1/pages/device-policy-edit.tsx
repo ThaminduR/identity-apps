@@ -102,8 +102,6 @@ const DevicePolicyEditPage: FunctionComponent<DevicePolicyEditPagePropsInterface
         [ policy ]
     );
 
-    /* -- Metadata for display-name resolution (SWR caches by URL) ------- */
-
     const platformsInPolicy: DevicePlatformType[] = useMemo(
         (): DevicePlatformType[] =>
             platformRules.map((r: PolicyResourceResponseInterface): DevicePlatformType =>

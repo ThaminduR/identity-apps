@@ -97,8 +97,6 @@ const DeviceAssurancePoliciesPage: FunctionComponent<DeviceAssurancePoliciesPage
             return;
         }
 
-        // `AdvancedSearchWithBasicFilters` emits a SCIM-style expression (e.g. `name co "value"`).
-        // The policies endpoint expects the bare search term, so extract the quoted value.
         const match: RegExpMatchArray | null = query.match(/"([^"]*)"/);
         const filterValue: string = match ? match[1] : query;
 

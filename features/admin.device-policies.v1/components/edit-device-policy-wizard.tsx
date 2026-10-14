@@ -157,8 +157,6 @@ const EditDevicePolicyWizard: FunctionComponent<EditDevicePolicyWizardPropsInter
         [ initialRules ]
     );
 
-    /* -- State --------------------------------------------------------- */
-
     const [ currentStep, setCurrentStep ] = useState<WizardStep>(WizardStep.EXECUTION_RULES);
     const [ policyName ] = useState<string>(initialName);
     const [ activeTabIndex, setActiveTabIndex ] = useState<number>(0);
@@ -169,8 +167,6 @@ const EditDevicePolicyWizard: FunctionComponent<EditDevicePolicyWizardPropsInter
     const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
 
     const activePlatform: DevicePlatformType | null = selectedPlatforms[activeTabIndex] ?? null;
-
-    /* -- Metadata ------------------------------------------------------ */
 
     const { data: androidMeta, isLoading: isAndroidLoading } =
         useGetDevicePolicyMetadata("android", selectedPlatforms.includes("android"));
@@ -223,8 +219,6 @@ const EditDevicePolicyWizard: FunctionComponent<EditDevicePolicyWizardPropsInter
         },
         [ allRawMeta ]
     );
-
-    /* -- Handlers ------------------------------------------------------ */
 
     const saveActivePlatformRule = (): void => {
         if (activePlatform !== null && platformConfigured[activePlatform]) {
@@ -295,7 +289,6 @@ const EditDevicePolicyWizard: FunctionComponent<EditDevicePolicyWizardPropsInter
                         target: p
                     })
                 )
-                // Only send platforms with at least one rule group; the API rejects empty `rules`.
                 .filter((resource: PolicyResourceRequestInterface): boolean => resource.rule.rules.length > 0);
 
         updateDevicePolicy(policyId, { resources })
@@ -329,8 +322,6 @@ const EditDevicePolicyWizard: FunctionComponent<EditDevicePolicyWizardPropsInter
             });
     };
 
-    /* -- Wizard steps -------------------------------------------------- */
-
     const WIZARD_STEPS: { icon: FunctionComponent<SVGProps<SVGSVGElement>>; title: string }[] = [
         {
             icon: GearsIcon,
@@ -341,8 +332,6 @@ const EditDevicePolicyWizard: FunctionComponent<EditDevicePolicyWizardPropsInter
             title: t("devices:assurancePolicies.wizard.steps.review.title")
         }
     ];
-
-    /* -- Step renderers ------------------------------------------------ */
 
     const resolveStepContent = (): ReactElement => {
         switch (currentStep) {

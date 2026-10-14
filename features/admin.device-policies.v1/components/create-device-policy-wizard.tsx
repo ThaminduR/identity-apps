@@ -120,8 +120,6 @@ const CreateDevicePolicyWizard: FunctionComponent<CreateDevicePolicyWizardPropsI
         [ t, technologyLogos ]
     );
 
-    /* -- State --------------------------------------------------------- */
-
     const [ currentStep, setCurrentStep ] = useState<WizardStep>(WizardStep.BASIC_DETAILS);
     const [ policyName, setPolicyName ] = useState<string>("");
     const [ nameError, setNameError ] = useState<string>("");
@@ -137,7 +135,6 @@ const CreateDevicePolicyWizard: FunctionComponent<CreateDevicePolicyWizardPropsI
 
     const activePlatform: DevicePlatformType | null = selectedPlatforms[activeTabIndex] ?? null;
 
-    /* -- Metadata (one hook per platform, SWR caches by URL) ----------- */
     const onRulesStep: boolean = currentStep === WizardStep.EXECUTION_RULES;
 
     const { data: androidMeta, isLoading: isAndroidLoading } =
@@ -191,8 +188,6 @@ const CreateDevicePolicyWizard: FunctionComponent<CreateDevicePolicyWizardPropsI
         },
         [ allRawMeta ]
     );
-
-    /* -- Handlers ------------------------------------------------------ */
 
     const handlePlatformToggle = (platform: DevicePlatformType): void => {
         setSelectedPlatforms((prev: DevicePlatformType[]): DevicePlatformType[] => {
@@ -382,7 +377,6 @@ const CreateDevicePolicyWizard: FunctionComponent<CreateDevicePolicyWizardPropsI
                         target: p
                     })
                 )
-                // Only send platforms with at least one rule group; the API rejects empty `rules`.
                 .filter((resource: PolicyResourceRequestInterface): boolean => resource.rule.rules.length > 0);
 
         createDevicePolicy({ name: policyName.trim(), resources })
@@ -416,8 +410,6 @@ const CreateDevicePolicyWizard: FunctionComponent<CreateDevicePolicyWizardPropsI
             });
     };
 
-    /* -- Wizard steps config ------------------------------------------- */
-
     const WIZARD_STEPS: { icon: FunctionComponent<SVGProps<SVGSVGElement>>; title: string }[] = [
         {
             icon: ShieldIcon,
@@ -432,8 +424,6 @@ const CreateDevicePolicyWizard: FunctionComponent<CreateDevicePolicyWizardPropsI
             title: t("devices:assurancePolicies.wizard.steps.review.title")
         }
     ];
-
-    /* -- Step renderers ------------------------------------------------ */
 
     const renderBasicDetailsStep = (): ReactElement => (
         <Box>
