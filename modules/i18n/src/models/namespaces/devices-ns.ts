@@ -149,10 +149,6 @@ export interface DevicesNS {
                     };
                 };
             };
-            connector: {
-                header: string;
-                description: string;
-            };
             platforms: {
                 android: string;
                 ios: string;
@@ -190,6 +186,10 @@ export interface DevicesNS {
                     };
                 };
             };
+        };
+        connector: {
+            header: string;
+            description: string;
         };
         title: string;
         description: string;
