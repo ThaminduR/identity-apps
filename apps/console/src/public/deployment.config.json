@@ -1115,14 +1115,14 @@
                 "scopes": {
                     "create": [],
                     "delete": [
-                        "internal_governance_update"
+                        "internal_device_mgt_delete"
                     ],
                     "feature": [],
                     "read": [
-                        "internal_governance_view"
+                        "internal_device_mgt_view"
                     ],
                     "update": [
-                        "internal_governance_update"
+                        "internal_device_mgt_update"
                     ]
                 }
             },
@@ -1132,17 +1132,17 @@
                 "featureFlags": [],
                 "scopes": {
                     "create": [
-                        "internal_governance_update"
+                        "internal_policy_mgt_create"
                     ],
                     "delete": [
-                        "internal_governance_update"
+                        "internal_policy_mgt_delete"
                     ],
                     "feature": [],
                     "read": [
-                        "internal_governance_view"
+                        "internal_policy_mgt_view"
                     ],
                     "update": [
-                        "internal_governance_update"
+                        "internal_policy_mgt_update"
                     ]
                 }
             },
