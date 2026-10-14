@@ -19,22 +19,6 @@
 import { DevicesNS } from "../../../models/namespaces/devices-ns";
 
 export const devices: DevicesNS = {
-    advancedSearch: {
-        form: {
-            inputs: {
-                filterAttribute: {
-                    placeholder: "E.g. Device name, user, status etc."
-                },
-                filterCondition: {
-                    placeholder: "E.g. Starts with etc."
-                },
-                filterValue: {
-                    placeholder: "Enter value to search"
-                }
-            }
-        },
-        placeholder: "Search by device name"
-    },
     assurancePolicies: {
         advancedSearch: {
             placeholder: "Search by policy name",
@@ -241,57 +225,6 @@ export const devices: DevicesNS = {
         title: "Device Assurance Policies"
     },
     description: "View and manage devices enrolled by users in your organization.",
-    list: {
-        columns: {
-            actions: "Actions",
-            deviceName: "Device",
-            registeredAt: "Enrolled At",
-            status: "Status",
-            user: "User"
-        },
-        confirmations: {
-            delete: {
-                assertionHint: "Please confirm your action.",
-                content: "This action is irreversible. The device will be permanently removed.",
-                header: "Are you sure?",
-                message: "If you delete this device, the user will need to re-enroll it."
-            }
-        }
-    },
-    notifications: {
-        delete: {
-            error: {
-                description: "An error occurred while deleting the device.",
-                message: "Delete failed"
-            },
-            success: {
-                description: "The device has been deleted successfully.",
-                message: "Device deleted"
-            }
-        },
-        fetch: {
-            genericError: {
-                description: "An error occurred while retrieving devices.",
-                message: "Retrieval failed"
-            }
-        }
-    },
-    placeholders: {
-        empty: {
-            subtitles: {
-                0: "There are no enrolled devices in your organization yet."
-            },
-            title: "No Devices"
-        },
-        emptySearch: {
-            action: "Clear search query",
-            subtitles: {
-                0: "We could not find any results for \"{{searchQuery}}\"",
-                1: "Please try a different search term."
-            },
-            title: "No results found"
-        }
-    },
     title: "Enrolled Devices",
     detail: {
         backButton: "Go back to Enrolled Devices",
@@ -312,23 +245,6 @@ export const devices: DevicesNS = {
                     status: "Status"
                 },
                 heading: "Device Information"
-            },
-            metadata: {
-                columns: {
-                    key: "Property",
-                    value: "Value"
-                },
-                description: "Additional hardware and software properties reported by the device.",
-                empty: "No metadata available for this device.",
-                heading: "Device Metadata"
-            },
-            userInfo: {
-                fields: {
-                    email: "Email",
-                    username: "Username"
-                },
-                heading: "Enrolled User",
-                notFound: "User details could not be loaded."
             }
         }
     }

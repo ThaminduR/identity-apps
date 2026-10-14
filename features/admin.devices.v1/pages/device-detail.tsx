@@ -20,11 +20,6 @@ import Box from "@oxygen-ui/react/Box";
 import Chip from "@oxygen-ui/react/Chip";
 import Grid from "@oxygen-ui/react/Grid";
 import Stack from "@oxygen-ui/react/Stack";
-import Table from "@oxygen-ui/react/Table";
-import TableBody from "@oxygen-ui/react/TableBody";
-import TableCell from "@oxygen-ui/react/TableCell";
-import TableHead from "@oxygen-ui/react/TableHead";
-import TableRow from "@oxygen-ui/react/TableRow";
 import Typography from "@oxygen-ui/react/Typography";
 import { history } from "@wso2is/admin.core.v1/helpers/history";
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
@@ -36,7 +31,7 @@ import {
     PageLayout
 } from "@wso2is/react-components";
 import isEmpty from "lodash-es/isEmpty";
-import React, { FunctionComponent, ReactElement, ReactNode, useEffect, useMemo } from "react";
+import React, { FunctionComponent, ReactElement, ReactNode, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { RouteComponentProps } from "react-router";
@@ -76,20 +71,6 @@ const DeviceDetailPage: FunctionComponent<DeviceDetailPagePropsInterface> = ({
             message: t("devices:detail.notifications.fetch.genericError.message")
         }));
     }, [ deviceFetchError ]);
-
-    const parsedMetadata: Record<string, string> = useMemo((): Record<string, string> => {
-        if (!device?.metadata) {
-            return {};
-        }
-
-        try {
-            return JSON.parse(device.metadata) as Record<string, string>;
-        } catch {
-            return {};
-        }
-    }, [ device ]);
-
-    const metadataEntries: [ string, string ][] = Object.entries(parsedMetadata);
 
     const resolveStatusChip = (status: string): ReactElement => {
         const color: "success" | "warning" | "error" =
@@ -141,7 +122,6 @@ const DeviceDetailPage: FunctionComponent<DeviceDetailPagePropsInterface> = ({
             pageHeaderMaxWidth={ false }
         >
             <Stack spacing={ 3 }>
-                { /* ── Device Information ── */ }
                 <EmphasizedSegment padded="very" data-componentid={ `${ componentId }-info-segment` }>
                     <Heading as="h5">
                         { t("devices:detail.sections.deviceInfo.heading") }
@@ -172,46 +152,6 @@ const DeviceDetailPage: FunctionComponent<DeviceDetailPagePropsInterface> = ({
                             ) }
                         </Grid>
                     </Grid>
-                </EmphasizedSegment>
-
-                { /* ── Device Metadata ── */ }
-                <EmphasizedSegment padded="very" data-componentid={ `${ componentId }-metadata-segment` }>
-                    <Heading as="h5">
-                        { t("devices:detail.sections.metadata.heading") }
-                    </Heading>
-                    <Typography variant="body2" color="text.secondary" className="sub-heading">
-                        { t("devices:detail.sections.metadata.description") }
-                    </Typography>
-                    { metadataEntries.length > 0 ? (
-                        <Table data-componentid={ `${ componentId }-metadata-table` }>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>
-                                        { t("devices:detail.sections.metadata.columns.key") }
-                                    </TableCell>
-                                    <TableCell>
-                                        { t("devices:detail.sections.metadata.columns.value") }
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                { metadataEntries.map(([ key, value ]: [ string, string ]): ReactElement => (
-                                    <TableRow key={ key }>
-                                        <TableCell>
-                                            <Typography variant="body2" sx={ { fontWeight: 500 } }>
-                                                { key }
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>{ String(value) }</TableCell>
-                                    </TableRow>
-                                )) }
-                            </TableBody>
-                        </Table>
-                    ) : (
-                        <Typography variant="body2" color="text.secondary">
-                            { t("devices:detail.sections.metadata.empty") }
-                        </Typography>
-                    ) }
                 </EmphasizedSegment>
             </Stack>
         </PageLayout>

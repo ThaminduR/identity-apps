@@ -19,57 +19,6 @@
 export interface DevicesNS {
     title: string;
     description: string;
-    advancedSearch: {
-        placeholder: string;
-        form: {
-            inputs: {
-                filterAttribute: {
-                    placeholder: string;
-                };
-                filterCondition: {
-                    placeholder: string;
-                };
-                filterValue: {
-                    placeholder: string;
-                };
-            };
-        };
-    };
-    list: {
-        columns: {
-            deviceName: string;
-            user: string;
-            status: string;
-            registeredAt: string;
-            actions: string;
-        };
-        confirmations: {
-            delete: {
-                assertionHint: string;
-                header: string;
-                message: string;
-                content: string;
-            };
-        };
-    };
-    notifications: {
-        fetch: {
-            genericError: {
-                message: string;
-                description: string;
-            };
-        };
-        delete: {
-            success: {
-                message: string;
-                description: string;
-            };
-            error: {
-                message: string;
-                description: string;
-            };
-        };
-    };
     assurancePolicies: {
         advancedSearch: {
             placeholder: string;
@@ -275,22 +224,6 @@ export interface DevicesNS {
             };
         };
     };
-    placeholders: {
-        emptySearch: {
-            title: string;
-            subtitles: {
-                0: string;
-                1: string;
-            };
-            action: string;
-        };
-        empty: {
-            title: string;
-            subtitles: {
-                0: string;
-            };
-        };
-    };
     detail: {
         backButton: string;
         sections: {
@@ -302,23 +235,6 @@ export interface DevicesNS {
                     status: string;
                     registeredAt: string;
                 };
-            };
-            metadata: {
-                heading: string;
-                description: string;
-                columns: {
-                    key: string;
-                    value: string;
-                };
-                empty: string;
-            };
-            userInfo: {
-                heading: string;
-                fields: {
-                    username: string;
-                    email: string;
-                };
-                notFound: string;
             };
         };
         notifications: {

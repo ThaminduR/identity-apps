@@ -16,15 +16,15 @@
  * under the License.
  */
 
+/**
+ * Registered device as returned by the device management API.
+ */
 export interface DeviceResponseInterface {
     id: string;
-    userId: string;
-    userName?: string;
     deviceName: string;
     deviceModel: string;
     status: string;
     registeredAt: string;
-    metadata?: string;
 }
 
 export interface DeviceListLinkInterface {
