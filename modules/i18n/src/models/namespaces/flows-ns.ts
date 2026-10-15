@@ -373,6 +373,21 @@ export interface flowsNS {
             unknownAuthor: string;
         };
     };
+    deviceRegistrationFlow: {
+        flowDisplayName: string;
+        notifications: {
+            updateDeviceRegistrationFlow: {
+                genericError: {
+                    description: string;
+                    message: string;
+                };
+                success: {
+                    description: string;
+                    message: string;
+                };
+            };
+        };
+    };
     label?: string;
     passwordRecovery: {
         banner: {

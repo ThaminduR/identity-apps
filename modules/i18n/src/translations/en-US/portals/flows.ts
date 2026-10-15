@@ -370,6 +370,21 @@ export const flows: flowsNS = {
             title: "Workflow Engaged"
         }
     },
+    deviceRegistrationFlow: {
+        flowDisplayName: "Device Registration",
+        notifications: {
+            updateDeviceRegistrationFlow: {
+                genericError: {
+                    description: "Failed to update the device registration flow.",
+                    message: "Flow Update Failure"
+                },
+                success: {
+                    description: "Device registration flow updated successfully.",
+                    message: "Flow Updated Successfully"
+                }
+            }
+        }
+    },
     label: "Flows",
     page: {
         description: "Design and customize your user journeys with a no-code flow composer.",

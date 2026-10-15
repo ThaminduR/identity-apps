@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) 2025-2026, WSO2 LLC. (https://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -38,6 +38,7 @@ import resolveStepMetadata from "@wso2is/admin.flow-builder-core.v1/utils/resolv
 import updateTemplatePlaceholderReferences
     from
     "@wso2is/admin.flow-builder-core.v1/utils/update-template-placeholder-references";
+import { FlowTypes } from "@wso2is/admin.flows.v1/models/flows";
 import AIGenerationModal from "@wso2is/common.ai.v1/components/ai-generation-modal";
 import { AlertInterface, AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
@@ -82,7 +83,12 @@ import { RegistrationStaticStepTypes } from "../models/flow";
 /**
  * Props interface of {@link RegistrationFlowBuilderCore}
  */
-type RegistrationFlowBuilderCorePropsInterface = IdentifiableComponentInterface;
+interface RegistrationFlowBuilderCorePropsInterface extends IdentifiableComponentInterface {
+    /**
+     * Flow type that is being built. Defaults to the registration flow.
+     */
+    flowType?: FlowTypes;
+}
 
 /**
  * Main component that wraps the `FlowBuilder` from the flow builder core.
@@ -92,6 +98,7 @@ type RegistrationFlowBuilderCorePropsInterface = IdentifiableComponentInterface;
  */
 const RegistrationFlowBuilderCore: FunctionComponent<RegistrationFlowBuilderCorePropsInterface> = ({
     "data-componentid": componentId = "registration-flow-builder-core",
+    flowType = FlowTypes.REGISTRATION,
     ...rest
 }: RegistrationFlowBuilderCorePropsInterface): ReactElement => {
     const { addEmailVerificationEdges, addEmailVerificationNodes } = useDefaultFlow();
@@ -132,9 +139,9 @@ const RegistrationFlowBuilderCore: FunctionComponent<RegistrationFlowBuilderCore
         error: registrationFlowFetchRequestError,
         isLoading: isRegistrationFlowFetchRequestLoading,
         isValidating: isRegistrationFlowFetchRequestValidating
-    } = useGetRegistrationFlow();
+    } = useGetRegistrationFlow(flowType);
 
-    const { data: resources } = useGetRegistrationFlowBuilderResources();
+    const { data: resources } = useGetRegistrationFlowBuilderResources(flowType);
 
     const { steps, templates } = resources;
 
@@ -578,6 +585,25 @@ const RegistrationFlowBuilderCore: FunctionComponent<RegistrationFlowBuilderCore
     }, [ templates, resources ]);
 
     const initialNodes: Node[] = useMemo<Node[]>(() => {
+        if (flowType === FlowTypes.DEVICE_REGISTRATION) {
+            const deviceRegistrationTemplate: Template = cloneDeep(
+                templates.find((template: Template) => template.type === TemplateTypes.BasicDeviceRegister)
+            );
+
+            const deviceRegistrationSteps: Step[] = deviceRegistrationTemplate?.config?.data?.steps ?? [];
+
+            if (deviceRegistrationSteps.length === 0) {
+                return [];
+            }
+
+            const [ deviceRegistrationNodes ] = updateTemplatePlaceholderReferences(
+                generateSteps(deviceRegistrationSteps as Node[]),
+                deviceRegistrationTemplate?.config?.data?.__generationMeta__?.replacers
+            );
+
+            return deviceRegistrationNodes as Node[];
+        }
+
         // Try to seed from Basic template (without the last step).
         const basicSteps: Step[] = getBasicTemplateStepsWithoutOnBoardingStep();
 
@@ -593,7 +619,7 @@ const RegistrationFlowBuilderCore: FunctionComponent<RegistrationFlowBuilderCore
 
             return generateSteps(seedNodes);
         }
-    }, [ getBasicTemplateStepsWithoutOnBoardingStep, generateSteps ]);
+    }, [ flowType, templates, getBasicTemplateStepsWithoutOnBoardingStep, generateSteps ]);
 
     const [ nodes, setNodes, onNodesChange ] = useNodesState([]);
     const [ edges, setEdges, onEdgesChange ] = useEdgesState([]);

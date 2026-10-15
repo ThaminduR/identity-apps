@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) 2025-2026, WSO2 LLC. (https://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -24,35 +24,61 @@ import useGetExtensionExecutorSteps
     from "@wso2is/admin.flow-builder-core.v1/api/use-get-extension-executor-steps";
 import useGetFlowBuilderCoreResources from "@wso2is/admin.flow-builder-core.v1/api/use-get-flow-builder-core-resources";
 import { Resources } from "@wso2is/admin.flow-builder-core.v1/models/resources";
-import { Step } from "@wso2is/admin.flow-builder-core.v1/models/steps";
+import { ExecutionTypes, Step } from "@wso2is/admin.flow-builder-core.v1/models/steps";
 import { Template, TemplateTypes } from "@wso2is/admin.flow-builder-core.v1/models/templates";
 import { WidgetTypes } from "@wso2is/admin.flow-builder-core.v1/models/widget";
 import { FlowTypes } from "@wso2is/admin.flows.v1/models/flows";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
+import deviceRegistrationTemplates from "../data/device-registration-templates.json";
+import deviceRegistrationWidgets from "../data/device-registration-widgets.json";
 import elements from "../data/elements.json";
 import steps from "../data/steps.json";
 import templates from "../data/templates.json";
 import widgets from "../data/widgets.json";
 
 /**
+ * Labels of the core steps offered on the resource panel of the device registration flow builder.
+ */
+const DEVICE_REGISTRATION_PANEL_CORE_STEP_LABELS: Set<string> = new Set<string>([
+    "Blank View",
+    "Email OTP View",
+    "SMS OTP View"
+]);
+
+/**
+ * Hides a step from the resource panel unless it is allowed in the device registration flow builder.
+ *
+ * @param step - Step to process.
+ * @param isAllowed - Whether the step should remain visible on the resource panel.
+ * @returns Step with the resource panel visibility resolved.
+ */
+const resolveDeviceRegistrationPanelStep = (step: Step, isAllowed: boolean): Step => ({
+    ...step,
+    display: {
+        ...step?.display,
+        showOnResourcePanel: isAllowed && (step?.display?.showOnResourcePanel ?? false)
+    }
+});
+
+/**
  * Hook to get the resources supported by the registration flow builder.
  * This hook will aggregate the core resources and the registration specific resources.
+ * For the device registration flow, the resource panel is limited to the device registration step and the
+ * Email OTP and SMS OTP factors.
  *
- * This function calls the GET method of the following endpoint to get the resources.
- * - TODO: Fill this
- * For more details, refer to the documentation:
- * {@link https://TODO:<fillthis>)}
- *
+ * @param flowType - Flow type the resources are resolved for.
+ * @param _shouldFetch - Should fetch the data.
  * @returns SWR response object containing the data, error, isLoading, isValidating, mutate.
  */
 const useGetRegistrationFlowBuilderResources = <Data = Resources, Error = RequestErrorInterface>(
+    flowType: FlowTypes = FlowTypes.REGISTRATION,
     _shouldFetch: boolean = true
 ): RequestResultInterface<Data, Error> => {
     const { data: coreResources } = useGetFlowBuilderCoreResources();
 
     // Executors contributed by extensions deployed on the server. Appended to the palette at runtime.
-    const extensionExecutorSteps: Step[] = useGetExtensionExecutorSteps(FlowTypes.REGISTRATION);
+    const extensionExecutorSteps: Step[] = useGetExtensionExecutorSteps(flowType);
 
     const aiFeature: FeatureAccessConfigInterface = useSelector(
         (state: AppState) => state.config.ui.features?.ai
@@ -63,6 +89,25 @@ const useGetRegistrationFlowBuilderResources = <Data = Resources, Error = Reques
     );
 
     const data: unknown = useMemo(() => {
+        if (flowType === FlowTypes.DEVICE_REGISTRATION) {
+            return {
+                ...coreResources,
+                steps: [
+                    ...(coreResources?.steps ?? []).map((step: Step) => resolveDeviceRegistrationPanelStep(
+                        step,
+                        DEVICE_REGISTRATION_PANEL_CORE_STEP_LABELS.has(step?.display?.label)
+                    )),
+                    ...(steps as Step[]).map((step: Step) => resolveDeviceRegistrationPanelStep(
+                        step,
+                        step?.data?.action?.executor?.name === ExecutionTypes.DeviceRegistration
+                    )),
+                    ...extensionExecutorSteps
+                ],
+                templates: deviceRegistrationTemplates,
+                widgets: deviceRegistrationWidgets
+            };
+        }
+
         const isAiFeatureDisabled: boolean = !aiFeature?.enabled || aiFeature?.disabledFeatures?.includes(
             FeatureFlagConstants.FEATURE_FLAG_KEY_MAP.AI_FLOWS_TYPES_REGISTRATION);
 
@@ -100,7 +145,7 @@ const useGetRegistrationFlowBuilderResources = <Data = Resources, Error = Reques
                 ...filteredWidgets
             ]
         };
-    }, [ coreResources, aiFeature, presentationDefinitionsFeature, extensionExecutorSteps ]);
+    }, [ coreResources, aiFeature, presentationDefinitionsFeature, extensionExecutorSteps, flowType ]);
 
     return {
         data: data as Data,

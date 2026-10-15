@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) 2025-2026, WSO2 LLC. (https://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -17,6 +17,7 @@
  */
 
 import AIGeneratedFlowProvider from "@wso2is/admin.flow-builder-core.v1/providers/ai-generated-flow-provider";
+import { FlowTypes } from "@wso2is/admin.flows.v1/models/flows";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
 import React, { FunctionComponent, ReactElement } from "react";
 import RegistrationFlowBuilderCore from "./registration-flow-builder-core";
@@ -24,7 +25,12 @@ import RegistrationFlowBuilderCore from "./registration-flow-builder-core";
 /**
  * Props interface of {@link RegistrationFlowBuilder}
  */
-type RegistrationFlowBuilderPropsInterface = IdentifiableComponentInterface;
+interface RegistrationFlowBuilderPropsInterface extends IdentifiableComponentInterface {
+    /**
+     * Flow type that is being built. Defaults to the registration flow.
+     */
+    flowType?: FlowTypes;
+}
 
 /**
  * Entry point for the registration flow builder decorated with the necessary providers.
@@ -34,10 +40,11 @@ type RegistrationFlowBuilderPropsInterface = IdentifiableComponentInterface;
  */
 const RegistrationFlowBuilder: FunctionComponent<RegistrationFlowBuilderPropsInterface> = ({
     "data-componentid": componentId = "registration-flow-builder",
+    flowType = FlowTypes.REGISTRATION,
     ...rest
 }: RegistrationFlowBuilderPropsInterface): ReactElement => (
     <AIGeneratedFlowProvider>
-        <RegistrationFlowBuilderCore { ...rest } />
+        <RegistrationFlowBuilderCore { ...rest } flowType={ flowType } />
     </AIGeneratedFlowProvider>
 );
 
