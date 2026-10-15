@@ -135,8 +135,8 @@ export interface DevicePolicyFieldDefinitionInterface {
         displayName: string;
     }[];
     value: {
-        inputType: "INPUT" | "OPTIONS";
-        valueType: "STRING" | "NUMBER" | "BOOLEAN";
+        inputType: "input" | "options";
+        valueType: "string" | "number" | "boolean" | "date";
         values?: DevicePolicyMetadataValueOptionInterface[];
     };
 }
