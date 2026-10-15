@@ -162,7 +162,9 @@ const PolicyRulesStep: FunctionComponent<PolicyRulesStepPropsInterface> = (
                         <Tab
                             key={ platform }
                             value={ index }
-                            icon={ pDef?.logo ? (renderPlatformLogo(pDef.logo, 18) as ReactElement) : undefined }
+                            icon={ (pDef?.iconLogo ?? pDef?.logo)
+                                ? (renderPlatformLogo(pDef.iconLogo ?? pDef.logo, 18) as ReactElement)
+                                : undefined }
                             iconPosition="start"
                             data-componentid={ `${ componentId }-${ platform }-tab` }
                             label={

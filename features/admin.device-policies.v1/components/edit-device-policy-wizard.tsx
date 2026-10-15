@@ -104,6 +104,7 @@ const EditDevicePolicyWizard: FunctionComponent<EditDevicePolicyWizardPropsInter
             {
                 key: "ios",
                 label: t("devices:assurancePolicies.wizard.platforms.ios"),
+                iconLogo: technologyLogos.apple as FunctionComponent,
                 logo: technologyLogos.ios as FunctionComponent
             },
             {

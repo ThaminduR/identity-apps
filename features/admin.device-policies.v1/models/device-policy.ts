@@ -113,6 +113,10 @@ export interface PlatformDefinitionInterface {
     key: DevicePlatformType;
     label: string;
     logo: FunctionComponent | string;
+    /**
+     * Compact logo for small placements such as tabs, when the main logo is a wordmark.
+     */
+    iconLogo?: FunctionComponent | string;
     description?: string;
 }
 

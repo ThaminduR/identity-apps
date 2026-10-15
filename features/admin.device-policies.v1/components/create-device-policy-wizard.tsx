@@ -102,6 +102,7 @@ const CreateDevicePolicyWizard: FunctionComponent<CreateDevicePolicyWizardPropsI
                 description: t("devices:assurancePolicies.wizard.platformDescriptions.ios"),
                 key: "ios",
                 label: t("devices:assurancePolicies.wizard.platforms.ios"),
+                iconLogo: technologyLogos.apple as FunctionComponent,
                 logo: technologyLogos.ios as FunctionComponent
             },
             {
