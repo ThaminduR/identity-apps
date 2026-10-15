@@ -479,6 +479,8 @@ export class AppConstants {
                 `${ AppConstants.getDeveloperViewBasePath() }/edit-password-recovery-flow` ],
             [ "INVITE_USER_PASSWORD_SETUP_FLOW_BUILDER",
                 `${ AppConstants.getDeveloperViewBasePath() }/edit-invited-user-registration-flow` ],
+            [ "DEVICE_REGISTRATION_FLOW_BUILDER",
+                `${ AppConstants.getDeveloperViewBasePath() }/edit-device-registration-flow` ],
             [ "AGENTS", `${AppConstants.getAdminViewBasePath()}/agents` ],
             [ "AGENT_EDIT", `${ AppConstants.getDeveloperViewBasePath() }/agents/:id` ],
             [ "DEVICE_ASSURANCE_POLICIES",

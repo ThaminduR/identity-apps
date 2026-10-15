@@ -26,6 +26,15 @@
             "path": "INVITE_USER_PASSWORD_SETUP_FLOW_BUILDER",
             "type": "INVITED_USER_REGISTRATION",
             "disabled": false
+        },
+        {
+            "id": "device-registration",
+            "heading": "Device Registration",
+            "description": "Configure flows that let signed-in users register their devices to their accounts.",
+            "featureStatusKey": "flows.types.list.deviceRegistration",
+            "path": "DEVICE_REGISTRATION_FLOW_BUILDER",
+            "type": "DEVICE_REGISTRATION",
+            "disabled": false
         }
     ]
 }

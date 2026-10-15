@@ -323,6 +323,16 @@ export const getAppViewRoutes = (): RouteInterface[] => {
                     path: AppConstants.getPaths().get("INVITE_USER_PASSWORD_SETUP_FLOW_BUILDER"),
                     protected: true,
                     showOnSidePanel: false
+                },
+                {
+                    component: lazy(() => import(
+                        "@wso2is/admin.registration-flow-builder.v1/pages/device-registration-flow-builder-page")),
+                    exact: true,
+                    id: "deviceRegistrationFlowBuilder",
+                    name: "flows:deviceRegistrationFlow.flowDisplayName",
+                    path: AppConstants.getPaths().get("DEVICE_REGISTRATION_FLOW_BUILDER"),
+                    protected: true,
+                    showOnSidePanel: false
                 }
             ],
             component: lazy(() => import("@wso2is/admin.flows.v1/pages/flows-page")),
