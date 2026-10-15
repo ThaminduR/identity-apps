@@ -79,12 +79,6 @@
                             "isFlowCompletionNotificationEnabled": "false"
                         },
                         "data": {
-                            "action": {
-                                "type": "EXECUTOR",
-                                "executor": {
-                                    "name": "UserProvisioningExecutor"
-                                }
-                            },
                             "components": [
                                 {
                                     "category": "DISPLAY",
@@ -261,13 +255,7 @@
                                         "text": "<p class=\"rich-text-paragraph rich-text-align-center\"><span class=\"rich-text-pre-wrap\">Your device has been registered successfully.</span></p>"
                                     }
                                 }
-                            ],
-                            "action": {
-                                "type": "EXECUTOR",
-                                "executor": {
-                                    "name": "UserProvisioningExecutor"
-                                }
-                            }
+                            ]
                         }
                     }
                 ]
@@ -502,13 +490,7 @@
                                         "text": "<p class=\"rich-text-paragraph rich-text-align-center\"><span class=\"rich-text-pre-wrap\">Your device has been registered successfully.</span></p>"
                                     }
                                 }
-                            ],
-                            "action": {
-                                "type": "EXECUTOR",
-                                "executor": {
-                                    "name": "UserProvisioningExecutor"
-                                }
-                            }
+                            ]
                         }
                     }
                 ]
@@ -743,13 +725,7 @@
                                         "text": "<p class=\"rich-text-paragraph rich-text-align-center\"><span class=\"rich-text-pre-wrap\">Your device has been registered successfully.</span></p>"
                                     }
                                 }
-                            ],
-                            "action": {
-                                "type": "EXECUTOR",
-                                "executor": {
-                                    "name": "UserProvisioningExecutor"
-                                }
-                            }
+                            ]
                         }
                     }
                 ]
