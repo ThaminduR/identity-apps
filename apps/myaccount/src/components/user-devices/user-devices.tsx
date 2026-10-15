@@ -31,7 +31,15 @@ import { ConfirmationModal } from "@wso2is/react-components";
 import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from "react";
+import React, {
+    FunctionComponent,
+    MutableRefObject,
+    ReactElement,
+    useCallback,
+    useEffect,
+    useRef,
+    useState
+} from "react";
 import { useTranslation } from "react-i18next";
 import { UserDeviceRenameDialog } from "./user-device-rename-dialog";
 import { deleteUserDevice, getUserDevices, updateUserDevice } from "../../api";
@@ -82,6 +90,14 @@ export const UserDevicesComponent: FunctionComponent<UserDevicesComponentPropsIn
     const [ removingDevice, setRemovingDevice ] = useState<UserDeviceInterface | null>(null);
     const [ pendingDeviceId, setPendingDeviceId ] = useState<string | null>(null);
 
+    // The parent recreates the alert callback on every render, so keep the latest one in a ref instead of
+    // depending on it; otherwise the devices would be re-fetched after every render.
+    const onAlertFiredRef: MutableRefObject<(alert: AlertInterface) => void> = useRef(onAlertFired);
+
+    useEffect(() => {
+        onAlertFiredRef.current = onAlertFired;
+    }, [ onAlertFired ]);
+
     const fireErrorAlert: (
         notification: DeviceNotificationKey,
         error: AxiosError<HttpErrorResponseDataInterface>
@@ -92,7 +108,7 @@ export const UserDevicesComponent: FunctionComponent<UserDevicesComponentPropsIn
         const description: string | undefined = error?.response?.data?.description;
 
         if (description) {
-            onAlertFired({
+            onAlertFiredRef.current({
                 description: t(`myAccount:components.userDevices.notifications.${ notification }.error.description`,
                     { description }),
                 level: AlertLevels.ERROR,
@@ -102,21 +118,21 @@ export const UserDevicesComponent: FunctionComponent<UserDevicesComponentPropsIn
             return;
         }
 
-        onAlertFired({
+        onAlertFiredRef.current({
             description: t(`myAccount:components.userDevices.notifications.${ notification }.genericError.description`),
             level: AlertLevels.ERROR,
             message: t(`myAccount:components.userDevices.notifications.${ notification }.genericError.message`)
         });
-    }, [ onAlertFired, t ]);
+    }, [ t ]);
 
     const fireSuccessAlert: (notification: DeviceNotificationKey) => void = useCallback(
         (notification: DeviceNotificationKey): void => {
-            onAlertFired({
+            onAlertFiredRef.current({
                 description: t(`myAccount:components.userDevices.notifications.${ notification }.success.description`),
                 level: AlertLevels.SUCCESS,
                 message: t(`myAccount:components.userDevices.notifications.${ notification }.success.message`)
             });
-        }, [ onAlertFired, t ]);
+        }, [ t ]);
 
     const fetchDevices: () => void = useCallback((): void => {
         getUserDevices()
