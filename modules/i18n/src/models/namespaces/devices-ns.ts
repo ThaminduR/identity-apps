@@ -213,8 +213,8 @@ export interface DevicesNS {
                         value: string;
                     };
                     values: {
-                        disabled: string;
-                        enabled: string;
+                        no: string;
+                        yes: string;
                     };
                 };
             };

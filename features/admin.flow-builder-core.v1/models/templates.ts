@@ -27,7 +27,6 @@ enum TemplateCategories {
 export enum TemplateTypes {
     Blank = "BLANK",
     Basic = "BASIC",
-    BasicDeviceRegister = "BASIC_DEVICE_REGISTER",
     BasicFederated = "BASIC_FEDERATED",
     GeneratedWithAI = "GENERATE_WITH_AI",
     BasicPasskey = "BASIC_PASSKEY",

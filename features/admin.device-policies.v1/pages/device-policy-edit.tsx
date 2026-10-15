@@ -170,8 +170,7 @@ const DevicePolicyEditPage: FunctionComponent<DevicePolicyEditPagePropsInterface
         if (raw === "true") {
             return (
                 <Chip
-                    label={ t("devices:assurancePolicies.edit.sections.conditions.values.enabled") }
-                    color="success"
+                    label={ t("devices:assurancePolicies.edit.sections.conditions.values.yes") }
                     size="small"
                 />
             );
@@ -180,8 +179,7 @@ const DevicePolicyEditPage: FunctionComponent<DevicePolicyEditPagePropsInterface
         if (raw === "false") {
             return (
                 <Chip
-                    label={ t("devices:assurancePolicies.edit.sections.conditions.values.disabled") }
-                    color="error"
+                    label={ t("devices:assurancePolicies.edit.sections.conditions.values.no") }
                     size="small"
                 />
             );

@@ -209,8 +209,8 @@ export const devices: DevicesNS = {
                     description: "The following conditions must all be met for this policy to pass.",
                     heading: "Conditions",
                     values: {
-                        disabled: "Disabled",
-                        enabled: "Enabled"
+                        no: "No",
+                        yes: "Yes"
                     }
                 },
                 platform: {

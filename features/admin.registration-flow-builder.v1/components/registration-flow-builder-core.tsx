@@ -587,7 +587,7 @@ const RegistrationFlowBuilderCore: FunctionComponent<RegistrationFlowBuilderCore
     const initialNodes: Node[] = useMemo<Node[]>(() => {
         if (flowType === FlowTypes.DEVICE_REGISTRATION) {
             const deviceRegistrationTemplate: Template = cloneDeep(
-                templates.find((template: Template) => template.type === TemplateTypes.BasicDeviceRegister)
+                templates.find((template: Template) => template.type === TemplateTypes.DeviceRegistrationEmailOTP)
             );
 
             const deviceRegistrationSteps: Step[] = deviceRegistrationTemplate?.config?.data?.steps ?? [];
