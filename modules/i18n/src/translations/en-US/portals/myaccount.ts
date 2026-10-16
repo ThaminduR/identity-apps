@@ -2074,6 +2074,7 @@ export const myAccount: MyAccountNS = {
         userDevices: {
             description: "Manage the devices registered to your account. Deactivate or remove a device you no " +
                 "longer use or don't recognize.",
+            emptyPlaceholderText: "You don't have any registered devices yet.",
             heading: "Registered devices"
         },
         userSessions: {

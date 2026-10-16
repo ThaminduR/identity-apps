@@ -69,8 +69,7 @@ const DeviceActions: typeof Box = styled(Box)(({ theme }: { theme: Theme }) => (
 
 /**
  * Lists the devices registered to the user and lets the user rename, activate, deactivate or remove them.
- * The section is hidden when the user has never registered a device, since devices are registered through
- * application sign-in flows and not from My Account.
+ * The section is hidden only when the server does not support device management.
  *
  * @param props - Props injected to the component.
  * @returns User devices section.
@@ -85,7 +84,7 @@ export const UserDevicesComponent: FunctionComponent<UserDevicesComponentPropsIn
 
     const [ devices, setDevices ] = useState<UserDeviceInterface[]>([]);
     const [ isLoading, setIsLoading ] = useState<boolean>(true);
-    const [ hasRegisteredDevices, setHasRegisteredDevices ] = useState<boolean>(false);
+    const [ isDeviceManagementAvailable, setIsDeviceManagementAvailable ] = useState<boolean>(true);
     const [ renamingDevice, setRenamingDevice ] = useState<UserDeviceInterface | null>(null);
     const [ removingDevice, setRemovingDevice ] = useState<UserDeviceInterface | null>(null);
     const [ pendingDeviceId, setPendingDeviceId ] = useState<string | null>(null);
@@ -140,15 +139,15 @@ export const UserDevicesComponent: FunctionComponent<UserDevicesComponentPropsIn
                 const userDevices: UserDeviceInterface[] = response?.devices ?? [];
 
                 setDevices(userDevices);
-                if (userDevices.length > 0) {
-                    setHasRegisteredDevices(true);
-                }
             })
             .catch((error: AxiosError<HttpErrorResponseDataInterface>) => {
-                // A server without device management does not expose the API; keep the section hidden.
-                if (error?.response?.status !== 404) {
-                    fireErrorAlert("fetchDevices", error);
+                // A server without device management does not expose the API, so hide the section.
+                if (error?.response?.status === 404) {
+                    setIsDeviceManagementAvailable(false);
+
+                    return;
                 }
+                fireErrorAlert("fetchDevices", error);
             })
             .finally(() => {
                 setIsLoading(false);
@@ -295,7 +294,7 @@ export const UserDevicesComponent: FunctionComponent<UserDevicesComponentPropsIn
         );
     };
 
-    if (!isLoading && !hasRegisteredDevices) {
+    if (!isDeviceManagementAvailable) {
         return null;
     }
 
@@ -304,6 +303,11 @@ export const UserDevicesComponent: FunctionComponent<UserDevicesComponentPropsIn
             data-componentid={ `${ componentId }-settings-section` }
             description={ t("myAccount:sections.userDevices.description") }
             header={ t("myAccount:sections.userDevices.heading") }
+            placeholder={
+                !isLoading && devices.length === 0
+                    ? t("myAccount:sections.userDevices.emptyPlaceholderText")
+                    : null
+            }
         >
             { isLoading
                 ? <Skeleton variant="rectangular" height={ 64 } />

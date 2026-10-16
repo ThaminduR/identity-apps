@@ -1232,6 +1232,7 @@ export interface MyAccountNS {
         };
         userDevices?: {
             description: string;
+            emptyPlaceholderText: string;
             heading: string;
         };
         userSessions: {
